@@ -12,6 +12,8 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
 
 /**
  * json资源标示,json文件根节点必须为root
+ * <p>
+ * 文件样式 参考resource目录下jsonSmaple.json
  * 
  * @author Shadow
  * @version 1.0.0
@@ -20,14 +22,14 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonResource {
-	
+
 	/**
 	 * 资源名，包括路径
 	 * 
 	 * @return
 	 */
 	String fileName();
-	
+
 	/**
 	 * 资源加载器，默认为{@link JsonResourceLoader}.
 	 * <P>

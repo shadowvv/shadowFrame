@@ -9,5 +9,6 @@ public class LoaderSample {
 		System.out.println("xml:" + ResourceLoader.getInstance().loadTemplate(XmlSample.class));
 		System.out.println("json:" + ResourceLoader.getInstance().loadTemplate(JsonSample.class));
 		System.out.println("properties:" + ResourceLoader.getInstance().loadTemplate(PropertiesSample.class));
+		System.out.println("Excel:" + ResourceLoader.getInstance().loadTemplate(ExcelSample.class));
 	}
 }

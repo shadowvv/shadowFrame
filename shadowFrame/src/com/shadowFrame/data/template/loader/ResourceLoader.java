@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.CsvResource;
+import com.shadowFrame.data.annotation.ExcelResource;
 import com.shadowFrame.data.annotation.JsonResource;
 import com.shadowFrame.data.annotation.PropertiesResource;
 import com.shadowFrame.data.annotation.ResourceId;
@@ -40,6 +41,7 @@ public class ResourceLoader {
 		registerLoader(JsonResource.class, JsonResourceLoader.class);
 		registerLoader(PropertiesResource.class, PropertiesResourceLoader.class);
 		registerLoader(XmlResource.class, XmlResourceLoader.class);
+		registerLoader(ExcelResource.class, ExcelResourceLoader.class);
 	}
 
 	/**
@@ -137,14 +139,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadPropertis(Class<T> resource) {
-		PropertiesResource resAnnotation = resource.getClass().getAnnotation(PropertiesResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != PropertiesResourceLoader.class) {
-			return null;
-		}
-		return loadPropertis(resource, resAnnotation.fileName());
+		return new PropertiesResourceLoader().loadResource(resource);
 	}
 
 	/**
@@ -172,14 +167,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadCsv(Class<T> resource) {
-		CsvResource resAnnotation = resource.getClass().getAnnotation(CsvResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			return null;
-		}
-		return loadCsv(resource, resAnnotation.fileName());
+		return new CsvResourceLoader().loadResource(resource);
 	}
 
 	/**
@@ -207,14 +195,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadXml(Class<T> resource) {
-		XmlResource resAnnotation = resource.getClass().getAnnotation(XmlResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != XmlResourceLoader.class) {
-			return null;
-		}
-		return loadXml(resource, resAnnotation.fileName());
+		return new XmlResourceLoader().loadResource(resource);
 	}
 
 	/**
@@ -242,14 +223,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadJson(Class<T> resource) {
-		JsonResource resAnnotation = resource.getClass().getAnnotation(JsonResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
-			return null;
-		}
-		return loadJson(resource, resAnnotation.fileName());
+		return new JsonResourceLoader().loadResource(resource);
 	}
 
 	/**
@@ -265,6 +239,34 @@ public class ResourceLoader {
 	 */
 	public static <T> Map<String, T> loadJson(Class<T> resource, String fileName) {
 		return new JsonResourceLoader().loadResource(resource, fileName);
+	}
+	
+	/**
+	 * 加载excel格式资源，资源必须由{@link ExcelResource}标注
+	 * <P>
+	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @return 资源map,加载失败返回null
+	 */
+	public static <T> Map<String, T> loadExcel(Class<T> resource) {
+		return new ExcelResourceLoader().loadResource(resource);
+	}
+
+	/**
+	 * 加载excel格式资源
+	 * <P>
+	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 * @return 资源map,加载失败返回null
+	 */
+	public static <T> Map<String, T> loadExcel(Class<T> resource, String fileName) {
+		return new ExcelResourceLoader().loadResource(resource, fileName);
 	}
 
 	/**
@@ -313,6 +315,5 @@ public class ResourceLoader {
 		} catch (Exception e) {
 
 		}
-
 	}
 }

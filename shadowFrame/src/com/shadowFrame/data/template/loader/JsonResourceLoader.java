@@ -19,6 +19,8 @@ import com.shadowFrame.util.FileUtil;
 
 /**
  * Json格式资源加载器,json文件根节点必须为root
+ * <p>
+ * 文件样式 参考resource目录下jsonSmaple.json
  * 
  * @author Shadow
  * @version 1.0.0

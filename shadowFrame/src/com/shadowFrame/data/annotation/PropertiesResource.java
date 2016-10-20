@@ -18,6 +18,8 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
  * eg: <br>
  * # 注释 <br>
  * serverId = 1;
+ * <p>
+ * 文件样式 参考resource目录下propertiesSmaple.cfg
  * 
  * @author Shadow
  * @version 1.0.0

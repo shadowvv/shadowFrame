@@ -18,6 +18,8 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
  * eg: <br>
  * segment1,segment2,segment3 <br>
  * 1,,3
+ * <p>
+ * 文件样式参考resource目录下csvSmaple.csv
  * 
  * @author Shadow
  * @version 1.0.0

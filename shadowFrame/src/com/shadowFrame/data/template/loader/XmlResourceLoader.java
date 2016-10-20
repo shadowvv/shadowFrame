@@ -19,8 +19,9 @@ import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
- * xml格式资源加载器<br>
- * xml文件样式 参考resource目录下xmlSmaple.xml
+ * xml格式资源加载器
+ * <p>
+ * 文件样式 参考resource目录下xmlSmaple.xml
  * 
  * @author Shadow
  * @version 1.0.0
