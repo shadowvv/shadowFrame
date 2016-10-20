@@ -16,7 +16,7 @@ import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.util.FileUtil;
 
 /**
- * 属性资源加载器 
+ * 属性资源加载器
  * <p>
  * 文件以#标识注释，以'\n'结束语句
  * <p>
@@ -29,8 +29,8 @@ import com.shadowFrame.util.FileUtil;
  */
 public class PropertiesResourceLoader implements IResourceLoader {
 
-	public <T> Map<String, T> loadResource(T resource) {
-		PropertiesResource resAnnotation = resource.getClass().getAnnotation(PropertiesResource.class);
+	public <T> Map<String, T> loadResource(Class<T> resource) {
+		PropertiesResource resAnnotation = resource.getAnnotation(PropertiesResource.class);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -40,7 +40,7 @@ public class PropertiesResourceLoader implements IResourceLoader {
 		return loadResource(resource, resAnnotation.fileName());
 	}
 
-	public <T> Map<String, T> loadResource(T resource, String fileName) {
+	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
@@ -50,18 +50,19 @@ public class PropertiesResourceLoader implements IResourceLoader {
 					new InputStreamReader(new BufferedInputStream(new FileInputStream(file)), "UTF-8"));
 			if (bundle != null) {
 				Enumeration<String> keys = bundle.getKeys();
+				T resourceObject = resource.newInstance();
 				while (keys.hasMoreElements()) {
 					String key = (String) keys.nextElement().trim();
-					ResourceLoader.setAttr(resource, key, bundle.getString(key).trim());
+					ResourceLoader.setAttr(resourceObject, key, bundle.getString(key).trim());
 				}
+				Map<String, T> map = new HashMap<>();
+				map.put(resource.getName(), resourceObject);
+				return map;
 			}
-
-		} catch (IOException e) {
+		} catch (IOException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		Map<String, T> map = new HashMap<>();
-		map.put(resource.getClass().getName(), resource);
-		return map;
+		return null;
 	}
 
 }

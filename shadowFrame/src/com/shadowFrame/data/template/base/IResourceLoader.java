@@ -21,9 +21,9 @@ public interface IResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return 资源map
+	 * @return 资源map,加载失败返回null
 	 */
-	public abstract <T> Map<String, T> loadResource(T resource, String fileName);
+	public abstract <T> Map<String, T> loadResource(Class<T> resource, String fileName);
 
 	/**
 	 * 加载资源，template必须由对呀的Annotation标记<br>
@@ -33,7 +33,7 @@ public interface IResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return 资源map
+	 * @return 资源map,加载失败返回null
 	 */
-	public abstract <T> Map<String, T> loadResource(T resource);
+	public abstract <T> Map<String, T> loadResource(Class<T> resource);
 }

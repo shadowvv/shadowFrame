@@ -27,6 +27,11 @@ public class JsonSample extends BaseTemplate {
 	public int getMin() {
 		return min;
 	}
+	
+	@Override
+	public String toString() {
+		return "id="+id+" min="+min+" max="+max;
+	}
 
 	@Override
 	public boolean invalid() {

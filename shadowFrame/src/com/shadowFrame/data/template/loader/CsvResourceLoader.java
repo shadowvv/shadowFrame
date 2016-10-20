@@ -35,7 +35,7 @@ public class CsvResourceLoader implements IResourceLoader {
 	static String CSV_SEPERATOR = ",";
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource, String fileName) {
+	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
@@ -58,9 +58,13 @@ public class CsvResourceLoader implements IResourceLoader {
 					break;
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
+				T resourceObject = resource.newInstance();
 				int index = 0;
 				for (String name : attrNames) {
-					ResourceLoader.setAttr(resource, name, attrValues[index]);
+					if(index>=attrValues.length){
+						return null;
+					}
+					ResourceLoader.setAttr(resourceObject, name, attrValues[index]);
 					if(id == null){
 						Field field = ClassUtil.getClassField(resource, name);
 						if(field == null){
@@ -76,7 +80,7 @@ public class CsvResourceLoader implements IResourceLoader {
 						if(resources.containsKey(keyAttrValue)){
 							return null;
 						}
-						resources.put(keyAttrValue, resource);
+						resources.put(keyAttrValue, resourceObject);
 					}
 					index++;
 				}
@@ -87,13 +91,17 @@ public class CsvResourceLoader implements IResourceLoader {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		return resources;
 	}
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource) {
-		CsvResource resAnnotation = resource.getClass().getAnnotation(CsvResource.class);
+	public <T> Map<String, T> loadResource(Class<T> resource) {
+		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
 		if (resAnnotation == null) {
 			return null;
 		}

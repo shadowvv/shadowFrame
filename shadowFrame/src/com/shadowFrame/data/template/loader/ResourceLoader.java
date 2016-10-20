@@ -24,11 +24,11 @@ import com.shadowFrame.util.ClassUtil;
 public class ResourceLoader {
 
 	private Map<String, Class<? extends IResourceLoader>> loaderMap;
-	
+
 	private static ResourceLoader instance;
-	
-	public static ResourceLoader getInstance(){
-		if(instance == null){
+
+	public static ResourceLoader getInstance() {
+		if (instance == null) {
 			instance = new ResourceLoader();
 		}
 		return instance;
@@ -36,10 +36,10 @@ public class ResourceLoader {
 
 	private ResourceLoader() {
 		loaderMap = new HashMap<>();
-		registerLoader(CsvResource.class,CsvResourceLoader.class);
-		registerLoader(JsonResource.class,JsonResourceLoader.class);
-		registerLoader(PropertiesResource.class,PropertiesResourceLoader.class);
-		registerLoader(XmlResource.class,XmlResourceLoader.class);
+		registerLoader(CsvResource.class, CsvResourceLoader.class);
+		registerLoader(JsonResource.class, JsonResourceLoader.class);
+		registerLoader(PropertiesResource.class, PropertiesResourceLoader.class);
+		registerLoader(XmlResource.class, XmlResourceLoader.class);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class ResourceLoader {
 	 * 
 	 * @param loader
 	 */
-	public void registerLoader(Class<?> resourceAnnotation,Class<? extends IResourceLoader> loader) {
+	public void registerLoader(Class<?> resourceAnnotation, Class<? extends IResourceLoader> loader) {
 		loaderMap.put(resourceAnnotation.getName(), loader);
 	}
 
@@ -59,15 +59,18 @@ public class ResourceLoader {
 	 * 
 	 * @param template
 	 *            模版类
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public <T extends BaseTemplate> Map<String, T> loadTemplate(T template) {
-		Annotation annotations[] = template.getClass().getAnnotations();
+	public <T extends BaseTemplate> Map<String, T> loadTemplate(Class<T> template) {
+		Annotation annotations[] = template.getAnnotations();
 		for (Annotation annotation : annotations) {
 			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
 			if (loader != null) {
 				try {
 					Map<String, T> resources = loader.newInstance().loadResource(template);
+					if (resources == null) {
+						return null;
+					}
 					for (T resource : resources.values()) {
 						if (resource.invalid()) {
 							return null;
@@ -95,15 +98,18 @@ public class ResourceLoader {
 	 *            模版类
 	 * @param fileName
 	 *            文件路径
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public <T extends BaseTemplate> Map<String, T> loadTemplate(T template, String fileName) {
-		Annotation annotations[] = template.getClass().getAnnotations();
+	public <T extends BaseTemplate> Map<String, T> loadTemplate(Class<T> template, String fileName) {
+		Annotation annotations[] = template.getAnnotations();
 		for (Annotation annotation : annotations) {
 			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
 			if (loader != null) {
 				try {
 					Map<String, T> resources = loader.newInstance().loadResource(template, fileName);
+					if (resources == null) {
+						return null;
+					}
 					for (T resource : resources.values()) {
 						if (resource.invalid()) {
 							return null;
@@ -128,9 +134,9 @@ public class ResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadPropertis(T resource) {
+	public static <T> Map<String, T> loadPropertis(Class<T> resource) {
 		PropertiesResource resAnnotation = resource.getClass().getAnnotation(PropertiesResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -150,9 +156,9 @@ public class ResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadPropertis(T resource, String fileName) {
+	public static <T> Map<String, T> loadPropertis(Class<T> resource, String fileName) {
 		return new PropertiesResourceLoader().loadResource(resource, fileName);
 	}
 
@@ -163,9 +169,9 @@ public class ResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadCsv(T resource) {
+	public static <T> Map<String, T> loadCsv(Class<T> resource) {
 		CsvResource resAnnotation = resource.getClass().getAnnotation(CsvResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -185,9 +191,9 @@ public class ResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadCsv(T resource, String fileName) {
+	public static <T> Map<String, T> loadCsv(Class<T> resource, String fileName) {
 		return new CsvResourceLoader().loadResource(resource, fileName);
 	}
 
@@ -198,9 +204,9 @@ public class ResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadXml(T resource) {
+	public static <T> Map<String, T> loadXml(Class<T> resource) {
 		XmlResource resAnnotation = resource.getClass().getAnnotation(XmlResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -220,9 +226,9 @@ public class ResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadXml(T resource, String fileName) {
+	public static <T> Map<String, T> loadXml(Class<T> resource, String fileName) {
 		return new XmlResourceLoader().loadResource(resource, fileName);
 	}
 
@@ -233,9 +239,9 @@ public class ResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadJson(T resource) {
+	public static <T> Map<String, T> loadJson(Class<T> resource) {
 		JsonResource resAnnotation = resource.getClass().getAnnotation(JsonResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -255,9 +261,9 @@ public class ResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return
+	 * @return 资源map,加载失败返回null
 	 */
-	public static <T> Map<String, T> loadJson(T resource, String fileName) {
+	public static <T> Map<String, T> loadJson(Class<T> resource, String fileName) {
 		return new JsonResourceLoader().loadResource(resource, fileName);
 	}
 
@@ -278,7 +284,7 @@ public class ResourceLoader {
 		if (attrValue == null || attrValue.equals("")) {
 			return;
 		}
-		Field field = ClassUtil.getClassField(instance, attrName);
+		Field field = ClassUtil.getClassField(instance.getClass(), attrName);
 		if (field == null) {
 			return;
 		}

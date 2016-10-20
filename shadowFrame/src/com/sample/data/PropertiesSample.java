@@ -20,6 +20,11 @@ public class PropertiesSample extends BaseTemplate {
 	public int getMin() {
 		return min;
 	}
+	
+	@Override
+	public String toString() {
+		return "min="+min+" max="+max;
+	}
 
 	@Override
 	public boolean invalid() {

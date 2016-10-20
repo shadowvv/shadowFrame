@@ -28,7 +28,7 @@ public class JsonResourceLoader implements IResourceLoader{
 	static String JSON_ROOT = "root";
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource, String fileName) {
+	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
@@ -53,8 +53,9 @@ public class JsonResourceLoader implements IResourceLoader{
 			for(int i = 0;i<jsonA.length();i++){
 				JSONObject element = jsonA.getJSONObject(i);
 				String[] key = JSONObject.getNames(element);
+				T resourceObject = resource.newInstance();
 				for (String attribute : key) {
-					ResourceLoader.setAttr(resource, attribute, element.getString(attribute));
+					ResourceLoader.setAttr(resourceObject, attribute, element.getString(attribute));
 					if(id == null){
 						Field field = ClassUtil.getClassField(resource, attribute);
 						if(field == null){
@@ -70,19 +71,19 @@ public class JsonResourceLoader implements IResourceLoader{
 						if(resources.containsKey(keyAttrValue)){
 							return null;
 						}
-						resources.put(keyAttrValue, resource);
+						resources.put(keyAttrValue, resourceObject);
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return resources;
 	}
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource) {
-		JsonResource resAnnotation = resource.getClass().getAnnotation(JsonResource.class);
+	public <T> Map<String, T> loadResource(Class<T> resource) {
+		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
 		if (resAnnotation == null) {
 			return null;
 		}

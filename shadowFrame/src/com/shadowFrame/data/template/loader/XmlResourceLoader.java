@@ -28,7 +28,7 @@ import com.shadowFrame.util.FileUtil;
 public class XmlResourceLoader implements IResourceLoader {
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource, String fileName) {
+	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
@@ -46,8 +46,9 @@ public class XmlResourceLoader implements IResourceLoader {
 			for (Element element : elements) {
 				@SuppressWarnings("unchecked")
 				List<Attribute> attrs = element.attributes();
+				T resourceObject = resource.newInstance();
 				for (Attribute attribute : attrs) {
-					ResourceLoader.setAttr(resource, attribute.getName(), attribute.getValue());
+					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
 					if(id == null){
 						Field field = ClassUtil.getClassField(resource, attribute.getName());
 						if(field == null){
@@ -63,19 +64,19 @@ public class XmlResourceLoader implements IResourceLoader {
 						if(resources.containsKey(keyAttrValue)){
 							return null;
 						}
-						resources.put(keyAttrValue, resource);
+						resources.put(keyAttrValue, resourceObject);
 					}
 				}
 			}
-		} catch (DocumentException e) {
+		} catch (DocumentException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return resources;
 	}
 
 	@Override
-	public <T> Map<String, T> loadResource(T resource) {
-		XmlResource resAnnotation = resource.getClass().getAnnotation(XmlResource.class);
+	public <T> Map<String, T> loadResource(Class<T> resource) {
+		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
 		if (resAnnotation == null) {
 			return null;
 		}

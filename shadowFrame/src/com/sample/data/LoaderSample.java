@@ -5,9 +5,9 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
 public class LoaderSample {
 
 	public static void main(String[] args) {
-		System.out.println(ResourceLoader.getInstance().loadTemplate(new CsvSample()));
-		System.out.println(ResourceLoader.getInstance().loadTemplate(new XmlSample()));
-		System.out.println(ResourceLoader.getInstance().loadTemplate(new JsonSample()));
-		System.out.println(ResourceLoader.getInstance().loadTemplate(new PropertiesSample()));
+		System.out.println("csv:" + ResourceLoader.getInstance().loadTemplate(CsvSample.class));
+		System.out.println("xml:" + ResourceLoader.getInstance().loadTemplate(XmlSample.class));
+		System.out.println("json:" + ResourceLoader.getInstance().loadTemplate(JsonSample.class));
+		System.out.println("properties:" + ResourceLoader.getInstance().loadTemplate(PropertiesSample.class));
 	}
 }

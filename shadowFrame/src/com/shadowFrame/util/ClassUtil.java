@@ -175,19 +175,19 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 获得映射对象属性字段
+	 * 获得类属性字段
 	 * 
-	 * @param instance
-	 *            对象
+	 * @param instanceClass
+	 *            类
 	 * @param attrName
 	 *            字段名
 	 * @return
 	 */
-	public static Field getClassField(Object instance, String attrName) {
+	public static Field getClassField(Class<?> instanceClass, String attrName) {
 		Field field = null;
-		try {
+		Class<?> originalClass = instanceClass;
+		try{
 			try {
-				Class<?> instanceClass = instance.getClass();
 				do {
 					try {
 						field = instanceClass.getField(attrName);
@@ -196,7 +196,7 @@ public class ClassUtil {
 					}
 				} while (field == null);
 			} catch (Exception e) {
-				Class<?> instanceClass = instance.getClass();
+				instanceClass = originalClass;
 				do {
 					try {
 						field = instanceClass.getDeclaredField(attrName);
@@ -205,7 +205,8 @@ public class ClassUtil {
 					}
 				} while (field == null);
 			}
-		} catch (Exception e) {
+		} catch (Exception e){
+			
 		}
 
 		if (field != null) {
