@@ -8,13 +8,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.shadowFrame.data.annotation.ExcelResource;
@@ -59,8 +58,32 @@ public class ExcelResourceLoader implements IResourceLoader {
 		HSSFWorkbook book = null;
 		try {
 			book = new HSSFWorkbook(new FileInputStream(file));
-			HSSFSheet sheet = book.getSheetAt(0);
-			HSSFRow attrnameRow = sheet.getRow(0);
+			return loadExcelFile(book, resource);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private <T> Map<String, T> loadXlsxFile(Class<T> resource, File file) {
+		XSSFWorkbook book = null;
+		try {
+			book = new XSSFWorkbook(new FileInputStream(file));
+			return loadExcelFile(book, resource);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private <T> Map<String, T> loadExcelFile(Workbook book, Class<T> resource) {
+		try {
+			Sheet sheet = book.getSheetAt(0);
+			Row attrnameRow = sheet.getRow(0);
 			if (attrnameRow == null) {
 				return null;
 			}
@@ -69,17 +92,17 @@ public class ExcelResourceLoader implements IResourceLoader {
 			String keyAttrValue = null;
 			Map<String, T> resources = new HashMap<>();
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
-				HSSFRow dataRow = sheet.getRow(i);
-				if(dataRow == null){
+				Row dataRow = sheet.getRow(i);
+				if (dataRow == null) {
 					continue;
 				}
 				T resourceObject = resource.newInstance();
-				for(int j = dataRow.getFirstCellNum();j<= dataRow.getLastCellNum();j++){
-					HSSFCell dataCell = dataRow.getCell(j);
-					if(dataCell == null){
+				for (int j = dataRow.getFirstCellNum(); j <= dataRow.getLastCellNum(); j++) {
+					Cell dataCell = dataRow.getCell(j);
+					if (dataCell == null) {
 						continue;
 					}
-					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), dataCell.toString());
+					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
 					if (id == null) {
 						Field field = ClassUtil.getClassField(resource, attrnameRow.getCell(j).toString());
 						if (field == null) {
@@ -109,8 +132,8 @@ public class ExcelResourceLoader implements IResourceLoader {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		}finally{
-			if(book != null){
+		} finally {
+			if (book != null) {
 				try {
 					book.close();
 				} catch (IOException e) {
@@ -121,70 +144,15 @@ public class ExcelResourceLoader implements IResourceLoader {
 		return null;
 	}
 
-	private <T> Map<String, T> loadXlsxFile(Class<T> resource, File file) {
-		XSSFWorkbook book = null;
-		try {
-			book = new XSSFWorkbook(new FileInputStream(file));
-			XSSFSheet sheet = book.getSheetAt(0);
-			XSSFRow attrnameRow = sheet.getRow(0);
-			if (attrnameRow == null) {
-				return null;
-			}
-			ResourceId id = null;
-			String keyAttrName = null;
-			String keyAttrValue = null;
-			Map<String, T> resources = new HashMap<>();
-			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
-				XSSFRow dataRow = sheet.getRow(i);
-				if(dataRow == null){
-					continue;
-				}
-				T resourceObject = resource.newInstance();
-				for(int j = dataRow.getFirstCellNum();j<= dataRow.getLastCellNum();j++){
-					XSSFCell dataCell = dataRow.getCell(j);
-					if(dataCell == null){
-						continue;
-					}
-					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), dataCell.toString());
-					if (id == null) {
-						Field field = ClassUtil.getClassField(resource, attrnameRow.getCell(j).toString());
-						if (field == null) {
-							return null;
-						}
-						id = field.getAnnotation(ResourceId.class);
-						if (id != null) {
-							keyAttrName = attrnameRow.getCell(j).toString();
-						}
-					}
-					if (keyAttrName != null && keyAttrName.equals(attrnameRow.getCell(j).toString())) {
-						keyAttrValue = dataCell.toString();
-						if (resources.containsKey(keyAttrValue)) {
-							return null;
-						}
-						resources.put(keyAttrValue, resourceObject);
-					}
-				}
-			}
-			book.close();
-			return resources;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}finally{
-			if(book != null){
-				try {
-					book.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	@SuppressWarnings("deprecation")
+	private String getRealValue(Cell cell) {
+		String real = cell.toString();
+		if (cell.getCellType() == CellType.NUMERIC.getCode()) {
+			if (real.endsWith(".0")) {
+				real = real.substring(0, real.lastIndexOf(".0"));
 			}
 		}
-		return null;
+		return real;
 	}
 
 	@Override

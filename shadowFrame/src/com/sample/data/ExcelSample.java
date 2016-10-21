@@ -9,8 +9,8 @@ public class ExcelSample extends BaseTemplate {
 
 	@ResourceId
 	private String id;
-	private float min;
-	private float max;
+	private int min;
+	private int max;
 
 	public ExcelSample() {
 
