@@ -3,6 +3,11 @@ package com.sample.data;
 import com.shadowFrame.data.annotation.PropertiesResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * 属性资源映射类例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 @PropertiesResource(fileName = "resource/propertiesSample.cfg")
 public class PropertiesSample extends BaseTemplate {
 

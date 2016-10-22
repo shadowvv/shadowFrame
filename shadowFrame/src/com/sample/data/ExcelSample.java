@@ -4,6 +4,11 @@ import com.shadowFrame.data.annotation.ExcelResource;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * excel资源映射类例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 @ExcelResource(fileName = "resource/excelSample.xls")
 public class ExcelSample extends BaseTemplate {
 

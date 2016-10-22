@@ -3,6 +3,12 @@ package com.shadowFrame.data.generator;
 import com.shadowFrame.data.annotation.PropertiesResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * 资源生成器配置映射类
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 @PropertiesResource(fileName = "cfg/generatorCfg.cfg")
 public class GeneratorCfg extends BaseTemplate {
 
@@ -54,6 +60,6 @@ public class GeneratorCfg extends BaseTemplate {
 
 	@Override
 	public void assembly() {
-		
+
 	}
 }

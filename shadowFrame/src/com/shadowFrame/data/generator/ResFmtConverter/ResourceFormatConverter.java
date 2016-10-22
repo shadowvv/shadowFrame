@@ -1,4 +1,4 @@
-package com.shadowFrame.data.generator;
+package com.shadowFrame.data.generator.ResFmtConverter;
 
 /**
  * 资源格式转换器

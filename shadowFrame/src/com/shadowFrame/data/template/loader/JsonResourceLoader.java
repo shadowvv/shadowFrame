@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.shadowFrame.data.annotation.JsonResource;
-import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -49,7 +46,6 @@ public class JsonResourceLoader implements IResourceLoader{
 			
 			JSONObject jsonO = new JSONObject(data);
 			JSONArray jsonA = jsonO.getJSONArray(JSON_ROOT);
-			ResourceId id = null;
 			String keyAttrName = null;
 			String keyAttrValue = null;
 			for(int i = 0;i<jsonA.length();i++){
@@ -58,15 +54,8 @@ public class JsonResourceLoader implements IResourceLoader{
 				T resourceObject = resource.newInstance();
 				for (String attribute : key) {
 					ResourceLoader.setAttr(resourceObject, attribute, element.getString(attribute));
-					if(id == null){
-						Field field = ClassUtil.getClassField(resource, attribute);
-						if(field == null){
-							return null;
-						}
-						id = field.getAnnotation(ResourceId.class);
-						if(id != null){
-							keyAttrName = attribute;
-						}
+					if (keyAttrName == null) {
+						keyAttrName = ResourceLoader.getIdFieldName(resource, attribute);
 					}
 					if(keyAttrName != null && keyAttrName.equals(attribute)){
 						keyAttrValue = element.getString(attribute);

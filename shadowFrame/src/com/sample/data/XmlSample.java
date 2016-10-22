@@ -4,6 +4,11 @@ import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * xml资源映射类例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 @XmlResource(fileName = "resource/xmlSample.xml")
 public class XmlSample extends BaseTemplate{
 	

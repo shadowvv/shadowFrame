@@ -4,6 +4,11 @@ import com.shadowFrame.data.annotation.JsonResource;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * json资源映射类例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 @JsonResource(fileName = "resource/jsonSample.json")
 public class JsonSample extends BaseTemplate {
 	

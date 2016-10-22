@@ -2,6 +2,11 @@ package com.sample.data;
 
 import com.shadowFrame.data.template.loader.ResourceLoader;
 
+/**
+ * 资源加载例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class LoaderSample {
 
 	public static void main(String[] args) {

@@ -1,7 +1,6 @@
 package com.shadowFrame.data.template.loader;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -39,7 +36,6 @@ public class XmlResourceLoader implements IResourceLoader {
 		try {
 			Document doc = reader.read(file);
 			Element root = doc.getRootElement();
-			ResourceId id = null;
 			String keyAttrName = null;
 			String keyAttrValue = null;
 			@SuppressWarnings("unchecked")
@@ -50,15 +46,8 @@ public class XmlResourceLoader implements IResourceLoader {
 				T resourceObject = resource.newInstance();
 				for (Attribute attribute : attrs) {
 					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
-					if(id == null){
-						Field field = ClassUtil.getClassField(resource, attribute.getName());
-						if(field == null){
-							return null;
-						}
-						id = field.getAnnotation(ResourceId.class);
-						if(id != null){
-							keyAttrName = attribute.getName();
-						}
+					if (keyAttrName == null) {
+						keyAttrName = ResourceLoader.getIdFieldName(resource, attribute.getName());
 					}
 					if(keyAttrName != null && keyAttrName.equals(attribute.getName())){
 						keyAttrValue = attribute.getValue();

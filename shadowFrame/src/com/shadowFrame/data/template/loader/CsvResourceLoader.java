@@ -7,14 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.CsvResource;
-import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -44,7 +41,6 @@ public class CsvResourceLoader implements IResourceLoader {
 		}
 		Map<String, T> resources = new HashMap<>();
 		try {
-			ResourceId id = null;
 			String keyAttrName = null;
 			String keyAttrValue = null;
 			@SuppressWarnings("resource")
@@ -67,15 +63,8 @@ public class CsvResourceLoader implements IResourceLoader {
 						return null;
 					}
 					ResourceLoader.setAttr(resourceObject, name, attrValues[index]);
-					if (id == null) {
-						Field field = ClassUtil.getClassField(resource, name);
-						if (field == null) {
-							return null;
-						}
-						id = field.getAnnotation(ResourceId.class);
-						if (id != null) {
-							keyAttrName = name;
-						}
+					if (keyAttrName == null) {
+						keyAttrName = ResourceLoader.getIdFieldName(resource, name);
 					}
 					if (keyAttrName != null && keyAttrName.equals(name)) {
 						keyAttrValue = attrValues[index];

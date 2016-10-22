@@ -4,6 +4,11 @@ import com.shadowFrame.data.annotation.CsvResource;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
+/**
+ * csv资源映射类例子
+ * @author Shadow
+ * @version 1.0.0
+ */
 @CsvResource(fileName = "resource/csvSample.csv")
 public class CsvSample extends BaseTemplate {
 	

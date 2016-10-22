@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.shadowFrame.data.annotation.ExcelResource;
-import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -87,7 +84,6 @@ public class ExcelResourceLoader implements IResourceLoader {
 			if (attrnameRow == null) {
 				return null;
 			}
-			ResourceId id = null;
 			String keyAttrName = null;
 			String keyAttrValue = null;
 			Map<String, T> resources = new HashMap<>();
@@ -103,15 +99,8 @@ public class ExcelResourceLoader implements IResourceLoader {
 						continue;
 					}
 					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
-					if (id == null) {
-						Field field = ClassUtil.getClassField(resource, attrnameRow.getCell(j).toString());
-						if (field == null) {
-							return null;
-						}
-						id = field.getAnnotation(ResourceId.class);
-						if (id != null) {
-							keyAttrName = attrnameRow.getCell(j).toString();
-						}
+					if (keyAttrName == null) {
+						keyAttrName = ResourceLoader.getIdFieldName(resource, attrnameRow.getCell(j).toString());
 					}
 					if (keyAttrName != null && keyAttrName.equals(attrnameRow.getCell(j).toString())) {
 						keyAttrValue = dataCell.toString();

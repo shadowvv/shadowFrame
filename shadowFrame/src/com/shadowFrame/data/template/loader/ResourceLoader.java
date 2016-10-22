@@ -240,7 +240,7 @@ public class ResourceLoader {
 	public static <T> Map<String, T> loadJson(Class<T> resource, String fileName) {
 		return new JsonResourceLoader().loadResource(resource, fileName);
 	}
-	
+
 	/**
 	 * 加载excel格式资源，资源必须由{@link ExcelResource}标注
 	 * <P>
@@ -315,5 +315,27 @@ public class ResourceLoader {
 		} catch (Exception e) {
 
 		}
+	}
+
+	/**
+	 * 获得资源映射类中id字段
+	 * 
+	 * @param resource
+	 *            映射类
+	 * @param fieldName
+	 *            字段名
+	 * @return
+	 */
+	public static String getIdFieldName(Class<?> resource, String fieldName) {
+		ResourceId id = null;
+		Field field = ClassUtil.getClassField(resource, fieldName);
+		if (field == null) {
+			return null;
+		}
+		id = field.getAnnotation(ResourceId.class);
+		if (id != null) {
+			return fieldName;
+		}
+		return null;
 	}
 }
