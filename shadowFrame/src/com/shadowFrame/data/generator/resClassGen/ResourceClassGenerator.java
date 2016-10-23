@@ -22,7 +22,7 @@ public class ResourceClassGenerator {
 	 */
 	public void generateClass() {
 		if (cfg.getFromFormat().equals("xls") || cfg.getFromFormat().equals("xlsx")) {
-			ExcelClassGenerator.generateFromExcel(cfg.getResourceDir());
+			ExcelClassGenerator.generateFromExcel(cfg.getResourceDir(),cfg.getResourceClassPackage());
 		} else {
 
 		}

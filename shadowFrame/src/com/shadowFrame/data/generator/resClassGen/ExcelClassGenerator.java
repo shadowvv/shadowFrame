@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFileArchitecture;
+
 /**
  * 使用excel资源生成映射类生成器
  * 
@@ -23,9 +25,11 @@ public class ExcelClassGenerator {
 
 	/**
 	 * 生成映射类
-	 * @param resourceDir 资源目录
+	 * 
+	 * @param resourceDir
+	 *            资源目录
 	 */
-	public static void generateFromExcel(String resourceDir) {
+	public static void generateFromExcel(String resourceDir, String classPackage) {
 		File dir = new File(resourceDir);
 		if (dir == null || !dir.isDirectory()) {
 			return;
@@ -34,7 +38,8 @@ public class ExcelClassGenerator {
 
 			@Override
 			public boolean accept(File file) {
-				if (file.isFile() && file.getName().endsWith(".xls") && file.getName().endsWith(".xlsx")) {
+				if (file.isFile() && file.getName().endsWith(".xls")
+						&& file.getName().endsWith(".xlsx")) {
 					return true;
 				}
 				return false;
@@ -43,17 +48,17 @@ public class ExcelClassGenerator {
 
 		for (File file : files) {
 			if (file.getName().endsWith(".xls")) {
-				generateFromExcelXls(file);
+				generateFromExcelXls(file, classPackage);
 			} else if (file.getName().endsWith(".xlsx")) {
-				generateFromExcelXlsx(file);
+				generateFromExcelXlsx(file, classPackage);
 			}
 		}
 	}
 
-	private static void generateFromExcelXls(File file) {
+	private static void generateFromExcelXls(File file, String classPackage) {
 		try {
 			HSSFWorkbook book = new HSSFWorkbook(new FileInputStream(file));
-			generateFromExcel(book);
+			generateFromExcel(book, file.getName(), classPackage);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -61,10 +66,10 @@ public class ExcelClassGenerator {
 		}
 	}
 
-	private static void generateFromExcelXlsx(File file) {
+	private static void generateFromExcelXlsx(File file, String classPackage) {
 		try {
 			XSSFWorkbook book = new XSSFWorkbook(new FileInputStream(file));
-			generateFromExcel(book);
+			generateFromExcel(book, file.getName(), classPackage);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -72,14 +77,18 @@ public class ExcelClassGenerator {
 		}
 	}
 
-	private static void generateFromExcel(Workbook book) {
+	private static void generateFromExcel(Workbook book, String className,
+			String classPackage) {
+		ResClassFileArchitecture classFile = new ResClassFileArchitecture(
+				className, classPackage);
 		Sheet sheet = book.getSheetAt(0);
 		Row fieldRow = sheet.getRow(0);
 		Row commentRow = sheet.getRow(1);
-		for(int i = fieldRow.getFirstCellNum();i <= fieldRow.getRowNum();i++){
+		for (int i = fieldRow.getFirstCellNum(); i <= fieldRow.getRowNum(); i++) {
 			Cell field = fieldRow.getCell(i);
 			Cell comment = commentRow.getCell(i);
-			ClassFileWriter.addField(field.toString(), "int", comment.toString());
+			classFile.addField(field.toString(), "int", comment.toString());
 		}
+		classFile.writeClassFile();
 	}
 }
