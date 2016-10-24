@@ -1,14 +1,42 @@
 package com.shadowFrame.data.cache;
 
-import java.util.List;
-
 /**
  * 内存缓存管理器
  * 
  * @author Shadow
  * @version 1.0.0
  */
-public class ResourceMemCache implements IResourceCache {
+public class ResourceMemCache<T> implements IResourceCache<T> {
+
+	@Override
+	public void setCacheNum(int cacheNum) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int getCacheNum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setCacheExpireTime(long expireTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public long getCacheExpireTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setAutoload(boolean autoload, ICacheLoader loader) {
+		// TODO Auto-generated method stub
+
+	}
 
 	@Override
 	public boolean isAutoload() {
@@ -17,31 +45,25 @@ public class ResourceMemCache implements IResourceCache {
 	}
 
 	@Override
-	public void setAutoload(boolean autoload) {
+	public T getResource(String resourceKey) {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override
-	public boolean getResource(String resourceKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean loadResource(String resourceKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addResource(String resourceKey, List<Object> resource) {
+	public boolean addResource(String resourceKey, T resource) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean removeResource(String resourceKey) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean loadResource(String resourceKey) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -65,7 +87,7 @@ public class ResourceMemCache implements IResourceCache {
 	}
 
 	@Override
-	public boolean update(String resourceKey, List<Object> resource) {
+	public boolean update(String resourceKey, T resource) {
 		// TODO Auto-generated method stub
 		return false;
 	}
