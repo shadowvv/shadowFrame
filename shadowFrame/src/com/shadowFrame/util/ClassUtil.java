@@ -186,7 +186,7 @@ public class ClassUtil {
 	public static Field getClassField(Class<?> instanceClass, String attrName) {
 		Field field = null;
 		Class<?> originalClass = instanceClass;
-		try{
+		try {
 			try {
 				do {
 					try {
@@ -205,14 +205,38 @@ public class ClassUtil {
 					}
 				} while (field == null);
 			}
-		} catch (Exception e){
-			
+		} catch (Exception e) {
+
 		}
 
 		if (field != null) {
 			field.setAccessible(true);
 		}
 		return field;
+	}
+
+	/**
+	 * 类中是否包括字段
+	 * 
+	 * @param resource
+	 *            类
+	 * @param fieldName
+	 *            字段名
+	 * @return
+	 */
+	public static boolean isContainField(Class<?> resource, String fieldName) {
+		Field resourceField = null;
+		try {
+			resourceField = resource.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException e) {
+			return false;
+		} catch (SecurityException e) {
+			return false;
+		}
+		if (resourceField == null) {
+			return false;
+		}
+		return true;
 	}
 
 	public static void main(String[] args) {

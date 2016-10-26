@@ -41,7 +41,7 @@ public interface IResourceCache<T> {
 	 * 
 	 * @param autoload
 	 */
-	public void setAutoload(boolean autoload, ICacheLoader loader);
+	public void setAutoload(boolean autoload, ICacheLoader<T> loader);
 
 	/**
 	 * 是否自动加载数据

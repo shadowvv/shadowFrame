@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.shadowFrame.data.annotation.ExcelResource;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -32,60 +33,142 @@ import com.shadowFrame.util.FileUtil;
 public class ExcelResourceLoader implements IResourceLoader {
 
 	@Override
-	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
+	public <T> Map<String, T> loadResources(Class<T> resource) {
+		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != ExcelResourceLoader.class) {
+			return null;
+		}
+		return loadResourcesFromFile(resource, resAnnotation.fileName());
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
+		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != ExcelResourceLoader.class) {
+			return null;
+		}
+		return loadResources(resource, resAnnotation.fileName(), resourceId);
+	}
+
+	@Override
+	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
 		}
+		if (resourceId == null) {
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
+			return null;
+		}
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
+			Workbook book = null;
 			String extension = fileName.substring(dotIndex);
-			if (extension.equals(".xls")) {
-				return loadXlsFile(resource, file);
-			} else if (extension.equals(".xlsx")) {
-				return loadXlsxFile(resource, file);
-			} else {
+			try {
+				if (extension.equals(".xls")) {
+					book = new HSSFWorkbook(new FileInputStream(file));
+					return loadExcelFile(book, resource, resourceId);
+				} else if (extension.equals(".xlsx")) {
+					book = new XSSFWorkbook(new FileInputStream(file));
+					return loadExcelFile(book, resource, resourceId);
+				} else {
+					return null;
+				}
+			} catch (Exception e) {
 				return null;
 			}
+
 		}
 		return null;
 	}
 
-	private <T> Map<String, T> loadXlsFile(Class<T> resource, File file) {
-		HSSFWorkbook book = null;
-		try {
-			book = new HSSFWorkbook(new FileInputStream(file));
-			return loadExcelFile(book, resource);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	@Override
+	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
+		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != ExcelResourceLoader.class) {
+			return null;
+		}
+		return loadResourceFromFile(resource, resAnnotation.fileName(), resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
+		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
+		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != ExcelResourceLoader.class) {
+			return null;
+		}
+		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		if (resourceId == null) {
+			return null;
+		}
+		if (resourceIdValue == null) {
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
+			return null;
+		}
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex != -1) {
+			Workbook book = null;
+			String extension = fileName.substring(dotIndex);
+			try {
+				if (extension.equals(".xls")) {
+					book = new HSSFWorkbook(new FileInputStream(file));
+					return loadExcelElement(book, resource, resourceId, resourceIdValue);
+				} else if (extension.equals(".xlsx")) {
+					book = new XSSFWorkbook(new FileInputStream(file));
+					return loadExcelElement(book, resource, resourceId, resourceIdValue);
+				} else {
+					return null;
+				}
+			} catch (Exception e) {
+				return null;
+			}
+
 		}
 		return null;
 	}
 
-	private <T> Map<String, T> loadXlsxFile(Class<T> resource, File file) {
-		XSSFWorkbook book = null;
-		try {
-			book = new XSSFWorkbook(new FileInputStream(file));
-			return loadExcelFile(book, resource);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private <T> Map<String, T> loadExcelFile(Workbook book, Class<T> resource) {
+	private <T> Map<String, T> loadExcelFile(Workbook book, Class<T> resource, String resourceId) {
 		try {
 			Sheet sheet = book.getSheetAt(0);
 			Row attrnameRow = sheet.getRow(0);
 			if (attrnameRow == null) {
 				return null;
 			}
-			String keyAttrName = null;
-			String keyAttrValue = null;
+			String resourceIdValue = null;
 			Map<String, T> resources = new HashMap<>();
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
 				Row dataRow = sheet.getRow(i);
@@ -99,20 +182,74 @@ public class ExcelResourceLoader implements IResourceLoader {
 						continue;
 					}
 					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
-					if (keyAttrName == null) {
-						keyAttrName = ResourceLoader.getIdFieldName(resource, attrnameRow.getCell(j).toString());
-					}
-					if (keyAttrName != null && keyAttrName.equals(attrnameRow.getCell(j).toString())) {
-						keyAttrValue = dataCell.toString();
-						if (resources.containsKey(keyAttrValue)) {
+					if (resourceId.equals(attrnameRow.getCell(j).toString())) {
+						resourceIdValue = dataCell.toString();
+						if (resources.containsKey(resourceIdValue)) {
 							return null;
 						}
-						resources.put(keyAttrValue, resourceObject);
+						resources.put(resourceIdValue, resourceObject);
 					}
 				}
 			}
 			book.close();
 			return resources;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} finally {
+			if (book != null) {
+				try {
+					book.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+	private <T> T loadExcelElement(Workbook book, Class<T> resource, String resourceId, String resourceIdValue) {
+		try {
+			Sheet sheet = book.getSheetAt(0);
+			Row attrnameRow = sheet.getRow(0);
+			if (attrnameRow == null) {
+				return null;
+			}
+			int idIndex = -1;
+			for (int i = attrnameRow.getFirstCellNum(); i <= attrnameRow.getLastCellNum(); i++) {
+				Cell attrNameCell = attrnameRow.getCell(i);
+				if (attrNameCell.toString().equals(resourceId)) {
+					idIndex = i;
+					break;
+				}
+			}
+			if (idIndex == -1) {
+				return null;
+			}
+			T resourceObject = resource.newInstance();
+			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
+				Row dataRow = sheet.getRow(i);
+				if (dataRow == null) {
+					continue;
+				}
+				if (!dataRow.getCell(idIndex).toString().equals(resourceIdValue)) {
+					continue;
+				}
+				for (int j = dataRow.getFirstCellNum(); j <= dataRow.getLastCellNum(); j++) {
+					Cell dataCell = dataRow.getCell(j);
+					if (dataCell == null) {
+						continue;
+					}
+					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
+				}
+			}
+			book.close();
+			return resourceObject;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -142,18 +279,6 @@ public class ExcelResourceLoader implements IResourceLoader {
 			}
 		}
 		return real;
-	}
-
-	@Override
-	public <T> Map<String, T> loadResource(Class<T> resource) {
-		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != ExcelResourceLoader.class) {
-			return null;
-		}
-		return loadResource(resource, resAnnotation.fileName());
 	}
 
 }

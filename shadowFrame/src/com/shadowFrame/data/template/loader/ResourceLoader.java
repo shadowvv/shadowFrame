@@ -69,7 +69,7 @@ public class ResourceLoader {
 			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
 			if (loader != null) {
 				try {
-					Map<String, T> resources = loader.newInstance().loadResource(template);
+					Map<String, T> resources = loader.newInstance().loadResources(template);
 					if (resources == null) {
 						return null;
 					}
@@ -108,7 +108,7 @@ public class ResourceLoader {
 			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
 			if (loader != null) {
 				try {
-					Map<String, T> resources = loader.newInstance().loadResource(template, fileName);
+					Map<String, T> resources = loader.newInstance().loadResourcesFromFile(template, fileName);
 					if (resources == null) {
 						return null;
 					}
@@ -139,7 +139,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadPropertis(Class<T> resource) {
-		return new PropertiesResourceLoader().loadResource(resource);
+		return new PropertiesResourceLoader().loadResources(resource);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadPropertis(Class<T> resource, String fileName) {
-		return new PropertiesResourceLoader().loadResource(resource, fileName);
+		return new PropertiesResourceLoader().loadResourcesFromFile(resource, fileName);
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadCsv(Class<T> resource) {
-		return new CsvResourceLoader().loadResource(resource);
+		return new CsvResourceLoader().loadResources(resource);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadCsv(Class<T> resource, String fileName) {
-		return new CsvResourceLoader().loadResource(resource, fileName);
+		return new CsvResourceLoader().loadResourcesFromFile(resource, fileName);
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadXml(Class<T> resource) {
-		return new XmlResourceLoader().loadResource(resource);
+		return new XmlResourceLoader().loadResources(resource);
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadXml(Class<T> resource, String fileName) {
-		return new XmlResourceLoader().loadResource(resource, fileName);
+		return new XmlResourceLoader().loadResourcesFromFile(resource, fileName);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadJson(Class<T> resource) {
-		return new JsonResourceLoader().loadResource(resource);
+		return new JsonResourceLoader().loadResources(resource);
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadJson(Class<T> resource, String fileName) {
-		return new JsonResourceLoader().loadResource(resource, fileName);
+		return new JsonResourceLoader().loadResourcesFromFile(resource, fileName);
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadExcel(Class<T> resource) {
-		return new ExcelResourceLoader().loadResource(resource);
+		return new ExcelResourceLoader().loadResources(resource);
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class ResourceLoader {
 	 * @return 资源map,加载失败返回null
 	 */
 	public static <T> Map<String, T> loadExcel(Class<T> resource, String fileName) {
-		return new ExcelResourceLoader().loadResource(resource, fileName);
+		return new ExcelResourceLoader().loadResourcesFromFile(resource, fileName);
 	}
 
 	/**
@@ -322,19 +322,16 @@ public class ResourceLoader {
 	 * 
 	 * @param resource
 	 *            映射类
-	 * @param fieldName
-	 *            字段名
 	 * @return
 	 */
-	public static String getIdFieldName(Class<?> resource, String fieldName) {
+	public static String getIdFieldName(Class<?> resource) {
 		ResourceId id = null;
-		Field field = ClassUtil.getClassField(resource, fieldName);
-		if (field == null) {
-			return null;
-		}
-		id = field.getAnnotation(ResourceId.class);
-		if (id != null) {
-			return fieldName;
+		Field[] fields = resource.getDeclaredFields();
+		for (Field attr : fields) {
+			id = attr.getAnnotation(ResourceId.class);
+			if (id != null) {
+				return attr.getName();
+			}
 		}
 		return null;
 	}

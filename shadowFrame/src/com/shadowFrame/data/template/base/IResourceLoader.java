@@ -12,6 +12,20 @@ import com.shadowFrame.data.annotation.ResourceId;
  * @version 1.0.0
  */
 public interface IResourceLoader {
+
+	/**
+	 * 加载资源
+	 * <P>
+	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * <P>
+	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @return 资源map,加载失败返回null
+	 */
+	public abstract <T> Map<String, T> loadResources(Class<T> resource);
+
 	/**
 	 * 加载资源
 	 * <P>
@@ -23,17 +37,92 @@ public interface IResourceLoader {
 	 *            资源名
 	 * @return 资源map,加载失败返回null
 	 */
-	public abstract <T> Map<String, T> loadResource(Class<T> resource, String fileName);
+	public abstract <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName);
 
 	/**
-	 * 加载资源，template必须由对呀的Annotation标记<br>
-	 * eg:{@link CsvResource}
+	 * 加载资源
 	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
+	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
 	 * 
 	 * @param resource
 	 *            资源映射类
+	 * @param resourceId
+	 *            资源键
 	 * @return 资源map,加载失败返回null
 	 */
-	public abstract <T> Map<String, T> loadResource(Class<T> resource);
+	public abstract <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId);
+
+	/**
+	 * 加载资源
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 * @param resourceId
+	 *            资源Id名
+	 * @return 资源map,加载失败返回null
+	 */
+	public abstract <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId);
+
+	/**
+	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
+	 * <P>
+	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * <P>
+	 * 资源键由映射类中{@link ResourceId}标记
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param resourceIdValue
+	 *            资源键值
+	 * @return 资源，加载失败返回null
+	 */
+	public abstract <T> T loadResource(Class<T> resource, String resourceIdValue);
+
+	/**
+	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
+	 * <P>
+	 * 资源键由映射类中{@link ResourceId}标记
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 * @param resourceIdValue
+	 *            资源键值
+	 * @return 资源，加载失败返回null
+	 */
+	public abstract <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue);
+
+	/**
+	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
+	 * <P>
+	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param resourceId
+	 *            资源键
+	 * @param resourceIdValue
+	 *            资源键值
+	 * @return 资源，加载失败返回null
+	 */
+	public abstract <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue);
+
+	/**
+	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 * @param resourceId
+	 *            资源键
+	 * @param resourceIdValue
+	 *            资源键值
+	 * @return 资源，加载失败返回null
+	 */
+	public abstract <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue);
+
 }

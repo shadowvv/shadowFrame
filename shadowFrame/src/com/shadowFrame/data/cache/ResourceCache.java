@@ -50,7 +50,7 @@ public class ResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public void setAutoload(boolean autoload, ICacheLoader loader) {
+	public void setAutoload(boolean autoload, ICacheLoader<T> loader) {
 		cache.setAutoload(autoload, loader);
 	}
 

@@ -23,7 +23,7 @@ import com.shadowFrame.util.FileUtil;
  * eg: <br>
  * # 注释 <br>
  * serverId = 1
-  * <p>
+ * <p>
  * 文件样式 参考resource目录下propertiesSmaple.cfg
  * 
  * @author Shadow
@@ -31,7 +31,7 @@ import com.shadowFrame.util.FileUtil;
  */
 public class PropertiesResourceLoader implements IResourceLoader {
 
-	public <T> Map<String, T> loadResource(Class<T> resource) {
+	public <T> Map<String, T> loadResources(Class<T> resource) {
 		PropertiesResource resAnnotation = resource.getAnnotation(PropertiesResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -39,10 +39,10 @@ public class PropertiesResourceLoader implements IResourceLoader {
 		if (resAnnotation.loader() != PropertiesResourceLoader.class) {
 			return null;
 		}
-		return loadResource(resource, resAnnotation.fileName());
+		return loadResourcesFromFile(resource, resAnnotation.fileName());
 	}
 
-	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
+	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
 			return null;
@@ -64,6 +64,60 @@ public class PropertiesResourceLoader implements IResourceLoader {
 		} catch (IOException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> T loadResource(Class<T> resource, String resourceKey) {
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceKey) {
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
+		return null;
+	}
+
+	/**
+	 * 针对与属性资源该方法无效,返回null
+	 */
+	@Override
+	@Deprecated
+	public <T> T loadResource(Class<T> resource, String fileName, String resourceKeyName, String resourceKey) {
 		return null;
 	}
 

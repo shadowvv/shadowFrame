@@ -13,6 +13,7 @@ import org.dom4j.io.SAXReader;
 
 import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -26,9 +27,44 @@ import com.shadowFrame.util.FileUtil;
 public class XmlResourceLoader implements IResourceLoader {
 
 	@Override
-	public <T> Map<String, T> loadResource(Class<T> resource, String fileName) {
+	public <T> Map<String, T> loadResources(Class<T> resource) {
+		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != XmlResourceLoader.class) {
+			return null;
+		}
+		return loadResourcesFromFile(resource, resAnnotation.fileName());
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
+		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != XmlResourceLoader.class) {
+			return null;
+		}
+		return loadResources(resource, resAnnotation.fileName(), resourceId);
+	}
+
+	@Override
+	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
+			return null;
+		}
+		if (resourceId == null) {
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
 			return null;
 		}
 		Map<String, T> resources = new HashMap<>();
@@ -36,8 +72,7 @@ public class XmlResourceLoader implements IResourceLoader {
 		try {
 			Document doc = reader.read(file);
 			Element root = doc.getRootElement();
-			String keyAttrName = null;
-			String keyAttrValue = null;
+			String resourceIdValue = null;
 			@SuppressWarnings("unchecked")
 			List<Element> elements = root.elements();
 			for (Element element : elements) {
@@ -46,15 +81,12 @@ public class XmlResourceLoader implements IResourceLoader {
 				T resourceObject = resource.newInstance();
 				for (Attribute attribute : attrs) {
 					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
-					if (keyAttrName == null) {
-						keyAttrName = ResourceLoader.getIdFieldName(resource, attribute.getName());
-					}
-					if(keyAttrName != null && keyAttrName.equals(attribute.getName())){
-						keyAttrValue = attribute.getValue();
-						if(resources.containsKey(keyAttrValue)){
+					if (resourceId.equals(attribute.getName())) {
+						resourceIdValue = attribute.getValue();
+						if (resources.containsKey(resourceIdValue)) {
 							return null;
 						}
-						resources.put(keyAttrValue, resourceObject);
+						resources.put(resourceIdValue, resourceObject);
 					}
 				}
 			}
@@ -65,7 +97,7 @@ public class XmlResourceLoader implements IResourceLoader {
 	}
 
 	@Override
-	public <T> Map<String, T> loadResource(Class<T> resource) {
+	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
 		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
 		if (resAnnotation == null) {
 			return null;
@@ -73,7 +105,67 @@ public class XmlResourceLoader implements IResourceLoader {
 		if (resAnnotation.loader() != XmlResourceLoader.class) {
 			return null;
 		}
-		return loadResource(resource, resAnnotation.fileName());
+		return loadResourceFromFile(resource, resAnnotation.fileName(), resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
+		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
+		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
+		if (resAnnotation == null) {
+			return null;
+		}
+		if (resAnnotation.loader() != XmlResourceLoader.class) {
+			return null;
+		}
+		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		if (resourceId == null) {
+			return null;
+		}
+		if (resourceIdValue == null) {
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
+			return null;
+		}
+		SAXReader reader = new SAXReader();
+		try {
+			Document doc = reader.read(file);
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> elements = root.elements();
+			for (Element element : elements) {
+				Attribute idAttr = element.attribute(resourceId);
+				if (idAttr == null) {
+					return null;
+				}
+				if (!idAttr.getName().equals(resourceId)) {
+					continue;
+				}
+				@SuppressWarnings("unchecked")
+				List<Attribute> attrs = element.attributes();
+				T resourceObject = resource.newInstance();
+				for (Attribute attribute : attrs) {
+					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
+				}
+				return resourceObject;
+			}
+		} catch (DocumentException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
