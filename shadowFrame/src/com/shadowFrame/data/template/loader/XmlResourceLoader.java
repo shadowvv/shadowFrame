@@ -151,7 +151,7 @@ public class XmlResourceLoader implements IResourceLoader {
 				if (idAttr == null) {
 					return null;
 				}
-				if (!idAttr.getName().equals(resourceId)) {
+				if (!idAttr.getValue().equals(resourceIdValue)) {
 					continue;
 				}
 				@SuppressWarnings("unchecked")

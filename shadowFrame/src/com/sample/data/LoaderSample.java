@@ -23,6 +23,6 @@ public class LoaderSample {
 		System.out.println("csv:" + new CsvResourceLoader().loadResource(CsvSample.class,"1"));
 		System.out.println("xml:" + new XmlResourceLoader().loadResource(XmlSample.class,"1"));
 		System.out.println("json:" + new JsonResourceLoader().loadResource(JsonSample.class,"1"));
-		System.out.println("Excel:" + new ExcelResourceLoader().loadResource(ExcelSample.class,"1.0"));
+		System.out.println("Excel:" + new ExcelResourceLoader().loadResource(ExcelSample.class,"1"));
 	}
 }

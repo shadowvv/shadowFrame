@@ -183,7 +183,7 @@ public class ExcelResourceLoader implements IResourceLoader {
 					}
 					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
 					if (resourceId.equals(attrnameRow.getCell(j).toString())) {
-						resourceIdValue = dataCell.toString();
+						resourceIdValue = getRealValue(dataCell);
 						if (resources.containsKey(resourceIdValue)) {
 							return null;
 						}
@@ -231,15 +231,16 @@ public class ExcelResourceLoader implements IResourceLoader {
 			if (idIndex == -1) {
 				return null;
 			}
-			T resourceObject = resource.newInstance();
+
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
 				Row dataRow = sheet.getRow(i);
 				if (dataRow == null) {
 					continue;
 				}
-				if (!dataRow.getCell(idIndex).toString().equals(resourceIdValue)) {
+				if (!getRealValue(dataRow.getCell(idIndex)).equals(resourceIdValue)) {
 					continue;
 				}
+				T resourceObject = resource.newInstance();
 				for (int j = dataRow.getFirstCellNum(); j <= dataRow.getLastCellNum(); j++) {
 					Cell dataCell = dataRow.getCell(j);
 					if (dataCell == null) {
@@ -247,9 +248,10 @@ public class ExcelResourceLoader implements IResourceLoader {
 					}
 					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
 				}
+				return resourceObject;
 			}
 			book.close();
-			return resourceObject;
+			return null;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
