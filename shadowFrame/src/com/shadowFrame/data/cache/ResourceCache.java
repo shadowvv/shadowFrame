@@ -10,9 +10,81 @@ public class ResourceCache<T> implements IResourceCache<T> {
 
 	private IResourceCache<T> cache;
 	private ResourceCacheType cacheType;
+	private ResourceCacheStrategy cacheStrategy;
 
+	/**
+	 * 默认构造器。缓存类型为{@link ResourceCacheType#MEMORY},缓存策略为{@link ResourceCacheStrategy#COMMON}
+	 */
+	public ResourceCache() {
+		this(ResourceCacheType.MEMORY, ResourceCacheStrategy.COMMON);
+	}
+
+	/**
+	 * 
+	 * @param cacheType
+	 *            缓存类型
+	 */
 	public ResourceCache(ResourceCacheType cacheType) {
+		this(cacheType, ResourceCacheStrategy.COMMON);
+	}
+
+	/**
+	 * 
+	 * @param cacheStrategy
+	 *            缓存策略
+	 */
+	public ResourceCache(ResourceCacheStrategy cacheStrategy) {
+		this(ResourceCacheType.MEMORY, cacheStrategy);
+	}
+
+	/**
+	 * 
+	 * @param cacheType
+	 *            缓存类型
+	 * @param cacheStrategy
+	 *            缓存策略
+	 */
+	public ResourceCache(ResourceCacheType cacheType, ResourceCacheStrategy cacheStrategy) {
 		this.cacheType = cacheType;
+		setCacheType(cacheType);
+	}
+
+	/**
+	 * 设置缓存类型
+	 * 
+	 * @param cacheType
+	 */
+	public void setCacheType(ResourceCacheType cacheType) {
+		this.cacheType = cacheType;
+		initCacheLoader(cacheType);
+	}
+
+	/**
+	 * 
+	 * @return 缓存类型
+	 */
+	public ResourceCacheType getCacheType() {
+		return cacheType;
+	}
+
+	/**
+	 * 设置缓存策略
+	 * 
+	 * @param cacheStrategy
+	 */
+	public void setCacheStrategy(ResourceCacheStrategy cacheStrategy) {
+		this.cacheStrategy = cacheStrategy;
+	}
+
+	/**
+	 * 
+	 * @return 缓存策略
+	 */
+	public ResourceCacheStrategy getCacheStrategy() {
+		return cacheStrategy;
+	}
+
+	private void initCacheLoader(ResourceCacheType cacheType) {
 		switch (cacheType) {
 		case REDIS:
 			cache = new ResourceRedisCache<>();
@@ -23,10 +95,6 @@ public class ResourceCache<T> implements IResourceCache<T> {
 		default:
 			return;
 		}
-	}
-
-	public ResourceCacheType getCacheType() {
-		return cacheType;
 	}
 
 	@Override
@@ -50,7 +118,7 @@ public class ResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public void setAutoload(boolean autoload, ICacheLoader<T> loader) {
+	public void setAutoload(boolean autoload, ICacheIO<T> loader) {
 		cache.setAutoload(autoload, loader);
 	}
 
@@ -75,7 +143,7 @@ public class ResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public boolean loadResource(String resourceKey) {
+	public T loadResource(String resourceKey) {
 		return cache.loadResource(resourceKey);
 	}
 
@@ -97,6 +165,11 @@ public class ResourceCache<T> implements IResourceCache<T> {
 	@Override
 	public boolean update(String resourceKey, T resource) {
 		return cache.update(resourceKey, resource);
+	}
+
+	@Override
+	public boolean save(T resource) {
+		return cache.save(resource);
 	}
 
 }

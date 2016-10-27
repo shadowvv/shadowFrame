@@ -39,9 +39,10 @@ public interface IResourceCache<T> {
 	/**
 	 * 设置自动加载
 	 * 
-	 * @param autoload
+	 * @param autoload 自动加载
+	 * @param loader 加载器
 	 */
-	public void setAutoload(boolean autoload, ICacheLoader<T> loader);
+	public void setAutoload(boolean autoload, ICacheIO<T> loader);
 
 	/**
 	 * 是否自动加载数据
@@ -84,9 +85,9 @@ public interface IResourceCache<T> {
 	 * 
 	 * @param resourceKey
 	 *            资源键值
-	 * @return
+	 * @return 加载的资源,加载失败返回null
 	 */
-	public boolean loadResource(String resourceKey);
+	public T loadResource(String resourceKey);
 
 	/**
 	 * 清空缓存
@@ -121,4 +122,13 @@ public interface IResourceCache<T> {
 	 * @return
 	 */
 	public boolean update(String resourceKey, T resource);
+
+	/**
+	 * 保存资源,移除缓存
+	 * 
+	 * @param resource
+	 *            资源
+	 * @return
+	 */
+	public boolean save(T resource);
 }

@@ -5,7 +5,7 @@ public abstract class BaseResourceCache<T> implements IResourceCache<T> {
 	private int cacheNum;
 	private long cacheExpireTime;
 	private boolean autoload;
-	private ICacheLoader<T> loader;
+	private ICacheIO<T> io;
 
 	@Override
 	public void setCacheNum(int cacheNum) {
@@ -28,9 +28,9 @@ public abstract class BaseResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public void setAutoload(boolean autoload, ICacheLoader<T> loader) {
+	public void setAutoload(boolean autoload, ICacheIO<T> loader) {
 		this.autoload = autoload;
-		this.loader = loader;
+		this.io = loader;
 	}
 
 	@Override
@@ -39,21 +39,26 @@ public abstract class BaseResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public boolean loadResource(String resourceKey) {
-		T resource = loader.loadResource(resourceKey);
+	public T loadResource(String resourceKey) {
+		T resource = io.loadResource(resourceKey);
 		if (resource == null) {
-			return false;
+			return null;
 		}
-		return addResource(resourceKey, resource);
+		addResource(resourceKey, resource);
+		return resource;
 	}
 
 	@Override
 	public boolean update(String resourcekey) {
-		T resource = loader.loadResource(resourcekey);
+		T resource = io.loadResource(resourcekey);
 		if (resource == null) {
 			return false;
 		}
 		return update(resourcekey, resource);
 	}
 
+	@Override
+	public boolean save(T resource) {
+		return io.saveResource(resource);
+	}
 }
