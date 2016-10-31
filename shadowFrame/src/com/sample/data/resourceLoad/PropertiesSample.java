@@ -1,4 +1,4 @@
-package com.sample.data;
+package com.sample.data.resourceLoad;
 
 import com.shadowFrame.data.annotation.PropertiesResource;
 import com.shadowFrame.data.template.base.BaseTemplate;

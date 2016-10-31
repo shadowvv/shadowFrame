@@ -1,4 +1,4 @@
-package com.sample.data;
+package com.sample.data.resourceLoad;
 
 import com.shadowFrame.data.template.loader.CsvResourceLoader;
 import com.shadowFrame.data.template.loader.ExcelResourceLoader;

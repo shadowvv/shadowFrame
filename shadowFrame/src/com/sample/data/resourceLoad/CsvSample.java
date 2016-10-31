@@ -1,23 +1,24 @@
-package com.sample.data;
+package com.sample.data.resourceLoad;
 
+import com.shadowFrame.data.annotation.CsvResource;
 import com.shadowFrame.data.annotation.ResourceId;
-import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
 
 /**
- * xml资源映射类例子
+ * csv资源映射类例子
+ * 
  * @author Shadow
  * @version 1.0.0
  */
-@XmlResource(fileName = "resource/xmlSample.xml")
-public class XmlSample extends BaseTemplate{
-	
+@CsvResource(fileName = "resource/csvSample.csv")
+public class CsvSample extends BaseTemplate {
+
 	@ResourceId
 	private String id;
 	private int min;
 	private int max;
 
-	public XmlSample() {
+	public CsvSample() {
 
 	}
 
@@ -32,10 +33,10 @@ public class XmlSample extends BaseTemplate{
 	public int getMin() {
 		return min;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "id="+id+" min="+min+" max="+max;
+		return "id=" + id + " min=" + min + " max=" + max;
 	}
 
 	@Override
@@ -45,6 +46,6 @@ public class XmlSample extends BaseTemplate{
 
 	@Override
 	public void assembly() {
-		
+
 	}
 }

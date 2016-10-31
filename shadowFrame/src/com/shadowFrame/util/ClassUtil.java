@@ -14,7 +14,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * 类扫描器
+ * 类操作工具类
  * 
  * @author Shadow
  * @version 1.0.0

@@ -1,4 +1,4 @@
-package com.sample.data;
+package com.sample.data.resourceLoad;
 
 import com.shadowFrame.data.annotation.ExcelResource;
 import com.shadowFrame.data.annotation.ResourceId;
@@ -9,7 +9,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
  * @author Shadow
  * @version 1.0.0
  */
-@ExcelResource(fileName = "resource/excelSample.xls")
+@ExcelResource(fileName = "resource/excelSample.xlsx")
 public class ExcelSample extends BaseTemplate {
 
 	@ResourceId

@@ -16,6 +16,7 @@ public class GeneratorCfg extends BaseTemplate {
 	private String resourceClassPackage;
 	private String fromFormat;
 	private String toFormat;
+	private String targetDir;
 
 	/**
 	 * 资源转换原始格式
@@ -51,6 +52,15 @@ public class GeneratorCfg extends BaseTemplate {
 	 */
 	public String getResourceClassPackage() {
 		return resourceClassPackage;
+	}
+
+	/**
+	 * 资源类输出目录
+	 * 
+	 * @return
+	 */
+	public String getTargetDir() {
+		return targetDir;
 	}
 
 	@Override
