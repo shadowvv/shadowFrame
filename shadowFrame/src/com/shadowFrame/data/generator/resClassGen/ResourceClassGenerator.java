@@ -22,9 +22,14 @@ public class ResourceClassGenerator {
 	 */
 	public void generateClass() {
 		if (cfg.getFromFormat().equals("xls") || cfg.getFromFormat().equals("xlsx")) {
-			ExcelClassGenerator.generateFromExcel(cfg.getResourceDir(),cfg.getResourceClassPackage());
+			ExcelClassGenerator.generateFromExcel(cfg.getResourceDir(), cfg.getResourceClassPackage(),
+					cfg.getTargetDir(), cfg.getToFormat());
 		} else {
 
 		}
+	}
+
+	public static void main(String[] args) {
+		new ResourceClassGenerator().generateClass();
 	}
 }
