@@ -40,6 +40,17 @@ public class ResClassFileArchitecture {
 	}
 
 	/**
+	 * 
+	 * @param classFile
+	 *            类
+	 */
+	public ResClassFileArchitecture(Class<?> classFile) {
+		className = classFile.getSimpleName();
+		classPackage = classFile.getPackage().getName();
+		fieldMap = new HashMap<>();
+	}
+
+	/**
 	 * 添加类字段
 	 * 
 	 * @param fieldName
