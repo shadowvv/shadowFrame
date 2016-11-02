@@ -14,17 +14,21 @@ public class ShadowLogger {
 	/**
 	 * 一般日志
 	 */
-	static Logger logger = LoggerFactory.getLogger("Shadow");
+	private static final Logger LOGGER = LoggerFactory.getLogger("Shadow");
 
 	/**
 	 * 异常日志
 	 */
-	static Logger exceptionLogger = LoggerFactory.getLogger("Exception");
+	private static final Logger exceptionLOGGER = LoggerFactory.getLogger("Exception");
 
 	/**
 	 * 性能日志
 	 */
-	static Logger performanceLogger = LoggerFactory.getLogger("Performance");
+	private static final Logger performanceLOGGER = LoggerFactory.getLogger("Performance");
+
+	private ShadowLogger() {
+
+	}
 
 	/**
 	 * 调试日志
@@ -33,7 +37,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void debugPrintln(String log, Object... params) {
-		logger.debug(log, params);
+		LOGGER.debug(log, params);
 	}
 
 	/**
@@ -43,7 +47,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void logPrintln(String log, Object... params) {
-		logger.info(log, params);
+		LOGGER.info(log, params);
 	}
 
 	/**
@@ -53,7 +57,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void errorPrintln(String log, Object... params) {
-		logger.error(log, params);
+		LOGGER.error(log, params);
 	}
 
 	/**
@@ -63,7 +67,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void performancePrintln(String log, Object... params) {
-		performanceLogger.info(log, params);
+		performanceLOGGER.info(log, params);
 	}
 
 	/**
@@ -73,6 +77,6 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void exceptionPrintln(String log, Object... params) {
-		exceptionLogger.info(log, params);
+		exceptionLOGGER.info(log, params);
 	}
 }

@@ -10,6 +10,10 @@ import java.io.File;
  */
 public class FileUtil {
 
+	private FileUtil() {
+
+	}
+
 	/**
 	 * 获得存在的文件，不存在返回null
 	 * 

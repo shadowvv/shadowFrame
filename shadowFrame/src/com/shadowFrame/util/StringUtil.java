@@ -8,6 +8,10 @@ package com.shadowFrame.util;
  */
 public class StringUtil {
 
+	private StringUtil() {
+
+	}
+
 	/**
 	 * 使字符串第一个字符大写
 	 * 

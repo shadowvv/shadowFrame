@@ -22,6 +22,10 @@ import com.shadowFrame.util.StringUtil;
  */
 public class ResClassFileWriter {
 
+	private ResClassFileWriter() {
+
+	}
+
 	/**
 	 * 类写入文件
 	 * 
@@ -94,6 +98,8 @@ public class ResClassFileWriter {
 					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
 					+ "\n");
 			break;
+		default:
+			return null;
 		}
 		fileContent.append("public class " + StringUtil.upperHeadCase(resClassFileArchitecture.getClassName())
 				+ " extends BaseTemplate {");

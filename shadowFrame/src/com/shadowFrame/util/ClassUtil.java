@@ -41,6 +41,10 @@ public class ClassUtil {
 	 */
 	static String CLASSFILE_SUFFIX = ".class";
 
+	private ClassUtil() {
+
+	}
+
 	/**
 	 * 遍历包目录下所有类
 	 * 
@@ -190,18 +194,18 @@ public class ClassUtil {
 			try {
 				do {
 					try {
-						field = instanceClass.getField(attrName);
+						field = originalClass.getField(attrName);
 					} catch (Exception e) {
-						instanceClass = instanceClass.getSuperclass();
+						originalClass = originalClass.getSuperclass();
 					}
 				} while (field == null);
 			} catch (Exception e) {
-				instanceClass = originalClass;
+				originalClass = instanceClass;
 				do {
 					try {
-						field = instanceClass.getDeclaredField(attrName);
+						field = originalClass.getDeclaredField(attrName);
 					} catch (Exception ex) {
-						instanceClass = instanceClass.getSuperclass();
+						originalClass = originalClass.getSuperclass();
 					}
 				} while (field == null);
 			}
