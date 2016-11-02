@@ -1,6 +1,7 @@
 package com.shadowFrame.data.template.loader;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,6 +167,37 @@ public class XmlResourceLoader implements IResourceLoader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		if (!fileName.endsWith(".xml")) {
+			return null;
+		}
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		List<Map<String, String>> datas = new ArrayList<>();
+		SAXReader reader = new SAXReader();
+		try {
+			Document doc = reader.read(file);
+			Element root = doc.getRootElement();
+			@SuppressWarnings("unchecked")
+			List<Element> elements = root.elements();
+			for (Element element : elements) {
+				@SuppressWarnings("unchecked")
+				List<Attribute> attrs = element.attributes();
+				Map<String, String> data = new HashMap<>();
+				for (Attribute attribute : attrs) {
+					data.put(attribute.getName(), attribute.getValue());
+				}
+				datas.add(data);
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return datas;
 	}
 
 }

@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -179,6 +181,43 @@ public class JsonResourceLoader implements IResourceLoader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		if (!fileName.endsWith(".json")) {
+			return null;
+		}
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		InputStream inputStream;
+		List<Map<String, String>> datas = new ArrayList<>();
+		try {
+			inputStream = new FileInputStream(file);
+			StringBuilder stringBuilder = new StringBuilder();
+			int byteRead = 0;
+			while ((byteRead = inputStream.read()) != -1) {
+				stringBuilder.append((char) byteRead);
+			}
+			inputStream.close();
+			String stringData = stringBuilder.toString();
+			JSONObject jsonO = new JSONObject(stringData);
+			JSONArray jsonA = jsonO.getJSONArray(JSON_ROOT);
+			for (int i = 0; i < jsonA.length(); i++) {
+				JSONObject element = jsonA.getJSONObject(i);
+				String[] key = JSONObject.getNames(element);
+				Map<String, String> data = new HashMap<>();
+				for (String attribute : key) {
+					data.put(attribute, element.getString(attribute));
+				}
+				datas.add(data);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return datas;
 	}
 
 }

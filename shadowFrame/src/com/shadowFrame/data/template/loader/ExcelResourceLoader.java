@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -76,7 +78,7 @@ public class ExcelResourceLoader implements IResourceLoader {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
-			String extension = fileName.substring(dotIndex+1);
+			String extension = fileName.substring(dotIndex + 1);
 			try {
 				if (FileUtil.EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
@@ -142,7 +144,7 @@ public class ExcelResourceLoader implements IResourceLoader {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
-			String extension = fileName.substring(dotIndex+1);
+			String extension = fileName.substring(dotIndex + 1);
 			try {
 				if (FileUtil.EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
@@ -281,6 +283,78 @@ public class ExcelResourceLoader implements IResourceLoader {
 			}
 		}
 		return real;
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
+			return null;
+		}
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex != -1) {
+			Workbook book = null;
+			String extension = fileName.substring(dotIndex + 1);
+			try {
+				if (FileUtil.EXCEL03.equals(extension)) {
+					book = new HSSFWorkbook(new FileInputStream(file));
+					return loadExcelDatas(book);
+				} else if (FileUtil.EXCEL07.equals(extension)) {
+					book = new XSSFWorkbook(new FileInputStream(file));
+					return loadExcelDatas(book);
+				} else {
+					return null;
+				}
+			} catch (Exception e) {
+				return null;
+			}
+
+		}
+		return null;
+	}
+
+	private List<Map<String, String>> loadExcelDatas(Workbook book) {
+		try {
+			Sheet sheet = book.getSheetAt(0);
+			Row attrnameRow = sheet.getRow(0);
+			if (attrnameRow == null) {
+				return null;
+			}
+			List<Map<String, String>> datas = new ArrayList<>();
+			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
+				Row dataRow = sheet.getRow(i);
+				if (dataRow == null) {
+					continue;
+				}
+				Map<String, String> data = new HashMap<>();
+				for (int j = dataRow.getFirstCellNum(); j <= dataRow.getLastCellNum(); j++) {
+					Cell dataCell = dataRow.getCell(j);
+					if (dataCell == null) {
+						continue;
+					}
+					data.put(attrnameRow.getCell(j).toString(), getRealValue(dataCell));
+				}
+				datas.add(data);
+			}
+			book.close();
+			return datas;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (book != null) {
+				try {
+					book.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
 }

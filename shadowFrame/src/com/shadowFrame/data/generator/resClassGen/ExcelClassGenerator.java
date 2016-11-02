@@ -18,6 +18,10 @@ import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFil
 
 /**
  * 使用excel资源生成映射类生成器
+ * <p>
+ * excel第一个标签页为数据。标签页中第一行为字段名，第二行为字段注释，第三行之后为数据
+ * <p>
+ * 文件样式参考resource目录下excelSmaple.xlsx
  * 
  * @author Shadow
  * @version 1.0.0
@@ -38,7 +42,7 @@ public class ExcelClassGenerator {
 	 * @param targetDir
 	 *            资源映射类目标目录
 	 * @param resourceFMT
-	 *            资源类型
+	 *            资源导出类型
 	 */
 	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir,
 			String resourceFMT) {

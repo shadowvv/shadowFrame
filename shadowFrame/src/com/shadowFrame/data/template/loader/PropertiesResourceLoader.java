@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -118,6 +120,35 @@ public class PropertiesResourceLoader implements IResourceLoader {
 	@Override
 	@Deprecated
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceKeyName, String resourceKey) {
+		return null;
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		if (!fileName.endsWith(".cfg")) {
+			return null;
+		}
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		List<Map<String, String>> datas = new ArrayList<>();
+		try {
+			ResourceBundle bundle = new PropertyResourceBundle(
+					new InputStreamReader(new BufferedInputStream(new FileInputStream(file)), "UTF-8"));
+			if (bundle != null) {
+				Enumeration<String> keys = bundle.getKeys();
+				Map<String, String> data = new HashMap<>();
+				while (keys.hasMoreElements()) {
+					String key = (String) keys.nextElement().trim();
+					data.put(key, bundle.getString(key).trim());
+				}
+				datas.add(data);
+				return datas;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

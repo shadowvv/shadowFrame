@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.CsvResource;
@@ -175,13 +177,13 @@ public class CsvResourceLoader implements IResourceLoader {
 			}
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
 			int idIndex = -1;
-			for(int i = 0;i<attrNames.length;i++){
-				if(attrNames[i].equals(resourceId)){
+			for (int i = 0; i < attrNames.length; i++) {
+				if (attrNames[i].equals(resourceId)) {
 					idIndex = i;
 					break;
 				}
 			}
-			if(idIndex == -1){
+			if (idIndex == -1) {
 				return null;
 			}
 			for (;;) {
@@ -190,7 +192,7 @@ public class CsvResourceLoader implements IResourceLoader {
 					break;
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
-				if(!attrValues[idIndex].equals(resourceIdValue)){
+				if (!attrValues[idIndex].equals(resourceIdValue)) {
 					continue;
 				}
 				T resourceObject = resource.newInstance();
@@ -213,6 +215,52 @@ public class CsvResourceLoader implements IResourceLoader {
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		if(!fileName.endsWith(".csv")){
+			return null;
+		}
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			return null;
+		}
+		List<Map<String, String>> datas = new ArrayList<>();
+		try {
+			@SuppressWarnings("resource")
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+			String attrString = reader.readLine();
+			if (attrString == null) {
+				return null;
+			}
+			String[] attrNames = attrString.split(CSV_SEPERATOR);
+			for (;;) {
+				String attrValueString = reader.readLine();
+				if (attrValueString == null) {
+					break;
+				}
+				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
+				int index = 0;
+				Map<String, String> data = new HashMap<>();
+				for (String name : attrNames) {
+					if (index >= attrValues.length) {
+						return null;
+					}
+					data.put(name, attrValues[index]);
+					index++;
+				}
+				datas.add(data);
+			}
+			return datas;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;

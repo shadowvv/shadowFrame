@@ -1,5 +1,6 @@
 package com.shadowFrame.data.template.base;
 
+import java.util.List;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.CsvResource;
@@ -124,5 +125,14 @@ public interface IResourceLoader {
 	 * @return 资源，加载失败返回null
 	 */
 	public abstract <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue);
+
+	/**
+	 * 返回资源的数据
+	 * 
+	 * @param fileName
+	 *            文件名
+	 * @return 资源数据
+	 */
+	public abstract List<Map<String, String>> loadResource(String fileName);
 
 }
