@@ -8,6 +8,10 @@ package com.shadowFrame.util;
  */
 public class StringUtil {
 
+	private StringUtil() {
+
+	}
+
 	/**
 	 * 使字符串第一个字符大写
 	 * 
@@ -16,7 +20,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String upperHeadCase(String str) {
-		if (str == null || str.equals("")) {
+		if (str == null || str.isEmpty()) {
 			return null;
 		}
 		if (str.charAt(0) <= 'Z') {

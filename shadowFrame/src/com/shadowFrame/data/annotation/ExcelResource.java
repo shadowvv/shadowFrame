@@ -41,5 +41,5 @@ public @interface ExcelResource {
 	 * 
 	 * @return
 	 */
-	Class<?> loader() default ExcelResourceLoader.class;
+	Class<? extends IResourceLoader> loader() default ExcelResourceLoader.class;
 }

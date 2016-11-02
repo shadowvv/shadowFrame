@@ -45,5 +45,5 @@ public @interface PropertiesResource {
 	 * 
 	 * @return
 	 */
-	Class<?> loader() default PropertiesResourceLoader.class;
+	Class<? extends IResourceLoader> loader() default PropertiesResourceLoader.class;
 }

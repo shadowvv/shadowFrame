@@ -45,5 +45,5 @@ public @interface CsvResource {
 	 * 
 	 * @return
 	 */
-	Class<?> loader() default CsvResourceLoader.class;
+	Class<? extends IResourceLoader> loader() default CsvResourceLoader.class;
 }

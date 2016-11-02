@@ -72,13 +72,13 @@ public class JsonResourceLoader implements IResourceLoader {
 		InputStream inputStream;
 		try {
 			inputStream = new FileInputStream(file);
-			StringBuffer stringBuffer = new StringBuffer();
+			StringBuilder stringBuilder = new StringBuilder();
 			int byteRead = 0;
 			while ((byteRead = inputStream.read()) != -1) {
-				stringBuffer.append((char) byteRead);
+				stringBuilder.append((char) byteRead);
 			}
 			inputStream.close();
-			String data = stringBuffer.toString();
+			String data = stringBuilder.toString();
 			JSONObject jsonO = new JSONObject(data);
 			JSONArray jsonA = jsonO.getJSONArray(JSON_ROOT);
 			String resourceIdValue = null;
@@ -150,13 +150,13 @@ public class JsonResourceLoader implements IResourceLoader {
 		InputStream inputStream;
 		try {
 			inputStream = new FileInputStream(file);
-			StringBuffer stringBuffer = new StringBuffer();
+			StringBuilder stringBuilder = new StringBuilder();
 			int byteRead = 0;
 			while ((byteRead = inputStream.read()) != -1) {
-				stringBuffer.append((char) byteRead);
+				stringBuilder.append((char) byteRead);
 			}
 			inputStream.close();
-			String data = stringBuffer.toString();
+			String data = stringBuilder.toString();
 			JSONObject jsonO = new JSONObject(data);
 			JSONArray jsonA = jsonO.getJSONArray(JSON_ROOT);
 			for (int i = 0; i < jsonA.length(); i++) {

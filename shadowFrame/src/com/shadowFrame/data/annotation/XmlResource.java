@@ -39,5 +39,5 @@ public @interface XmlResource {
 	 * 
 	 * @return
 	 */
-	Class<?> loader() default XmlResourceLoader.class;
+	Class<? extends IResourceLoader> loader() default XmlResourceLoader.class;
 }

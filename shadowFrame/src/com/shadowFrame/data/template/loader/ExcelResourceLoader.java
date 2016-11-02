@@ -76,12 +76,12 @@ public class ExcelResourceLoader implements IResourceLoader {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
-			String extension = fileName.substring(dotIndex);
+			String extension = fileName.substring(dotIndex+1);
 			try {
-				if (extension.equals(".xls")) {
+				if (FileUtil.EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
 					return loadExcelFile(book, resource, resourceId);
-				} else if (extension.equals(".xlsx")) {
+				} else if (FileUtil.EXCEL07.equals(extension)) {
 					book = new XSSFWorkbook(new FileInputStream(file));
 					return loadExcelFile(book, resource, resourceId);
 				} else {
@@ -142,12 +142,12 @@ public class ExcelResourceLoader implements IResourceLoader {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
-			String extension = fileName.substring(dotIndex);
+			String extension = fileName.substring(dotIndex+1);
 			try {
-				if (extension.equals(".xls")) {
+				if (FileUtil.EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
 					return loadExcelElement(book, resource, resourceId, resourceIdValue);
-				} else if (extension.equals(".xlsx")) {
+				} else if (FileUtil.EXCEL07.equals(extension)) {
 					book = new XSSFWorkbook(new FileInputStream(file));
 					return loadExcelElement(book, resource, resourceId, resourceIdValue);
 				} else {

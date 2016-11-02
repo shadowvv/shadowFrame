@@ -280,10 +280,10 @@ public class ResourceLoader {
 	 *            字段值
 	 */
 	public static void setAttr(Object instance, String attrName, String attrValue) {
-		if (attrName == null || attrName.equals("")) {
+		if (attrName == null || attrName.isEmpty()) {
 			return;
 		}
-		if (attrValue == null || attrValue.equals("")) {
+		if (attrValue == null || attrValue.isEmpty()) {
 			return;
 		}
 		Field field = ClassUtil.getClassField(instance.getClass(), attrName);
@@ -294,9 +294,9 @@ public class ResourceLoader {
 		field.setAccessible(true);
 		try {
 			if (type.indexOf("boolean") >= 0 || type.indexOf("Boolean") >= 0) {
-				if (attrValue.equals("0")) {
+				if ("0".equals(attrValue)) {
 					field.set(instance, false);
-				} else if (attrValue.equals("1")) {
+				} else if ("1".equals(attrValue)) {
 					field.set(instance, true);
 				} else {
 					field.set(instance, Boolean.valueOf(attrValue));

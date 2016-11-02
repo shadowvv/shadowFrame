@@ -39,5 +39,5 @@ public @interface JsonResource {
 	 * 
 	 * @return
 	 */
-	Class<?> loader() default JsonResourceLoader.class;
+	Class<? extends IResourceLoader> loader() default JsonResourceLoader.class;
 }

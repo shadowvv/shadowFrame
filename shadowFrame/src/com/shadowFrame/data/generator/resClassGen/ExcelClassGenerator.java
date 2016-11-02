@@ -24,6 +24,10 @@ import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFil
  */
 public class ExcelClassGenerator {
 
+	private ExcelClassGenerator() {
+
+	}
+
 	/**
 	 * 生成映射类
 	 * 
