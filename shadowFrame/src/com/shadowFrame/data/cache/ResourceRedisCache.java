@@ -21,9 +21,8 @@ public class ResourceRedisCache<T> extends BaseResourceCache<T> {
 	}
 
 	@Override
-	public boolean removeResource(String resourceKey) {
+	public void removeResource(String resourceKey) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

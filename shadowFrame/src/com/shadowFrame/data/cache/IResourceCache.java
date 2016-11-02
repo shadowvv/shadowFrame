@@ -78,7 +78,7 @@ public interface IResourceCache<T> {
 	 *            资源键值
 	 * @return
 	 */
-	public boolean removeResource(String resourceKey);
+	public void removeResource(String resourceKey);
 
 	/**
 	 * 使用自动加载器加载资源,如果自动加载关闭,则该方法无效

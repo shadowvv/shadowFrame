@@ -138,8 +138,8 @@ public class ResourceCache<T> implements IResourceCache<T> {
 	}
 
 	@Override
-	public boolean removeResource(String resourceKey) {
-		return cache.removeResource(resourceKey);
+	public void removeResource(String resourceKey) {
+		cache.removeResource(resourceKey);
 	}
 
 	@Override

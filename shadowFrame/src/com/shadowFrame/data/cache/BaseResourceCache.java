@@ -1,5 +1,11 @@
 package com.shadowFrame.data.cache;
 
+/**
+ * 资源缓存管理基类
+ * @author Shadow
+ * @version 1.0.0
+ * @param <T> 资源映射类
+ */
 public abstract class BaseResourceCache<T> implements IResourceCache<T> {
 
 	private int cacheNum;
