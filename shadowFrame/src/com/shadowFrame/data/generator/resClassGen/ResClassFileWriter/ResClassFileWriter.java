@@ -37,7 +37,8 @@ public class ResClassFileWriter {
 	public static void writeClassFile(String dir, ResClassFileArchitecture resClassFileArchitecture) {
 		String packageName = resClassFileArchitecture.getClassPackage();
 		String packagePath = packageName.replace('.', File.separatorChar);
-		String filePath = dir + packagePath + File.separatorChar + resClassFileArchitecture.getClassName() + ".java";
+		String filePath = dir + File.separatorChar + packagePath + File.separatorChar
+				+ resClassFileArchitecture.getClassName() + ".java";
 		File file = new File(filePath);
 		try {
 			if (file.exists()) {
@@ -113,8 +114,9 @@ public class ResClassFileWriter {
 		StringBuilder FieldContent = new StringBuilder();
 		String idField = resClassFileArchitecture.getIdField();
 		if (idField != null) {
-			if (resClassFileArchitecture.getField(idField).getFieldComment() != null) {
-				FieldContent.append(getFieldComment(resClassFileArchitecture.getField(idField).getFieldComment()));
+			String idComment = resClassFileArchitecture.getField(idField).getFieldComment();
+			if (idComment != null && !idComment.isEmpty()) {
+				FieldContent.append(getFieldComment(idComment));
 			}
 			FieldContent.append("	@ResourceId" + "\n");
 			FieldContent.append("	private String " + idField + ";\n");
@@ -124,7 +126,7 @@ public class ResClassFileWriter {
 			if (resClassField.getFieldName().equals(idField)) {
 				continue;
 			}
-			if (resClassField.getFieldComment() != null) {
+			if (resClassField.getFieldComment() != null && resClassField.getFieldComment().isEmpty()) {
 				FieldContent.append(getFieldComment(resClassField.getFieldComment()));
 			}
 			FieldContent
@@ -132,7 +134,7 @@ public class ResClassFileWriter {
 		}
 		FieldContent.append("\n");
 		for (ResClassField resClassField : fields) {
-			if (resClassField.getFieldComment() != null) {
+			if (resClassField.getFieldComment() != null && resClassField.getFieldComment().isEmpty()) {
 				FieldContent.append(getFieldComment(resClassField.getFieldComment()));
 			}
 			FieldContent.append("	public " + resClassField.getFieldType() + " get"

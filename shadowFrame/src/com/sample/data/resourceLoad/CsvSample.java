@@ -10,7 +10,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
  * @author Shadow
  * @version 1.0.0
  */
-@CsvResource(fileName = "resource/csvSample.csv")
+@CsvResource(fileName = "./resource/csvSample.csv")
 public class CsvSample extends BaseTemplate {
 
 	@ResourceId

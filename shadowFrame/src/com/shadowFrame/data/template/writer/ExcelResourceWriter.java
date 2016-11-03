@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import com.shadowFrame.data.template.base.IResourceWriter;
 
-/**
- * 导出为csv格式资源
- * 
- * @author Shadow
- * @version 1.0.0
- */
-public class CsvResourceWriter implements IResourceWriter {
+public class ExcelResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
@@ -29,7 +29,7 @@ public class CsvResourceWriter implements IResourceWriter {
 		if (targetDir == null) {
 			return;
 		}
-		String name = targetDir + File.separator + resourceName + ".csv";
+		String name = targetDir + File.separator + resourceName + ".xls";
 		File file = new File(name);
 		if (file.exists()) {
 			file.delete();
@@ -38,7 +38,11 @@ public class CsvResourceWriter implements IResourceWriter {
 		try {
 			file.createNewFile();
 			FileOutputStream output = new FileOutputStream(file);
-			output.write(getFileContent(datas).getBytes());
+			Workbook book = new HSSFWorkbook();
+			Sheet sheet = book.createSheet();
+			getFileContent(sheet, datas);
+			book.write(output);
+			book.close();
 			output.flush();
 			output.close();
 		} catch (IOException e) {
@@ -46,8 +50,7 @@ public class CsvResourceWriter implements IResourceWriter {
 		}
 	}
 
-	private String getFileContent(List<Map<String, String>> datas) {
-		StringBuilder content = new StringBuilder();
+	private void getFileContent(Sheet sheet, List<Map<String, String>> datas) {
 		Set<String> fieldName = new LinkedHashSet<>();
 		for (Map<String, String> data : datas) {
 			for (String field : data.keySet()) {
@@ -68,22 +71,28 @@ public class CsvResourceWriter implements IResourceWriter {
 			realDatas.add(realData);
 		}
 
+		Row fieldRow = sheet.createRow(0);
+		Row commonRow = sheet.createRow(1);
+		int index = 0;
 		for (String field : fieldName) {
-			content.append(field);
-			content.append(",");
+			Cell fieldCell = fieldRow.createCell(index);
+			Cell commonCell = commonRow.createCell(index);
+			fieldCell.setCellValue(field);
+			commonCell.setCellValue("");
+			index++;
 		}
-		content.deleteCharAt(content.length() - 1);
-		content.append("\n");
+
+		int rowIndex = 2;
 		for (Map<String, String> data : realDatas) {
+			index = 0;
+			Row dataRow = sheet.createRow(rowIndex);
 			for (String field : fieldName) {
-				content.append(data.get(field));
-				content.append(",");
+				Cell dataCell = dataRow.createCell(index);
+				dataCell.setCellValue(data.get(field));
+				index++;
 			}
-			content.deleteCharAt(content.length() - 1);
-			content.append("\n");
+			rowIndex++;
 		}
-		content.deleteCharAt(content.length() - 1);
-		return content.toString();
 	}
 
 	public static void main(String[] args) {
@@ -96,7 +105,7 @@ public class CsvResourceWriter implements IResourceWriter {
 		data.put("id", "2_id");
 		data.put("min", "2");
 		datas.add(data);
-		new CsvResourceWriter().writeResource("test", "d:/resource", datas);
+		new ExcelResourceWriter().writeResource("test", "d:/resource", datas);
 	}
 
 }
