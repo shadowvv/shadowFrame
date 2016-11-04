@@ -3,8 +3,6 @@ package com.shadowFrame.data.template.writer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +11,14 @@ import org.json.JSONObject;
 
 import com.shadowFrame.data.template.base.IResourceWriter;
 
+/**
+ * json格式资源导出器
+ * <p>
+ * 文件样式参考resource目录下jsonSmaple.json
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class JsonResourceWriter implements IResourceWriter {
 
 	static String JSON_ROOT = "root";
@@ -51,19 +57,6 @@ public class JsonResourceWriter implements IResourceWriter {
 		}
 		root.put(JSON_ROOT, jsonDatas);
 		return root.toString();
-	}
-
-	public static void main(String[] args) {
-		List<Map<String, String>> datas = new LinkedList<>();
-		Map<String, String> data = new LinkedHashMap<>();
-		data.put("id", "1_id");
-		data.put("min", "1");
-		datas.add(data);
-		data = new LinkedHashMap<>();
-		data.put("id", "2_id");
-		data.put("min", "2");
-		datas.add(data);
-		new JsonResourceWriter().writeResource("test", "d:/resource", datas);
 	}
 
 }

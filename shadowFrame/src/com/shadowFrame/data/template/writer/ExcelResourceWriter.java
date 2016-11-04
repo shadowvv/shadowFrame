@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.shadowFrame.data.template.base.IResourceWriter;
 
+/**
+ * excel格式资源导出器
+ * <p>
+ * 文件样式参考resource目录下excelSmaple.xls
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class ExcelResourceWriter implements IResourceWriter {
 
 	@Override
@@ -93,19 +100,6 @@ public class ExcelResourceWriter implements IResourceWriter {
 			}
 			rowIndex++;
 		}
-	}
-
-	public static void main(String[] args) {
-		List<Map<String, String>> datas = new LinkedList<>();
-		Map<String, String> data = new LinkedHashMap<>();
-		data.put("id", "1_id");
-		data.put("min", "1");
-		datas.add(data);
-		data = new LinkedHashMap<>();
-		data.put("id", "2_id");
-		data.put("min", "2");
-		datas.add(data);
-		new ExcelResourceWriter().writeResource("test", "d:/resource", datas);
 	}
 
 }

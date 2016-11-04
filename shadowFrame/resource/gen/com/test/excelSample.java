@@ -4,7 +4,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.annotation.CsvResource
 
-@CsvResource(fileName = "./resource\\excelSample.csv")
+@CsvResource(fileName = ".\resource\excelSample.csv")
 public class ExcelSample extends BaseTemplate {
 	/**
 	 * id

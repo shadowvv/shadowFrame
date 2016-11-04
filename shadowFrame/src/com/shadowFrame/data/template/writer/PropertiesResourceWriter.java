@@ -3,13 +3,19 @@ package com.shadowFrame.data.template.writer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.shadowFrame.data.template.base.IResourceWriter;
 
+/**
+ * 属性格式资源导出器
+ * <p>
+ * 文件样式参考resource目录下propertiesSmaple.cfg
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class PropertiesResourceWriter implements IResourceWriter {
 
 	@Override
@@ -47,15 +53,6 @@ public class PropertiesResourceWriter implements IResourceWriter {
 			content.append(field + " = " + data.get(field) + "\n\n");
 		}
 		return content.toString();
-	}
-
-	public static void main(String[] args) {
-		List<Map<String, String>> datas = new LinkedList<>();
-		Map<String, String> data = new LinkedHashMap<>();
-		data.put("id", "1_id");
-		data.put("min", "1");
-		datas.add(data);
-		new PropertiesResourceWriter().writeResource("test", "d:/resource", datas);
 	}
 
 }

@@ -3,8 +3,6 @@ package com.shadowFrame.data.template.writer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +13,14 @@ import org.dom4j.io.XMLWriter;
 
 import com.shadowFrame.data.template.base.IResourceWriter;
 
+/**
+ * xml格式资源导出器
+ * <p>
+ * 文件样式参考resource目录下xmlSmaple.xml
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class XmlResourceWriter implements IResourceWriter {
 
 	@Override
@@ -57,19 +63,6 @@ public class XmlResourceWriter implements IResourceWriter {
 			root.add(xmlData);
 		}
 		return doc;
-	}
-
-	public static void main(String[] args) {
-		List<Map<String, String>> datas = new LinkedList<>();
-		Map<String, String> data = new LinkedHashMap<>();
-		data.put("id", "1_id");
-		data.put("min", "1");
-		datas.add(data);
-		data = new LinkedHashMap<>();
-		data.put("id", "2_id");
-		data.put("min", "2");
-		datas.add(data);
-		new XmlResourceWriter().writeResource("test", "d:/resource", datas);
 	}
 
 }

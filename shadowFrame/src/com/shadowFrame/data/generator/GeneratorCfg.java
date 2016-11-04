@@ -12,6 +12,8 @@ import com.shadowFrame.data.template.base.BaseTemplate;
 @PropertiesResource(fileName = "cfg/generatorCfg.cfg")
 public class GeneratorCfg extends BaseTemplate {
 
+	private boolean generatorClass;
+	private boolean generatorResource;
 	private String resourceDir;
 	private String resourceClassPackage;
 	private String fromFormat;
@@ -61,6 +63,24 @@ public class GeneratorCfg extends BaseTemplate {
 	 */
 	public String getTargetDir() {
 		return targetDir;
+	}
+
+	/**
+	 * 是否生成资源映射类
+	 * 
+	 * @return
+	 */
+	public boolean isGeneratorClass() {
+		return generatorClass;
+	}
+
+	/**
+	 * 是否转换资源格式
+	 * 
+	 * @return
+	 */
+	public boolean isGeneratorResource() {
+		return generatorResource;
 	}
 
 	@Override

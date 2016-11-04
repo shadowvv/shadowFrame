@@ -1,17 +1,34 @@
 package com.shadowFrame.data.generator;
 
+import com.shadowFrame.data.generator.ResFmtConverter.ResourceFormatConverter;
 import com.shadowFrame.data.generator.resClassGen.ResourceClassGenerator;
 import com.shadowFrame.data.template.loader.ResourceLoader;
 
+/**
+ * 资源转换和资源类导出功能类
+ * <P>
+ * 配置文件{@link GeneratorCfg}
+ * 
+ * @author Shadow
+ * @version 1.0.0
+ */
 public class ResourceClassAndFmtGen {
 
 	private ResourceClassAndFmtGen() {
 
 	}
-	
-	public static void main(String[] args) {
-		GeneratorCfg cfg = ResourceLoader.getInstance().loadTemplate(GeneratorCfg.class).get(GeneratorCfg.class.getName());
-		ResourceClassGenerator.generateClass(cfg.getResourceDir(), cfg.getTargetDir(), cfg.getFromFormat(), cfg.getToFormat(), cfg.getResourceClassPackage());
+
+	public static void generate() {
+		GeneratorCfg cfg = ResourceLoader.getInstance().loadTemplate(GeneratorCfg.class)
+				.get(GeneratorCfg.class.getName());
+		if (cfg.isGeneratorClass()) {
+			ResourceClassGenerator.generateClass(cfg.getResourceDir(), cfg.getTargetDir(), cfg.getFromFormat(),
+					cfg.getToFormat(), cfg.getResourceClassPackage());
+		}
+		if (cfg.isGeneratorResource()) {
+			ResourceFormatConverter.generateResource(cfg.getResourceDir(), cfg.getTargetDir(), cfg.getFromFormat(),
+					cfg.getToFormat());
+		}
 	}
 
 }

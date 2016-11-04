@@ -47,7 +47,7 @@ public class ResourceClassGenerator {
 			resourceDirT += File.separatorChar;
 		}
 		if (FileUtil.isExcelFile(fromFmt)) {
-			ExcelClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, toFmt);
+			ExcelToClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, toFmt);
 		} else {
 
 		}

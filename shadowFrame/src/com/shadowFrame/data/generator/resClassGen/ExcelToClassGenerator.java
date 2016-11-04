@@ -26,9 +26,9 @@ import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFil
  * @author Shadow
  * @version 1.0.0
  */
-public class ExcelClassGenerator {
+public class ExcelToClassGenerator {
 
-	private ExcelClassGenerator() {
+	private ExcelToClassGenerator() {
 
 	}
 
@@ -46,6 +46,10 @@ public class ExcelClassGenerator {
 	 */
 	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir,
 			String resourceFMT) {
+		File classDir = new File(targetDir);
+		if (classDir == null || !classDir.isDirectory()) {
+			return;
+		}
 		File dir = new File(resourceDir);
 		if (dir == null || !dir.isDirectory()) {
 			return;
@@ -54,10 +58,6 @@ public class ExcelClassGenerator {
 			return;
 		}
 		if (resourceFMT == null) {
-			return;
-		}
-		File classDir = new File(targetDir);
-		if (classDir == null || !classDir.isDirectory()) {
 			return;
 		}
 
@@ -73,21 +73,52 @@ public class ExcelClassGenerator {
 		});
 
 		for (File file : files) {
-			Workbook book = null;
-			try {
-				if (file.getName().endsWith(".xls")) {
-					book = new HSSFWorkbook(new FileInputStream(file));
-
-				} else if (file.getName().endsWith(".xlsx")) {
-					book = new XSSFWorkbook(new FileInputStream(file));
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			generateFromExcel(book, file.getName(), classPackage, targetDir, resourceFMT, resourceDir);
+			generateFromExcel(file, classPackage, targetDir, resourceFMT);
 		}
+	}
+
+	/**
+	 * 生成映射类
+	 * 
+	 * @param resourceFile
+	 *            资源文件
+	 * @param classPackage
+	 *            类包
+	 * @param targetDir
+	 *            资源映射类目标目录
+	 * @param resourceFMT
+	 *            资源导出类型
+	 */
+	public static void generateFromExcel(File resourceFile, String classPackage, String targetDir, String resourceFMT) {
+		File classDir = new File(targetDir);
+		if (classDir == null || !classDir.isDirectory()) {
+			return;
+		}
+		if (resourceFile == null) {
+			return;
+		}
+		if (classPackage == null) {
+			return;
+		}
+		if (resourceFMT == null) {
+			return;
+		}
+
+		Workbook book = null;
+		try {
+			if (resourceFile.getName().endsWith(".xls")) {
+				book = new HSSFWorkbook(new FileInputStream(resourceFile));
+
+			} else if (resourceFile.getName().endsWith(".xlsx")) {
+				book = new XSSFWorkbook(new FileInputStream(resourceFile));
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		generateFromExcel(book, resourceFile.getName(), classPackage, targetDir, resourceFMT,
+				resourceFile.getParent() + File.separator);
 	}
 
 	private static void generateFromExcel(Workbook book, String className, String classPackage, String targetDir,
