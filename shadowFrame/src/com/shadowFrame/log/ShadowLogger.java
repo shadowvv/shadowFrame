@@ -1,5 +1,6 @@
 package com.shadowFrame.log;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,20 +15,29 @@ public class ShadowLogger {
 	/**
 	 * 一般日志
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger("Shadow");
+	final Logger LOGGER = LoggerFactory.getLogger("Shadow");
 
 	/**
 	 * 异常日志
 	 */
-	private static final Logger exceptionLOGGER = LoggerFactory.getLogger("Exception");
+	final Logger exceptionLOGGER = LoggerFactory.getLogger("Exception");
 
 	/**
 	 * 性能日志
 	 */
-	private static final Logger performanceLOGGER = LoggerFactory.getLogger("Performance");
+	final Logger performanceLOGGER = LoggerFactory.getLogger("Performance");
+
+	private static ShadowLogger instance;
 
 	private ShadowLogger() {
+		PropertyConfigurator.configure("cfg/log4j.properties");
+	}
 
+	public static ShadowLogger getInstance() {
+		if (instance == null) {
+			instance = new ShadowLogger();
+		}
+		return instance;
 	}
 
 	/**
@@ -37,7 +47,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void debugPrintln(String log, Object... params) {
-		LOGGER.debug(log, params);
+		getInstance().LOGGER.debug(log, params);
 	}
 
 	/**
@@ -47,7 +57,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void logPrintln(String log, Object... params) {
-		LOGGER.info(log, params);
+		getInstance().LOGGER.info(log, params);
 	}
 
 	/**
@@ -57,7 +67,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void errorPrintln(String log, Object... params) {
-		LOGGER.error(log, params);
+		getInstance().LOGGER.error(log, params);
 	}
 
 	/**
@@ -67,7 +77,7 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void performancePrintln(String log, Object... params) {
-		performanceLOGGER.info(log, params);
+		getInstance().performanceLOGGER.info(log, params);
 	}
 
 	/**
@@ -77,6 +87,12 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void exceptionPrintln(String log, Object... params) {
-		exceptionLOGGER.info(log, params);
+		getInstance().exceptionLOGGER.info(log, params);
+	}
+
+	public static void main(String[] args) {
+		logPrintln("test");
+		exceptionPrintln("exception");
+		performancePrintln("performance");
 	}
 }

@@ -9,7 +9,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
  * @author Shadow
  * @version 1.0.0
  */
-@PropertiesResource(fileName = "cfg/generatorCfg.cfg")
+@PropertiesResource(fileName = "cfg/generator.cfg")
 public class GeneratorCfg extends BaseTemplate {
 
 	private boolean generatorClass;
