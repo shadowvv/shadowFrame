@@ -1,5 +1,7 @@
 package com.shadowFrame.data.template;
 
+import com.shadowFrame.log.ShadowLogger;
+
 /**
  * 资源日志
  * 
@@ -12,12 +14,12 @@ public class ResourceLogger {
 
 	}
 
-	public static void annotationError(String resource, String fileName) {
-
+	public static void annotationError(String resource, String annotation) {
+		ShadowLogger.errorPrintln(resource + " resource is not annotated by" + annotation);
 	}
 
 	public static void loaderError(String resource, String loaderName) {
-
+		ShadowLogger.errorPrintln(resource + " annotation's loader is not " + loaderName);
 	}
 
 	public static void resourceNotExist(String resource, String fileName) {

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.CsvResource;
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.ClassUtil;
@@ -36,39 +37,21 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource) {
-		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
-		if (resAnnotation == null) {
-			ShadowLogger.errorPrintln(
-					resource.getSimpleName() + " resource is not annotated by" + CsvResource.class.getSimpleName());
+		return loadResourcesWithResourceId(resource,ResourceLoader.getIdFieldName(resource));
+	}
+	
+	@Override
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		CsvResource resAnnotation = getAnnotation(resource);
+		if(resAnnotation == null){
 			return null;
 		}
-		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + " annotation's loader is not "
-					+ CsvResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return loadResourcesFromFile(resource, resAnnotation.fileName());
+		return loadResources(resource, resAnnotation.fileName(), resourceId);
 	}
 
 	@Override
 	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
 		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
-		if (resAnnotation == null) {
-			ShadowLogger.errorPrintln(
-					resource.getSimpleName() + " resource is not annotated by" + CsvResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + " annotation's loader is not "
-					+ CsvResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return loadResources(resource, resAnnotation.fileName(), resourceId);
 	}
 
 	@Override
@@ -138,24 +121,17 @@ public class CsvResourceLoader implements IResourceLoader {
 	}
 
 	@Override
-	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
-		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
+		CsvResource resAnnotation = getAnnotation(resource);
 		if (resAnnotation == null) {
-			ShadowLogger.errorPrintln(
-					resource.getSimpleName() + " resource is not annotated by" + CsvResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + " annotation's loader is not "
-					+ CsvResourceLoader.class.getSimpleName());
 			return null;
 		}
 		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
+	}
+	
+	@Override
+	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
+		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
 	}
 
 	@Override
@@ -271,6 +247,19 @@ public class CsvResourceLoader implements IResourceLoader {
 			ShadowLogger.exceptionPrintln("load " + fileName + " catch exception" + e.getMessage());
 		}
 		return datas;
+	}
+	
+	private CsvResource getAnnotation(Class<?> resource){
+		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
+		if (resAnnotation == null) {
+			ResourceLogger.annotationError(resource.getSimpleName(), CsvResource.class.getSimpleName());
+			return null;
+		}
+		if (resAnnotation.loader() != CsvResourceLoader.class) {
+			ResourceLogger.loaderError(resource.getSimpleName(), CsvResourceLoader.class.getSimpleName());
+			return null;
+		}
+		return resAnnotation;
 	}
 
 }
