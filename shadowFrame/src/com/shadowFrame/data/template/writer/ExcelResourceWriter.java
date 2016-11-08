@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceWriter;
 
 /**
@@ -30,12 +31,6 @@ public class ExcelResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
-		if (resourceName == null) {
-			return;
-		}
-		if (targetDir == null) {
-			return;
-		}
 		String name = targetDir + File.separator + resourceName + ".xls";
 		File file = new File(name);
 		if (file.exists()) {
@@ -52,8 +47,9 @@ public class ExcelResourceWriter implements IResourceWriter {
 			book.close();
 			output.flush();
 			output.close();
+			ResourceLogger.writeSuccess(name);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceLogger.writeResourceException(name, e.getMessage());
 		}
 	}
 

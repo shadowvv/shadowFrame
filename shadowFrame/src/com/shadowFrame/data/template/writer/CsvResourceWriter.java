@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceWriter;
 
 /**
@@ -24,12 +25,6 @@ public class CsvResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
-		if (resourceName == null) {
-			return;
-		}
-		if (targetDir == null) {
-			return;
-		}
 		String name = targetDir + File.separator + resourceName + ".csv";
 		File file = new File(name);
 		if (file.exists()) {
@@ -42,8 +37,9 @@ public class CsvResourceWriter implements IResourceWriter {
 			output.write(getFileContent(datas).getBytes());
 			output.flush();
 			output.close();
+			ResourceLogger.writeSuccess(name);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceLogger.writeResourceException(name, e.getMessage());
 		}
 	}
 

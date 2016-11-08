@@ -14,6 +14,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import com.shadowFrame.data.annotation.PropertiesResource;
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.util.FileUtil;
 
@@ -36,9 +37,12 @@ public class PropertiesResourceLoader implements IResourceLoader {
 	public <T> Map<String, T> loadResources(Class<T> resource) {
 		PropertiesResource resAnnotation = resource.getAnnotation(PropertiesResource.class);
 		if (resAnnotation == null) {
+			ResourceLogger.annotationError(resource.getSimpleName(), PropertiesResource.class.getSimpleName());
 			return null;
 		}
 		if (resAnnotation.loader() != PropertiesResourceLoader.class) {
+			ResourceLogger.annotationLoaderError(resource.getSimpleName(),
+					PropertiesResourceLoader.class.getSimpleName());
 			return null;
 		}
 		return loadResourcesFromFile(resource, resAnnotation.fileName());
@@ -47,6 +51,7 @@ public class PropertiesResourceLoader implements IResourceLoader {
 	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
+			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
 			return null;
 		}
 		try {
@@ -61,10 +66,11 @@ public class PropertiesResourceLoader implements IResourceLoader {
 				}
 				Map<String, T> map = new HashMap<>();
 				map.put(resource.getName(), resourceObject);
+				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
 				return map;
 			}
-		} catch (IOException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
 		return null;
 	}
@@ -125,11 +131,9 @@ public class PropertiesResourceLoader implements IResourceLoader {
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
-		if (!fileName.endsWith(".cfg")) {
-			return null;
-		}
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
+			ResourceLogger.resourceNotExist(fileName);
 			return null;
 		}
 		List<Map<String, String>> datas = new ArrayList<>();
@@ -147,8 +151,9 @@ public class PropertiesResourceLoader implements IResourceLoader {
 				return datas;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
+		ResourceLogger.loadSuccess(fileName);
 		return null;
 	}
 

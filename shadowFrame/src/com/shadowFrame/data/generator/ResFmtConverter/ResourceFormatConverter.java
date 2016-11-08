@@ -8,6 +8,10 @@ import java.util.Map;
 import com.shadowFrame.data.template.loader.ExcelResourceLoader;
 import com.shadowFrame.data.template.writer.CsvResourceWriter;
 import com.shadowFrame.data.template.writer.ExcelResourceWriter;
+import com.shadowFrame.data.template.writer.JsonResourceWriter;
+import com.shadowFrame.data.template.writer.PropertiesResourceWriter;
+import com.shadowFrame.data.template.writer.XmlResourceWriter;
+import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -35,13 +39,8 @@ public class ResourceFormatConverter {
 	 *            导出格式
 	 */
 	public static void generateResource(String resourceDir, String targetDir, String fromFmt, String toFmt) {
-		if (resourceDir == null) {
-			return;
-		}
-		if (targetDir == null) {
-			return;
-		}
 		if (fromFmt.equals(toFmt)) {
+			ShadowLogger.logPrintln("resoruce from format is same with to format:" + fromFmt);
 			return;
 		}
 		String resourceDirT = resourceDir;
@@ -54,6 +53,7 @@ public class ResourceFormatConverter {
 		}
 		File dir = new File(resourceDirT);
 		if (dir == null || !dir.isDirectory()) {
+			ShadowLogger.errorPrintln(resourceDir + " is not directory");
 			return;
 		}
 
@@ -72,7 +72,8 @@ public class ResourceFormatConverter {
 			if (FileUtil.isExcelFile(fromFmt)) {
 				datas = new ExcelResourceLoader().loadResource(file.getPath());
 			} else {
-
+				ShadowLogger.errorPrintln("converte resource from format:" + fromFmt + " is not supported");
+				return;
 			}
 
 			if (FileUtil.isExcelFile(toFmt)) {
@@ -81,6 +82,17 @@ public class ResourceFormatConverter {
 			} else if ("csv".equals(toFmt)) {
 				new CsvResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
 						targetDirT, datas);
+			} else if ("xml".equals(toFmt)) {
+				new XmlResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
+						targetDirT, datas);
+			} else if ("cfg".equals(toFmt)) {
+				new PropertiesResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
+						targetDirT, datas);
+			} else if ("json".equals(toFmt)) {
+				new JsonResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
+						targetDirT, datas);
+			} else {
+				ShadowLogger.errorPrintln("converte resource to format:" + toFmt + " is not supported");
 			}
 		}
 

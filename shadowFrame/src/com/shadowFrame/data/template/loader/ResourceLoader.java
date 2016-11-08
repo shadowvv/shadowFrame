@@ -13,6 +13,7 @@ import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.ClassUtil;
 
 /**
@@ -50,6 +51,7 @@ public class ResourceLoader {
 	 * @param loader
 	 */
 	public void registerLoader(Class<?> resourceAnnotation, Class<? extends IResourceLoader> loader) {
+		ShadowLogger.logPrintln("add " + resourceAnnotation.getSimpleName() + "'s loader " + loader.getSimpleName());
 		loaderMap.put(resourceAnnotation.getName(), loader);
 	}
 
@@ -280,14 +282,9 @@ public class ResourceLoader {
 	 *            字段值
 	 */
 	public static void setAttr(Object instance, String attrName, String attrValue) {
-		if (attrName == null || attrName.isEmpty()) {
-			return;
-		}
-		if (attrValue == null || attrValue.isEmpty()) {
-			return;
-		}
 		Field field = ClassUtil.getClassField(instance.getClass(), attrName);
 		if (field == null) {
+			ShadowLogger.errorPrintln(instance.getClass().getSimpleName() + " is not contained field " + attrName);
 			return;
 		}
 		String type = field.getType().toString();
@@ -313,7 +310,8 @@ public class ResourceLoader {
 				field.set(instance, attrValue);
 			}
 		} catch (Exception e) {
-
+			ShadowLogger.exceptionPrintln(
+					instance.getClass().getSimpleName() + " set field " + attrName + " value catch exception");
 		}
 	}
 

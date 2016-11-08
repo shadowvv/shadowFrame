@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.shadowFrame.data.annotation.JsonResource;
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
@@ -31,14 +32,16 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource) {
-		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
+		return loadResourcesWithResourceId(resource, ResourceLoader.getIdFieldName(resource));
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		JsonResource resAnnotation = getAnnotation(resource);
 		if (resAnnotation == null) {
 			return null;
 		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
-			return null;
-		}
-		return loadResourcesFromFile(resource, resAnnotation.fileName());
+		return loadResources(resource, resAnnotation.fileName(), resourceId);
 	}
 
 	@Override
@@ -47,27 +50,9 @@ public class JsonResourceLoader implements IResourceLoader {
 	}
 
 	@Override
-	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
-			return null;
-		}
-		return loadResources(resource, resAnnotation.fileName(), resourceId);
-	}
-
-	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
-		File file = FileUtil.getExistFile(fileName);
+		File file = checkFileFormat(resource, fileName, resourceId);
 		if (file == null) {
-			return null;
-		}
-		if (resourceId == null) {
-			return null;
-		}
-		if (!ClassUtil.isContainField(resource, resourceId)) {
 			return null;
 		}
 		Map<String, T> resources = new HashMap<>();
@@ -93,28 +78,23 @@ public class JsonResourceLoader implements IResourceLoader {
 					if (resourceId.equals(attribute)) {
 						resourceIdValue = element.getString(attribute);
 						if (resources.containsKey(resourceIdValue)) {
+							ResourceLogger.resourceContainDeplicateId(fileName, resourceIdValue);
 							return null;
 						}
 						resources.put(resourceIdValue, resourceObject);
 					}
 				}
 			}
-		} catch (IOException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
+		ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
 		return resources;
 	}
 
 	@Override
 	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
-		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
-		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
-			return null;
-		}
-		return loadResourceFromFile(resource, resAnnotation.fileName(), resourceIdValue);
+		return loadResourceWithResourceId(resource, ResourceLoader.getIdFieldName(resource), resourceIdValue);
 	}
 
 	@Override
@@ -124,11 +104,8 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
+		JsonResource resAnnotation = getAnnotation(resource);
 		if (resAnnotation == null) {
-			return null;
-		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
 			return null;
 		}
 		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
@@ -136,17 +113,8 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
-		File file = FileUtil.getExistFile(fileName);
+		File file = checkFileFormat(resource, fileName, resourceId);
 		if (file == null) {
-			return null;
-		}
-		if (resourceId == null) {
-			return null;
-		}
-		if (resourceIdValue == null) {
-			return null;
-		}
-		if (!ClassUtil.isContainField(resource, resourceId)) {
 			return null;
 		}
 		InputStream inputStream;
@@ -165,6 +133,7 @@ public class JsonResourceLoader implements IResourceLoader {
 				JSONObject element = jsonA.getJSONObject(i);
 				String keyValue = element.getString(resourceId);
 				if (keyValue == null) {
+					ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 					return null;
 				}
 				if (!keyValue.equals(resourceIdValue)) {
@@ -175,21 +144,21 @@ public class JsonResourceLoader implements IResourceLoader {
 				for (String attribute : key) {
 					ResourceLoader.setAttr(resourceObject, attribute, element.getString(attribute));
 				}
+				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
 				return resourceObject;
 			}
-		} catch (IOException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
+		ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 		return null;
 	}
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
-		if (!fileName.endsWith(".json")) {
-			return null;
-		}
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
+			ResourceLogger.resourceNotExist(fileName);
 			return null;
 		}
 		InputStream inputStream;
@@ -215,9 +184,35 @@ public class JsonResourceLoader implements IResourceLoader {
 				datas.add(data);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
+		ResourceLogger.loadSuccess(fileName);
 		return datas;
 	}
 
+	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
+			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
+			return null;
+		}
+		return file;
+	}
+
+	private JsonResource getAnnotation(Class<?> resource) {
+		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
+		if (resAnnotation == null) {
+			ResourceLogger.annotationError(resource.getSimpleName(), JsonResource.class.getSimpleName());
+			return null;
+		}
+		if (resAnnotation.loader() != JsonResourceLoader.class) {
+			ResourceLogger.annotationLoaderError(resource.getSimpleName(), JsonResourceLoader.class.getSimpleName());
+			return null;
+		}
+		return resAnnotation;
+	}
 }

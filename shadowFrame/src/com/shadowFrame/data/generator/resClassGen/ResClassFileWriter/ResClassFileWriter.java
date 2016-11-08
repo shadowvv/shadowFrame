@@ -12,6 +12,7 @@ import com.shadowFrame.data.annotation.PropertiesResource;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.StringUtil;
 
 /**
@@ -51,8 +52,9 @@ public class ResClassFileWriter {
 			output.write(fileContent.toString().getBytes());
 			output.flush();
 			output.close();
+			ShadowLogger.logPrintln("generate " + filePath + " success");
 		} catch (IOException e) {
-			e.printStackTrace();
+			ShadowLogger.exceptionPrintln("generate " + filePath + " catch exception:" + e.getMessage());
 		}
 	}
 

@@ -3,8 +3,6 @@ package com.shadowFrame.data.generator.resClassGen;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFileArchitecture;
+import com.shadowFrame.log.ShadowLogger;
 
 /**
  * 使用excel资源生成映射类生成器
@@ -41,23 +40,16 @@ public class ExcelToClassGenerator {
 	 *            类包
 	 * @param targetDir
 	 *            资源映射类目标目录
-	 * @param resourceFMT
+	 * @param fromFMT
+	 *            资源源类型
+	 * @param toFMT
 	 *            资源导出类型
 	 */
-	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir,
-			String resourceFMT) {
-		File classDir = new File(targetDir);
-		if (classDir == null || !classDir.isDirectory()) {
-			return;
-		}
+	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir, String fromFMT,
+			String toFMT) {
 		File dir = new File(resourceDir);
 		if (dir == null || !dir.isDirectory()) {
-			return;
-		}
-		if (classPackage == null) {
-			return;
-		}
-		if (resourceFMT == null) {
+			ShadowLogger.errorPrintln("generate from " + resourceDir + " is not directory");
 			return;
 		}
 
@@ -65,7 +57,7 @@ public class ExcelToClassGenerator {
 
 			@Override
 			public boolean accept(File file) {
-				if (file.isFile() && (file.getName().endsWith(".xls") || file.getName().endsWith(".xlsx"))) {
+				if (file.isFile() && (file.getName().endsWith("." + fromFMT))) {
 					return true;
 				}
 				return false;
@@ -73,7 +65,7 @@ public class ExcelToClassGenerator {
 		});
 
 		for (File file : files) {
-			generateFromExcel(file, classPackage, targetDir, resourceFMT);
+			generateFromExcel(file, classPackage, targetDir, toFMT);
 		}
 	}
 
@@ -92,15 +84,7 @@ public class ExcelToClassGenerator {
 	public static void generateFromExcel(File resourceFile, String classPackage, String targetDir, String resourceFMT) {
 		File classDir = new File(targetDir);
 		if (classDir == null || !classDir.isDirectory()) {
-			return;
-		}
-		if (resourceFile == null) {
-			return;
-		}
-		if (classPackage == null) {
-			return;
-		}
-		if (resourceFMT == null) {
+			ShadowLogger.errorPrintln("generate to " + targetDir + " is not directory");
 			return;
 		}
 
@@ -108,14 +92,13 @@ public class ExcelToClassGenerator {
 		try {
 			if (resourceFile.getName().endsWith(".xls")) {
 				book = new HSSFWorkbook(new FileInputStream(resourceFile));
-
 			} else if (resourceFile.getName().endsWith(".xlsx")) {
 				book = new XSSFWorkbook(new FileInputStream(resourceFile));
+			} else {
+				ShadowLogger.errorPrintln(resourceFile + " is not excel file");
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ShadowLogger.errorPrintln("generate class from " + resourceFile + " catch exception:" + e.getMessage());
 		}
 		generateFromExcel(book, resourceFile.getName(), classPackage, targetDir, resourceFMT,
 				resourceFile.getParent() + File.separator);
@@ -127,6 +110,7 @@ public class ExcelToClassGenerator {
 				className.substring(0, className.indexOf('.')), classPackage, resourceFMT, resourceDir);
 		Sheet sheet = book.getSheetAt(0);
 		if (sheet == null || sheet.getLastRowNum() < 3) {
+			ShadowLogger.errorPrintln(resourceDir + className + " format wrong");
 			return;
 		}
 		Row fieldRow = sheet.getRow(0);

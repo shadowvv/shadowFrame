@@ -14,56 +14,176 @@ public class ResourceLogger {
 
 	}
 
-	public static void annotationError(String resource, String annotation) {
-		ShadowLogger.errorPrintln(resource + " resource is not annotated by" + annotation);
+	/**
+	 * 资源映射类没有被对应annotation注释
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param annotation
+	 *            注释
+	 */
+	public static void annotationError(String resourceClass, String annotation) {
+		ShadowLogger.errorPrintln(resourceClass + " class is not annotated by" + annotation);
 	}
 
-	public static void loaderError(String resource, String loaderName) {
-		ShadowLogger.errorPrintln(resource + " annotation's loader is not " + loaderName);
+	/**
+	 * 资源注释中加载器错误
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param loaderName
+	 *            加载器
+	 */
+	public static void annotationLoaderError(String resourceClass, String loaderName) {
+		ShadowLogger.errorPrintln(resourceClass + " class annotation's loader is not " + loaderName);
 	}
 
-	public static void resourceNotExist(String resource, String fileName) {
-
+	/**
+	 * 资源文件不存在
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 */
+	public static void resourceNotExist(String resourceClass, String fileName) {
+		ShadowLogger.errorPrintln(resourceClass + " class resource " + fileName + " is not existed");
 	}
 
-	public static void resourceIdIsNull(String resource) {
-
+	/**
+	 * 资源文件不存在
+	 * 
+	 * @param fileName
+	 *            资源名
+	 */
+	public static void resourceNotExist(String fileName) {
+		ShadowLogger.errorPrintln("resource " + fileName + " is not existed");
 	}
 
-	public static void resourceClassNotContainResourceId(String resource, String resourceIdName) {
-
+	/**
+	 * 资源映射类没有id字段
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param resourceIdName
+	 *            资源id字段名
+	 */
+	public static void resourceClassNotContainResourceId(String resourceClass, String resourceIdName) {
+		ShadowLogger.errorPrintln(resourceClass + " class is not contain segment " + resourceIdName);
 	}
 
-	public static void resourceNotContainSegment(String resource, String fileName) {
-
+	/**
+	 * 资源没有包含字段列
+	 * 
+	 * @param fileName
+	 *            资源名
+	 */
+	public static void resourceNotContainSegments(String fileName) {
+		ShadowLogger.errorPrintln(fileName + " is not contain segment data");
 	}
 
-	public static void elementAttributeNotMatchSegment(String resource, String fileName, int index) {
-
+	/**
+	 * 资源数据与数据字段不符
+	 * 
+	 * @param fileName
+	 *            资源名
+	 * @param index
+	 *            资源索引
+	 */
+	public static void resourceElementNotMatchSegment(String fileName, int index) {
+		ShadowLogger.errorPrintln(fileName + "'s " + index + "th elemnt attribute is not match with segment");
 	}
 
-	public static void resourceContainDeplicateId(String resource, String fileName, String resourceIdName) {
-
+	/**
+	 * 资源数据包含重复id
+	 * 
+	 * @param fileName
+	 *            资源名
+	 * @param resourceIdValue
+	 *            重复id值
+	 */
+	public static void resourceContainDeplicateId(String fileName, String resourceIdValue) {
+		ShadowLogger.errorPrintln(fileName + " contain duplicate id:" + resourceIdValue);
 	}
 
-	public static void loadResourceException(String resource, String fileName, String exceptionMsg) {
-
+	/**
+	 * 加载资源异常
+	 * 
+	 * @param fileName
+	 *            资源名
+	 * @param exceptionMsg
+	 *            异常
+	 */
+	public static void loadResourceException(String fileName, String exceptionMsg) {
+		ShadowLogger.exceptionPrintln("load " + fileName + " catch exception " + exceptionMsg);
 	}
 
-	public static void loadIdValueIsNull(String resource) {
-
+	/**
+	 * 资源不包括对应元素
+	 * 
+	 * @param fileName
+	 *            资源名
+	 * @param resourceIdValue
+	 *            id值
+	 */
+	public static void resourceNotContainIdValue(String fileName, String resourceIdValue) {
+		ShadowLogger.logPrintln(fileName + " is not contain id = " + resourceIdValue + " element");
 	}
 
-	public static void resourceNotContainIdValue(String resource, String fileName, String resourceIdValue) {
-
+	/**
+	 * 加载资源成功
+	 * 
+	 * @param fileName
+	 *            资源名
+	 */
+	public static void loadSuccess(String fileName) {
+		ShadowLogger.logPrintln("load " + fileName + " load success");
 	}
 
-	public static void loadSuccess(String resource, String fileName) {
-
+	/**
+	 * 加载资源成功
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 */
+	public static void loadSuccess(String resourceClass, String fileName) {
+		ShadowLogger.logPrintln("load " + resourceClass + " from " + fileName + " success");
 	}
 
-	public static void loadSuccess(String resource, String fileName, String resourceIdValue) {
-
+	/**
+	 * 加载对应元素资源成功
+	 * 
+	 * @param resourceClass
+	 *            资源映射类
+	 * @param fileName
+	 *            资源名
+	 * @param resourceIdValue
+	 *            资源Id值
+	 */
+	public static void loadSuccess(String resourceClass, String fileName, String resourceIdValue) {
+		ShadowLogger.logPrintln("load " + resourceClass + " from" + fileName + " id = " + resourceIdValue + " success");
 	}
 
+	/**
+	 * 导出资源成功
+	 * 
+	 * @param fileName
+	 */
+	public static void writeSuccess(String fileName) {
+		ShadowLogger.logPrintln("write " + fileName + " success");
+	}
+	
+	/**
+	 * 加载资源异常
+	 * 
+	 * @param fileName
+	 *            资源名
+	 * @param exceptionMsg
+	 *            异常
+	 */
+	public static void writeResourceException(String fileName, String exceptionMsg) {
+		ShadowLogger.exceptionPrintln("write " + fileName + " catch exception " + exceptionMsg);
+	}
 }

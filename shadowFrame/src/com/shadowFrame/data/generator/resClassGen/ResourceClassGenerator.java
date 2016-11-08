@@ -2,6 +2,7 @@ package com.shadowFrame.data.generator.resClassGen;
 
 import java.io.File;
 
+import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -32,12 +33,6 @@ public class ResourceClassGenerator {
 	 */
 	public static void generateClass(String resourceDir, String targetDir, String fromFmt, String toFmt,
 			String resourcePackage) {
-		if (resourceDir == null) {
-			return;
-		}
-		if (targetDir == null) {
-			return;
-		}
 		String resourceDirT = resourceDir;
 		if (!resourceDir.endsWith("\\") || !resourceDir.endsWith("/")) {
 			resourceDirT += File.separatorChar;
@@ -47,9 +42,9 @@ public class ResourceClassGenerator {
 			resourceDirT += File.separatorChar;
 		}
 		if (FileUtil.isExcelFile(fromFmt)) {
-			ExcelToClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, toFmt);
+			ExcelToClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, fromFmt, toFmt);
 		} else {
-
+			ShadowLogger.errorPrintln("generator class format:" + fromFmt + " is not supported");
 		}
 	}
 

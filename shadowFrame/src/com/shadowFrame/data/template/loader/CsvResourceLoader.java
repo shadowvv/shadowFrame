@@ -12,7 +12,6 @@ import java.util.Map;
 import com.shadowFrame.data.annotation.CsvResource;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
@@ -37,13 +36,13 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource) {
-		return loadResourcesWithResourceId(resource,ResourceLoader.getIdFieldName(resource));
+		return loadResourcesWithResourceId(resource, ResourceLoader.getIdFieldName(resource));
 	}
-	
+
 	@Override
 	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
 		CsvResource resAnnotation = getAnnotation(resource);
-		if(resAnnotation == null){
+		if (resAnnotation == null) {
 			return null;
 		}
 		return loadResources(resource, resAnnotation.fileName(), resourceId);
@@ -56,17 +55,8 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
-		File file = FileUtil.getExistFile(fileName);
+		File file = checkFileFormat(resource, fileName, resourceId);
 		if (file == null) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s resource " + fileName + " is not existed");
-			return null;
-		}
-		if (resourceId == null) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s resourceId = null");
-			return null;
-		}
-		if (!ClassUtil.isContainField(resource, resourceId)) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s not contain " + resourceId);
 			return null;
 		}
 		Map<String, T> resources = new HashMap<>();
@@ -76,7 +66,7 @@ public class CsvResourceLoader implements IResourceLoader {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 			String attrString = reader.readLine();
 			if (attrString == null) {
-				ShadowLogger.errorPrintln(fileName + "'s not contain segment element");
+				ResourceLogger.resourceNotContainSegments(fileName);
 				return null;
 			}
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
@@ -88,8 +78,7 @@ public class CsvResourceLoader implements IResourceLoader {
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
 				if (attrNames.length != attrValues.length) {
-					ShadowLogger.errorPrintln(
-							fileName + "'s " + elementIndex + "th elemnt attribute is not match with segment");
+					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
 					return null;
 				}
 				T resourceObject = resource.newInstance();
@@ -99,7 +88,7 @@ public class CsvResourceLoader implements IResourceLoader {
 					if (resourceId.equals(name)) {
 						resourceIdValue = attrValues[index];
 						if (resources.containsKey(resourceIdValue)) {
-							ShadowLogger.errorPrintln(fileName + " contain duplicate id:" + resourceIdValue);
+							ResourceLogger.resourceContainDeplicateId(fileName, resourceIdValue);
 							return null;
 						}
 						resources.put(resourceIdValue, resourceObject);
@@ -109,9 +98,9 @@ public class CsvResourceLoader implements IResourceLoader {
 				elementIndex++;
 			}
 		} catch (Exception e) {
-			ShadowLogger.exceptionPrintln("load " + fileName + " catch exception" + e.getMessage());
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ShadowLogger.logPrintln(resource.getSimpleName() + "'s resource " + fileName + " load success");
+		ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
 		return resources;
 	}
 
@@ -128,7 +117,7 @@ public class CsvResourceLoader implements IResourceLoader {
 		}
 		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
 	}
-	
+
 	@Override
 	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
 		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
@@ -136,29 +125,16 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
-		File file = FileUtil.getExistFile(fileName);
+		File file = checkFileFormat(resource, fileName, resourceId);
 		if (file == null) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s resource " + fileName + " is not existed");
-			return null;
-		}
-		if (resourceId == null) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s resource " + resourceId + " is null");
-			return null;
-		}
-		if (resourceIdValue == null) {
-			ShadowLogger.errorPrintln("load " + fileName + " resourceIdValue = null");
-			return null;
-		}
-		if (!ClassUtil.isContainField(resource, resourceId)) {
-			ShadowLogger.errorPrintln(resource.getSimpleName() + "'s not contain " + resourceId);
 			return null;
 		}
 		try {
 			@SuppressWarnings("resource")
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 			String attrString = reader.readLine();
 			if (attrString == null) {
-				ShadowLogger.errorPrintln(fileName + "'s not contain segment element");
+				ResourceLogger.resourceNotContainSegments(fileName);
 				return null;
 			}
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
@@ -170,10 +146,12 @@ public class CsvResourceLoader implements IResourceLoader {
 				}
 			}
 			if (idIndex == -1) {
-				ShadowLogger.errorPrintln(fileName + "'s not contain " + resourceId);
+				ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
 				return null;
 			}
+			int elementIndex = 0;
 			for (;;) {
+				elementIndex++;
 				String attrValueString = reader.readLine();
 				if (attrValueString == null) {
 					break;
@@ -183,7 +161,7 @@ public class CsvResourceLoader implements IResourceLoader {
 					continue;
 				}
 				if (attrNames.length != attrValues.length) {
-					ShadowLogger.errorPrintln(fileName + "'s elemnt attribute is not match with segment");
+					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
 					return null;
 				}
 				T resourceObject = resource.newInstance();
@@ -192,14 +170,13 @@ public class CsvResourceLoader implements IResourceLoader {
 					ResourceLoader.setAttr(resourceObject, name, attrValues[index]);
 					index++;
 				}
-				ShadowLogger.logPrintln("load " + resource.getSimpleName() + " from" + fileName + " id = "
-						+ resourceIdValue + " success");
+				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
 				return resourceObject;
 			}
 		} catch (Exception e) {
-			ShadowLogger.exceptionPrintln("load " + fileName + " catch exception" + e.getMessage());
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ShadowLogger.logPrintln(fileName + " is not contain id = " + resourceIdValue + " element");
+		ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 		return null;
 	}
 
@@ -207,7 +184,7 @@ public class CsvResourceLoader implements IResourceLoader {
 	public List<Map<String, String>> loadResource(String fileName) {
 		File file = FileUtil.getExistFile(fileName);
 		if (file == null) {
-			ShadowLogger.errorPrintln(fileName + " is not existed");
+			ResourceLogger.resourceNotExist(fileName);
 			return null;
 		}
 		List<Map<String, String>> datas = new ArrayList<>();
@@ -216,7 +193,7 @@ public class CsvResourceLoader implements IResourceLoader {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 			String attrString = reader.readLine();
 			if (attrString == null) {
-				ShadowLogger.errorPrintln(fileName + "'s not contain segment element");
+				ResourceLogger.resourceNotContainSegments(fileName);
 				return null;
 			}
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
@@ -228,8 +205,7 @@ public class CsvResourceLoader implements IResourceLoader {
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
 				if (attrNames.length != attrValues.length) {
-					ShadowLogger.errorPrintln(
-							fileName + "'s " + elementIndex + " elemnt attribute is not match with segment");
+					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
 					return null;
 				}
 				int index = 0;
@@ -241,22 +217,35 @@ public class CsvResourceLoader implements IResourceLoader {
 				datas.add(data);
 				elementIndex++;
 			}
-			ShadowLogger.logPrintln("load " + fileName + " success");
+			ResourceLogger.loadSuccess(fileName);
 			return datas;
 		} catch (Exception e) {
-			ShadowLogger.exceptionPrintln("load " + fileName + " catch exception" + e.getMessage());
+			ResourceLogger.loadResourceException(fileName, e.getMessage());
 		}
 		return datas;
 	}
-	
-	private CsvResource getAnnotation(Class<?> resource){
+
+	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
+		File file = FileUtil.getExistFile(fileName);
+		if (file == null) {
+			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
+			return null;
+		}
+		if (!ClassUtil.isContainField(resource, resourceId)) {
+			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
+			return null;
+		}
+		return file;
+	}
+
+	private CsvResource getAnnotation(Class<?> resource) {
 		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
 		if (resAnnotation == null) {
 			ResourceLogger.annotationError(resource.getSimpleName(), CsvResource.class.getSimpleName());
 			return null;
 		}
 		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			ResourceLogger.loaderError(resource.getSimpleName(), CsvResourceLoader.class.getSimpleName());
+			ResourceLogger.annotationLoaderError(resource.getSimpleName(), CsvResourceLoader.class.getSimpleName());
 			return null;
 		}
 		return resAnnotation;

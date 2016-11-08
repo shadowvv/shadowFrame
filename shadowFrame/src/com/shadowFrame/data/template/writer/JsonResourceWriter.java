@@ -9,6 +9,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceWriter;
 
 /**
@@ -25,12 +26,6 @@ public class JsonResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
-		if (resourceName == null) {
-			return;
-		}
-		if (targetDir == null) {
-			return;
-		}
 		String name = targetDir + File.separatorChar + resourceName + ".json";
 		File file = new File(name);
 		if (file.exists()) {
@@ -43,8 +38,9 @@ public class JsonResourceWriter implements IResourceWriter {
 			output.write(getFileContent(datas).getBytes());
 			output.flush();
 			output.close();
+			ResourceLogger.writeSuccess(name);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ResourceLogger.writeResourceException(name, e.getMessage());
 		}
 	}
 
