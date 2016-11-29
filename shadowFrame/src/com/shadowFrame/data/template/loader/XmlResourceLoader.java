@@ -12,9 +12,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.shadowFrame.data.annotation.XmlResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
@@ -40,7 +41,7 @@ public class XmlResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		XmlResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.XML_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -91,7 +92,7 @@ public class XmlResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		XmlResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.XML_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -143,10 +144,6 @@ public class XmlResourceLoader implements IResourceLoader {
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(fileName);
-			return null;
-		}
 		List<Map<String, String>> datas = new ArrayList<>();
 		SAXReader reader = new SAXReader();
 		try {
@@ -172,28 +169,11 @@ public class XmlResourceLoader implements IResourceLoader {
 
 	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
-			return null;
-		}
 		if (!ClassUtil.isContainField(resource, resourceId)) {
 			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
 			return null;
 		}
 		return file;
-	}
-
-	private XmlResource getAnnotation(Class<?> resource) {
-		XmlResource resAnnotation = resource.getAnnotation(XmlResource.class);
-		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), XmlResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != XmlResourceLoader.class) {
-			ResourceLogger.annotationLoaderError(resource.getSimpleName(), XmlResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return resAnnotation;
 	}
 
 }

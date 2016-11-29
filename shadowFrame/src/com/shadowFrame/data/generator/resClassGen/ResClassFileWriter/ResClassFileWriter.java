@@ -5,13 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import com.shadowFrame.data.annotation.CsvResource;
-import com.shadowFrame.data.annotation.ExcelResource;
-import com.shadowFrame.data.annotation.JsonResource;
-import com.shadowFrame.data.annotation.PropertiesResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.annotation.ResourceId;
-import com.shadowFrame.data.annotation.XmlResource;
 import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.StringUtil;
 
@@ -64,47 +61,35 @@ public class ResClassFileWriter {
 		fileContent.append("\n");
 		fileContent.append("import " + BaseTemplate.class.getName() + ";\n");
 		fileContent.append("import " + ResourceId.class.getName() + ";\n");
+		fileContent.append("import " + ResourceFmtAnnotation.class.getName() + "\n");
+		fileContent.append("\n");
+
+		String filename = "\"" + resClassFileArchitecture.getResDir() + resClassFileArchitecture.getClassName() + "."
+				+ resClassFileArchitecture.getResourceFMT() + "\"";
+
+		fileContent.append("@" + ResourceFmtAnnotation.class.getSimpleName() + "(fileName = " + filename + " ,");
+		fileContent.append("format = " + ResourceFmt.class.getSimpleName() + ".");
 		switch (resClassFileArchitecture.getResourceFMT()) {
 		case "csv":
-			fileContent.append("import " + CsvResource.class.getName() + "\n");
-			fileContent.append("\n");
-			fileContent.append("@CsvResource(fileName = \"" + resClassFileArchitecture.getResDir()
-					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
-					+ "\n");
+			fileContent.append(ResourceFmt.CSV_RES.name() + ")" + "\n");
 			break;
 		case "json":
-			fileContent.append("import " + JsonResource.class.getName() + "\n");
-			fileContent.append("\n");
-			fileContent.append("@JsonResource(fileName = \"" + resClassFileArchitecture.getResDir()
-					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
-					+ "\n");
+			fileContent.append(ResourceFmt.JSON_RES.name() + ")" + "\n");
 			break;
 		case "xml":
-			fileContent.append("import " + XmlResource.class.getName() + "\n");
-			fileContent.append("\n");
-			fileContent.append("@XmlResource(fileName = \"" + resClassFileArchitecture.getResDir()
-					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
-					+ "\n");
+			fileContent.append(ResourceFmt.XML_RES.name() + ")" + "\n");
 			break;
 		case "xls":
 		case "xlsx":
-			fileContent.append("import " + ExcelResource.class.getName() + "\n");
-			fileContent.append("\n");
-			fileContent.append("@ExcelResource(fileName = \"" + resClassFileArchitecture.getResDir()
-					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
-					+ "\n");
+			fileContent.append(ResourceFmt.EXCEL_RES.name() + ")" + "\n");
 			break;
 		case "cfg":
-			fileContent.append("import " + PropertiesResource.class.getName() + "\n");
-			fileContent.append("\n");
-			fileContent.append("@PropertiesResource(fileName = \"" + resClassFileArchitecture.getResDir()
-					+ resClassFileArchitecture.getClassName() + "." + resClassFileArchitecture.getResourceFMT() + "\")"
-					+ "\n");
+			fileContent.append(ResourceFmt.PROPERTIES_RES.name() + ")" + "\n");
 			break;
 		default:
 			return null;
 		}
-		fileContent.append("public class " + StringUtil.upperHeadCase(resClassFileArchitecture.getClassName())
+		fileContent.append("public class " + StringUtil.upperHeadChar(resClassFileArchitecture.getClassName())
 				+ " extends BaseTemplate {");
 		fileContent.append("\n");
 		fileContent.append(buildField(resClassFileArchitecture));
@@ -140,7 +125,7 @@ public class ResClassFileWriter {
 				FieldContent.append(getFieldComment(resClassField.getFieldComment()));
 			}
 			FieldContent.append("	public " + resClassField.getFieldType() + " get"
-					+ StringUtil.upperHeadCase(resClassField.getFieldName()) + "(){" + "\n");
+					+ StringUtil.upperHeadChar(resClassField.getFieldName()) + "(){" + "\n");
 			FieldContent.append("		return " + resClassField.getFieldName() + ";" + "\n");
 			FieldContent.append("	}" + "\n");
 			FieldContent.append("\n");

@@ -2,6 +2,8 @@ package com.shadowFrame.util;
 
 import java.io.File;
 
+import com.google.common.base.Strings;
+
 /**
  * 文件操作工具类
  * 
@@ -24,17 +26,18 @@ public class FileUtil {
 	public static String EXCEL03 = "xls";
 
 	/**
-	 * 获得存在的文件，不存在返回null
+	 * 获得存在的文件
 	 * 
 	 * @param fileName
 	 *            文件名
 	 * @return
 	 */
 	public static File getExistFile(String fileName) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+
 		File file = new File(fileName);
-		if (!file.isFile() || !file.exists()) {
-			return null;
-		}
+		PreconditionUtil.checkState(file.isFile() && file.exists(), "file:" + fileName + " is not exist");
+
 		return file;
 	}
 
@@ -45,6 +48,8 @@ public class FileUtil {
 	 * @return 是否为excel文件
 	 */
 	public static boolean isExcelFile(String fileFMT) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileFMT), "argument fileFmt is null or empty");
+
 		if (EXCEL07.equals(fileFMT) || EXCEL03.equals(fileFMT)) {
 			return true;
 		}

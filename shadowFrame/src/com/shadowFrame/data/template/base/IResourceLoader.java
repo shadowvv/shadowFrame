@@ -3,7 +3,7 @@ package com.shadowFrame.data.template.base;
 import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.data.annotation.CsvResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.annotation.ResourceId;
 
 /**
@@ -17,7 +17,7 @@ public interface IResourceLoader {
 	/**
 	 * 加载资源
 	 * <P>
-	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * resource必须由对应的Annotation标记 eg:{@link ResourceFmtAnnotation}
 	 * <P>
 	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据
 	 * 
@@ -43,7 +43,7 @@ public interface IResourceLoader {
 	/**
 	 * 加载资源
 	 * <P>
-	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * resource必须由对应的Annotation标记 eg:{@link ResourceFmtAnnotation}
 	 * 
 	 * @param resource
 	 *            资源映射类
@@ -69,7 +69,7 @@ public interface IResourceLoader {
 	/**
 	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
 	 * <P>
-	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * resource必须由对应的Annotation标记 eg:{@link ResourceFmtAnnotation}
 	 * <P>
 	 * 资源键由映射类中{@link ResourceId}标记
 	 * 
@@ -99,7 +99,7 @@ public interface IResourceLoader {
 	/**
 	 * 加载资源中特定key资源,返回第一个键值与resourceKey相同的资源
 	 * <P>
-	 * resource必须由对应的Annotation标记 eg:{@link CsvResource}
+	 * resource必须由对应的Annotation标记 eg:{@link ResourceFmtAnnotation}
 	 * 
 	 * @param resource
 	 *            资源映射类

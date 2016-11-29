@@ -90,9 +90,4 @@ public class ShadowLogger {
 		getInstance().exceptionLOGGER.info(log, params);
 	}
 
-	public static void main(String[] args) {
-		logPrintln("test");
-		exceptionPrintln("exception");
-		performancePrintln("performance");
-	}
 }

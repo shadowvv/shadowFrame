@@ -243,8 +243,4 @@ public class ClassUtil {
 		return true;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(getAllClasses("com.shadowFrame.data", true));
-	}
-
 }

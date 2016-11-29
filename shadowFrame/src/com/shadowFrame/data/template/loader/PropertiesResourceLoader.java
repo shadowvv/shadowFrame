@@ -13,9 +13,10 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import com.shadowFrame.data.annotation.PropertiesResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.util.FileUtil;
 
 /**
@@ -35,14 +36,8 @@ import com.shadowFrame.util.FileUtil;
 public class PropertiesResourceLoader implements IResourceLoader {
 
 	public <T> Map<String, T> loadResources(Class<T> resource) {
-		PropertiesResource resAnnotation = resource.getAnnotation(PropertiesResource.class);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.PROPERTIES_RES);
 		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), PropertiesResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != PropertiesResourceLoader.class) {
-			ResourceLogger.annotationLoaderError(resource.getSimpleName(),
-					PropertiesResourceLoader.class.getSimpleName());
 			return null;
 		}
 		return loadResourcesFromFile(resource, resAnnotation.fileName());
@@ -50,10 +45,6 @@ public class PropertiesResourceLoader implements IResourceLoader {
 
 	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
-			return null;
-		}
 		try {
 			ResourceBundle bundle = new PropertyResourceBundle(
 					new InputStreamReader(new BufferedInputStream(new FileInputStream(file)), "UTF-8"));
@@ -132,10 +123,6 @@ public class PropertiesResourceLoader implements IResourceLoader {
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(fileName);
-			return null;
-		}
 		List<Map<String, String>> datas = new ArrayList<>();
 		try {
 			ResourceBundle bundle = new PropertyResourceBundle(

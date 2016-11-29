@@ -1,15 +1,17 @@
 package com.sample.data.resourceLoad;
 
-import com.shadowFrame.data.annotation.ExcelResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * excel资源映射类例子
+ * 
  * @author Shadow
  * @version 1.0.0
  */
-@ExcelResource(fileName = "resource/excelSample.xlsx")
+@ResourceFmtAnnotation(fileName = "resource/excelSample.xlsx", format = ResourceFmt.EXCEL_RES)
 public class ExcelSample extends BaseTemplate {
 
 	@ResourceId

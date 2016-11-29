@@ -16,9 +16,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.shadowFrame.data.annotation.ExcelResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
@@ -42,7 +43,7 @@ public class ExcelResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		ExcelResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.EXCEL_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -91,7 +92,7 @@ public class ExcelResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		ExcelResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.EXCEL_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -136,10 +137,6 @@ public class ExcelResourceLoader implements IResourceLoader {
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(fileName);
-			return null;
-		}
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
@@ -326,28 +323,11 @@ public class ExcelResourceLoader implements IResourceLoader {
 
 	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
-			return null;
-		}
 		if (!ClassUtil.isContainField(resource, resourceId)) {
 			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
 			return null;
 		}
 		return file;
-	}
-
-	private ExcelResource getAnnotation(Class<?> resource) {
-		ExcelResource resAnnotation = resource.getAnnotation(ExcelResource.class);
-		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), ExcelResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != ExcelResourceLoader.class) {
-			ResourceLogger.annotationLoaderError(resource.getSimpleName(), ExcelResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return resAnnotation;
 	}
 
 }

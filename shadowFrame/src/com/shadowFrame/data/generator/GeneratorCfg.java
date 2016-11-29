@@ -1,7 +1,8 @@
 package com.shadowFrame.data.generator;
 
-import com.shadowFrame.data.annotation.PropertiesResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * 资源生成器配置映射类
@@ -9,7 +10,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
  * @author Shadow
  * @version 1.0.0
  */
-@PropertiesResource(fileName = "cfg/generator.cfg")
+@ResourceFmtAnnotation(fileName = "cfg/generator.cfg", format = ResourceFmt.PROPERTIES_RES)
 public class GeneratorCfg extends BaseTemplate {
 
 	private boolean generatorClass;

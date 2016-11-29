@@ -12,9 +12,10 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.shadowFrame.data.annotation.JsonResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
@@ -37,7 +38,7 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		JsonResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.JSON_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -104,7 +105,7 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		JsonResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.JSON_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -157,10 +158,6 @@ public class JsonResourceLoader implements IResourceLoader {
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(fileName);
-			return null;
-		}
 		InputStream inputStream;
 		List<Map<String, String>> datas = new ArrayList<>();
 		try {
@@ -192,10 +189,6 @@ public class JsonResourceLoader implements IResourceLoader {
 
 	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
-			return null;
-		}
 		if (!ClassUtil.isContainField(resource, resourceId)) {
 			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
 			return null;
@@ -203,16 +196,4 @@ public class JsonResourceLoader implements IResourceLoader {
 		return file;
 	}
 
-	private JsonResource getAnnotation(Class<?> resource) {
-		JsonResource resAnnotation = resource.getAnnotation(JsonResource.class);
-		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), JsonResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != JsonResourceLoader.class) {
-			ResourceLogger.annotationLoaderError(resource.getSimpleName(), JsonResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return resAnnotation;
-	}
 }

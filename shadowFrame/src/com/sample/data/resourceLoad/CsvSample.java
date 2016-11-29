@@ -1,8 +1,9 @@
 package com.sample.data.resourceLoad;
 
-import com.shadowFrame.data.annotation.CsvResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.annotation.ResourceId;
 import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * csv资源映射类例子
@@ -10,7 +11,7 @@ import com.shadowFrame.data.template.base.BaseTemplate;
  * @author Shadow
  * @version 1.0.0
  */
-@CsvResource(fileName = "./resource/csvSample.csv")
+@ResourceFmtAnnotation(fileName = "./resource/csvSample.csv", format = ResourceFmt.CSV_RES)
 public class CsvSample extends BaseTemplate {
 
 	@ResourceId

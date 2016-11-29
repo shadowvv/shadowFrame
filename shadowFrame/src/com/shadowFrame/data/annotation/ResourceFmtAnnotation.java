@@ -6,9 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.shadowFrame.data.template.base.IResourceLoader;
-import com.shadowFrame.data.template.loader.CsvResourceLoader;
-import com.shadowFrame.data.template.loader.ResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * csv资源标示
@@ -27,7 +25,7 @@ import com.shadowFrame.data.template.loader.ResourceLoader;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CsvResource {
+public @interface ResourceFmtAnnotation {
 
 	/**
 	 * 资源名，包括路径
@@ -37,13 +35,9 @@ public @interface CsvResource {
 	String fileName();
 
 	/**
-	 * 资源加载器，默认为{@link CsvResourceLoader}.
-	 * <P>
-	 * 如果想修改加载器，并且使用{@link ResourceLoader}加载资源<br>
-	 * 加载器必须实现{@link IResourceLoader}接口，并重新注册加载器{@link ResourceLoader#registerLoader(CsvResource.Class(),
-	 * IResourceLoader)}
+	 * 资源类型
 	 * 
 	 * @return
 	 */
-	Class<? extends IResourceLoader> loader() default CsvResourceLoader.class;
+	ResourceFmt format();
 }

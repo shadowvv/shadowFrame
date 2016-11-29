@@ -1,18 +1,14 @@
 package com.shadowFrame.data.template.loader;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.data.annotation.CsvResource;
-import com.shadowFrame.data.annotation.ExcelResource;
-import com.shadowFrame.data.annotation.JsonResource;
-import com.shadowFrame.data.annotation.PropertiesResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.annotation.ResourceId;
-import com.shadowFrame.data.annotation.XmlResource;
-import com.shadowFrame.data.template.base.BaseTemplate;
+import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
 import com.shadowFrame.util.ClassUtil;
 
@@ -23,252 +19,72 @@ import com.shadowFrame.util.ClassUtil;
  * @version 1.0.0
  *
  */
-public class ResourceLoader {
+public class ResourceLoader implements IResourceLoader {
 
-	private Map<String, Class<? extends IResourceLoader>> loaderMap;
+	private IResourceLoader loader;
 
-	private static ResourceLoader instance;
+	public ResourceLoader(ResourceFmt fmt) {
+		loader = fmt.getLoader();
+	}
 
-	public static ResourceLoader getInstance() {
-		if (instance == null) {
-			instance = new ResourceLoader();
+	@Override
+	public <T> Map<String, T> loadResources(Class<T> resource) {
+		return loader.loadResources(resource);
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
+		return loader.loadResourcesFromFile(resource, fileName);
+	}
+
+	@Override
+	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
+		return loader.loadResourcesWithResourceId(resource, resourceId);
+	}
+
+	@Override
+	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
+		return loader.loadResources(resource, fileName, resourceId);
+	}
+
+	@Override
+	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
+		return loader.loadResource(resource, resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
+		return loader.loadResourceFromFile(resource, fileName, resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
+		return loader.loadResourceWithResourceId(resource, resourceId, resourceIdValue);
+	}
+
+	@Override
+	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		return loader.loadResource(resource, fileName, resourceId, resourceIdValue);
+	}
+
+	@Override
+	public List<Map<String, String>> loadResource(String fileName) {
+		return loader.loadResource(fileName);
+	}
+
+	/**
+	 * 加载资源
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @return
+	 */
+	public static <T> Map<String, T> loadAnnotationResources(Class<T> resource) {
+		ResourceFmtAnnotation resAnnotation = resource.getAnnotation(ResourceFmtAnnotation.class);
+		if (resAnnotation == null) {
+			return null;
 		}
-		return instance;
-	}
-
-	private ResourceLoader() {
-		loaderMap = new HashMap<>();
-		registerLoader(CsvResource.class, CsvResourceLoader.class);
-		registerLoader(JsonResource.class, JsonResourceLoader.class);
-		registerLoader(PropertiesResource.class, PropertiesResourceLoader.class);
-		registerLoader(XmlResource.class, XmlResourceLoader.class);
-		registerLoader(ExcelResource.class, ExcelResourceLoader.class);
-	}
-
-	/**
-	 * 注册资源加载器
-	 * 
-	 * @param loader
-	 */
-	public void registerLoader(Class<?> resourceAnnotation, Class<? extends IResourceLoader> loader) {
-		ShadowLogger.logPrintln("add " + resourceAnnotation.getSimpleName() + "'s loader " + loader.getSimpleName());
-		loaderMap.put(resourceAnnotation.getName(), loader);
-	}
-
-	/**
-	 * 加载模版数据,T必须被包含文件名和loader类的Annotation标记<br>
-	 * 文件名包含文件路径
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param template
-	 *            模版类
-	 * @return 资源map,加载失败返回null
-	 */
-	public <T extends BaseTemplate> Map<String, T> loadTemplate(Class<T> template) {
-		Annotation annotations[] = template.getAnnotations();
-		for (Annotation annotation : annotations) {
-			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
-			if (loader != null) {
-				try {
-					Map<String, T> resources = loader.newInstance().loadResources(template);
-					if (resources == null) {
-						return null;
-					}
-					for (T resource : resources.values()) {
-						if (resource.invalid()) {
-							return null;
-						}
-						resource.assembly();
-					}
-					return resources;
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * 加载模版数据,T必须被包含文件名和loader类的Annotation标记
-	 * 
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param template
-	 *            模版类
-	 * @param fileName
-	 *            文件路径
-	 * @return 资源map,加载失败返回null
-	 */
-	public <T extends BaseTemplate> Map<String, T> loadTemplate(Class<T> template, String fileName) {
-		Annotation annotations[] = template.getAnnotations();
-		for (Annotation annotation : annotations) {
-			Class<? extends IResourceLoader> loader = loaderMap.get(annotation.annotationType().getName());
-			if (loader != null) {
-				try {
-					Map<String, T> resources = loader.newInstance().loadResourcesFromFile(template, fileName);
-					if (resources == null) {
-						return null;
-					}
-					for (T resource : resources.values()) {
-						if (resource.invalid()) {
-							return null;
-						}
-						resource.assembly();
-					}
-					return resources;
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * 加载Propertis格式资源，资源必须由{@link PropertiesResource}标注
-	 * <P>
-	 * 返回值:key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadPropertis(Class<T> resource) {
-		return new PropertiesResourceLoader().loadResources(resource);
-	}
-
-	/**
-	 * 加载Propertis格式资源
-	 * <P>
-	 * 返回值:key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadPropertis(Class<T> resource, String fileName) {
-		return new PropertiesResourceLoader().loadResourcesFromFile(resource, fileName);
-	}
-
-	/**
-	 * 加载csv格式资源，资源必须由{@link CsvResource}标注
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadCsv(Class<T> resource) {
-		return new CsvResourceLoader().loadResources(resource);
-	}
-
-	/**
-	 * 加载csv格式资源
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadCsv(Class<T> resource, String fileName) {
-		return new CsvResourceLoader().loadResourcesFromFile(resource, fileName);
-	}
-
-	/**
-	 * 加载xml格式资源，资源必须由{@link XmlResource}标注
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadXml(Class<T> resource) {
-		return new XmlResourceLoader().loadResources(resource);
-	}
-
-	/**
-	 * 加载xml格式资源
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadXml(Class<T> resource, String fileName) {
-		return new XmlResourceLoader().loadResourcesFromFile(resource, fileName);
-	}
-
-	/**
-	 * 加载Json格式资源，资源必须由{@link JsonResource}标注
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadJson(Class<T> resource) {
-		return new JsonResourceLoader().loadResources(resource);
-	}
-
-	/**
-	 * 加载Json格式资源
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadJson(Class<T> resource, String fileName) {
-		return new JsonResourceLoader().loadResourcesFromFile(resource, fileName);
-	}
-
-	/**
-	 * 加载excel格式资源，资源必须由{@link ExcelResource}标注
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadExcel(Class<T> resource) {
-		return new ExcelResourceLoader().loadResources(resource);
-	}
-
-	/**
-	 * 加载excel格式资源
-	 * <P>
-	 * 返回值:如果resource中有被{@link ResourceId}标记的字段，则key为该字段。如果没有key为resource类名,且只有一组数据<br>
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 * @return 资源map,加载失败返回null
-	 */
-	public static <T> Map<String, T> loadExcel(Class<T> resource, String fileName) {
-		return new ExcelResourceLoader().loadResourcesFromFile(resource, fileName);
+		return resAnnotation.format().getLoader().loadResources(resource);
 	}
 
 	/**
@@ -332,5 +148,27 @@ public class ResourceLoader {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 获得资源类对应的注释
+	 * 
+	 * @param resource
+	 *            资源映射类
+	 * @param fmt
+	 *            资源格式
+	 * @return
+	 */
+	public static ResourceFmtAnnotation getFmtAnnotation(Class<?> resource, ResourceFmt fmt) {
+		ResourceFmtAnnotation resAnnotation = resource.getAnnotation(ResourceFmtAnnotation.class);
+		if (resAnnotation == null) {
+			ResourceLogger.annotationError(resource.getSimpleName(), ResourceFmtAnnotation.class.getSimpleName());
+			return null;
+		}
+		if (resAnnotation.format() != fmt) {
+			ResourceLogger.annotationReosurceFmtError(resource.getSimpleName(), fmt);
+			return null;
+		}
+		return resAnnotation;
 	}
 }

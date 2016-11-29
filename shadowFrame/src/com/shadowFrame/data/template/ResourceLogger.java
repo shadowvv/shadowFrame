@@ -1,5 +1,6 @@
 package com.shadowFrame.data.template;
 
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
 
 /**
@@ -31,33 +32,11 @@ public class ResourceLogger {
 	 * 
 	 * @param resourceClass
 	 *            资源映射类
-	 * @param loaderName
+	 * @param ResourceFMT
 	 *            加载器
 	 */
-	public static void annotationLoaderError(String resourceClass, String loaderName) {
-		ShadowLogger.errorPrintln(resourceClass + " class annotation's loader is not " + loaderName);
-	}
-
-	/**
-	 * 资源文件不存在
-	 * 
-	 * @param resourceClass
-	 *            资源映射类
-	 * @param fileName
-	 *            资源名
-	 */
-	public static void resourceNotExist(String resourceClass, String fileName) {
-		ShadowLogger.errorPrintln(resourceClass + " class resource " + fileName + " is not existed");
-	}
-
-	/**
-	 * 资源文件不存在
-	 * 
-	 * @param fileName
-	 *            资源名
-	 */
-	public static void resourceNotExist(String fileName) {
-		ShadowLogger.errorPrintln("resource " + fileName + " is not existed");
+	public static void annotationReosurceFmtError(String resourceClass, ResourceFmt ResourceFMT) {
+		ShadowLogger.errorPrintln(resourceClass + " class fmt is not " + ResourceFMT.toString());
 	}
 
 	/**
@@ -174,7 +153,7 @@ public class ResourceLogger {
 	public static void writeSuccess(String fileName) {
 		ShadowLogger.logPrintln("write " + fileName + " success");
 	}
-	
+
 	/**
 	 * 加载资源异常
 	 * 

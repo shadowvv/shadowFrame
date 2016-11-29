@@ -2,9 +2,9 @@ package com.test;
 
 import com.shadowFrame.data.template.base.BaseTemplate;
 import com.shadowFrame.data.annotation.ResourceId;
-import com.shadowFrame.data.annotation.CsvResource
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation
 
-@CsvResource(fileName = ".\resource\excelSample.csv")
+@ResourceFmtAnnotation(fileName = ".\resource\excelSample.csv" ,format = ResourceFmt.CSV_RES)
 public class ExcelSample extends BaseTemplate {
 	/**
 	 * id

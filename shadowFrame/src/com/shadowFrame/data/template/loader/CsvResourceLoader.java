@@ -9,9 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.data.annotation.CsvResource;
+import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.ResourceLogger;
 import com.shadowFrame.data.template.base.IResourceLoader;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
 
@@ -41,7 +42,7 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		CsvResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.CSV_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -111,7 +112,7 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		CsvResource resAnnotation = getAnnotation(resource);
+		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.CSV_RES);
 		if (resAnnotation == null) {
 			return null;
 		}
@@ -182,11 +183,6 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
-		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(fileName);
-			return null;
-		}
 		List<Map<String, String>> datas = new ArrayList<>();
 		try {
 			@SuppressWarnings("resource")
@@ -227,28 +223,11 @@ public class CsvResourceLoader implements IResourceLoader {
 
 	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
 		File file = FileUtil.getExistFile(fileName);
-		if (file == null) {
-			ResourceLogger.resourceNotExist(resource.getSimpleName(), fileName);
-			return null;
-		}
 		if (!ClassUtil.isContainField(resource, resourceId)) {
 			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
 			return null;
 		}
 		return file;
-	}
-
-	private CsvResource getAnnotation(Class<?> resource) {
-		CsvResource resAnnotation = resource.getAnnotation(CsvResource.class);
-		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), CsvResource.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.loader() != CsvResourceLoader.class) {
-			ResourceLogger.annotationLoaderError(resource.getSimpleName(), CsvResourceLoader.class.getSimpleName());
-			return null;
-		}
-		return resAnnotation;
 	}
 
 }
