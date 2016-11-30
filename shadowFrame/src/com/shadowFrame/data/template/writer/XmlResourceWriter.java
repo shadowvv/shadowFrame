@@ -11,8 +11,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
 
-import com.shadowFrame.data.template.ResourceLogger;
+import com.google.common.base.Strings;
 import com.shadowFrame.data.template.base.IResourceWriter;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * xml格式资源导出器
@@ -26,6 +27,10 @@ public class XmlResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceName), "argument resourceName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(targetDir), "argument targetDir is null or empty");
+		PreconditionUtil.checkArgument(datas != null, "argument datas is null");
+		
 		String name = targetDir + File.separatorChar + resourceName + ".xml";
 		File file = new File(name);
 		if (file.exists()) {
@@ -40,9 +45,9 @@ public class XmlResourceWriter implements IResourceWriter {
 			writer.close();
 			output.flush();
 			output.close();
-			ResourceLogger.writeSuccess(name);
+			ResourceWriterLogger.writeSuccess(name);
 		} catch (IOException e) {
-			ResourceLogger.writeResourceException(name, e.getMessage());
+			ResourceWriterLogger.writeResourceException(name, e.getMessage());
 		}
 	}
 

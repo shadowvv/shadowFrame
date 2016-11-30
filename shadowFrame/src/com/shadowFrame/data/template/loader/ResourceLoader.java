@@ -1,16 +1,13 @@
 package com.shadowFrame.data.template.loader;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
-import com.shadowFrame.data.annotation.ResourceId;
-import com.shadowFrame.data.template.ResourceLogger;
+import com.shadowFrame.data.template.base.BaseTemplate;
 import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.data.template.base.ResourceFmt;
-import com.shadowFrame.log.ShadowLogger;
-import com.shadowFrame.util.ClassUtil;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * 模版文件加载器
@@ -81,94 +78,30 @@ public class ResourceLoader implements IResourceLoader {
 	 */
 	public static <T> Map<String, T> loadAnnotationResources(Class<T> resource) {
 		ResourceFmtAnnotation resAnnotation = resource.getAnnotation(ResourceFmtAnnotation.class);
-		if (resAnnotation == null) {
-			return null;
-		}
+		
+		PreconditionUtil.checkState(resAnnotation != null,
+				resource.getSimpleName() + " class is not annotated by" + ResourceFmtAnnotation.class.getSimpleName());
+		
 		return resAnnotation.format().getLoader().loadResources(resource);
 	}
 
 	/**
-	 * 赋值映射对象字段
-	 * 
-	 * @param instance
-	 *            对象
-	 * @param attrName
-	 *            字段名
-	 * @param attrValue
-	 *            字段值
-	 */
-	public static void setAttr(Object instance, String attrName, String attrValue) {
-		Field field = ClassUtil.getClassField(instance.getClass(), attrName);
-		if (field == null) {
-			ShadowLogger.errorPrintln(instance.getClass().getSimpleName() + " is not contained field " + attrName);
-			return;
-		}
-		String type = field.getType().toString();
-		field.setAccessible(true);
-		try {
-			if (type.indexOf("boolean") >= 0 || type.indexOf("Boolean") >= 0) {
-				if ("0".equals(attrValue)) {
-					field.set(instance, false);
-				} else if ("1".equals(attrValue)) {
-					field.set(instance, true);
-				} else {
-					field.set(instance, Boolean.valueOf(attrValue));
-				}
-			} else if (type.indexOf("int") >= 0 || type.indexOf("Integer") >= 0) {
-				field.set(instance, Integer.valueOf(attrValue));
-			} else if (type.indexOf("long") >= 0 || type.indexOf("Long") >= 0) {
-				field.set(instance, Long.valueOf(attrValue));
-			} else if (type.indexOf("float") >= 0 || type.indexOf("Float") >= 0) {
-				field.set(instance, Float.valueOf(attrValue));
-			} else if (type.indexOf("double") >= 0 || type.indexOf("Double") >= 0) {
-				field.set(instance, Double.valueOf(attrValue));
-			} else if (type.indexOf("String") >= 0) {
-				field.set(instance, attrValue);
-			}
-		} catch (Exception e) {
-			ShadowLogger.exceptionPrintln(
-					instance.getClass().getSimpleName() + " set field " + attrName + " value catch exception");
-		}
-	}
-
-	/**
-	 * 获得资源映射类中id字段
+	 * 加载引擎模版数据
 	 * 
 	 * @param resource
-	 *            映射类
+	 *            模版资源映射类
 	 * @return
 	 */
-	public static String getIdFieldName(Class<?> resource) {
-		ResourceId id = null;
-		Field[] fields = resource.getDeclaredFields();
-		for (Field attr : fields) {
-			id = attr.getAnnotation(ResourceId.class);
-			if (id != null) {
-				return attr.getName();
-			}
+	public static <T extends BaseTemplate> Map<String, T> loadTemplate(Class<T> resource) {
+		Map<String, T> datas = loadAnnotationResources(resource);
+		for (String key : datas.keySet()) {
+			T element = datas.get(key);
+			PreconditionUtil.checkState(!element.invalid(),
+					resource.getSimpleName() + " has invalid data at key = " + key);
+
+			element.assembly();
 		}
-		return null;
+		return datas;
 	}
 
-	/**
-	 * 获得资源类对应的注释
-	 * 
-	 * @param resource
-	 *            资源映射类
-	 * @param fmt
-	 *            资源格式
-	 * @return
-	 */
-	public static ResourceFmtAnnotation getFmtAnnotation(Class<?> resource, ResourceFmt fmt) {
-		ResourceFmtAnnotation resAnnotation = resource.getAnnotation(ResourceFmtAnnotation.class);
-		if (resAnnotation == null) {
-			ResourceLogger.annotationError(resource.getSimpleName(), ResourceFmtAnnotation.class.getSimpleName());
-			return null;
-		}
-		if (resAnnotation.format() != fmt) {
-			ResourceLogger.annotationReosurceFmtError(resource.getSimpleName(), fmt);
-			return null;
-		}
-		return resAnnotation;
-	}
 }

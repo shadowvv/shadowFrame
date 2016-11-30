@@ -2,8 +2,8 @@ package com.shadowFrame.data.generator.resClassGen;
 
 import java.io.File;
 
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
-import com.shadowFrame.util.FileUtil;
 
 /**
  * 资源映射类生成器
@@ -31,7 +31,7 @@ public class ResourceClassGenerator {
 	 * @param resourcePackage
 	 *            资源类包名
 	 */
-	public static void generateClass(String resourceDir, String targetDir, String fromFmt, String toFmt,
+	public static void generateClass(String resourceDir, String targetDir, ResourceFmt fromFmt, ResourceFmt toFmt,
 			String resourcePackage) {
 		String resourceDirT = resourceDir;
 		if (!resourceDir.endsWith("\\") || !resourceDir.endsWith("/")) {
@@ -41,8 +41,8 @@ public class ResourceClassGenerator {
 		if (!targetDir.endsWith("\\") || !targetDir.endsWith("/")) {
 			resourceDirT += File.separatorChar;
 		}
-		if (FileUtil.isExcelFile(fromFmt)) {
-			ExcelToClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, fromFmt, toFmt);
+		if (fromFmt.equals(ResourceFmt.EXCEL_RES)) {
+			ExcelToClassGenerator.generateFromExcel(resourceDirT, resourcePackage, targetDirT, toFmt);
 		} else {
 			ShadowLogger.errorPrintln("generator class format:" + fromFmt + " is not supported");
 		}

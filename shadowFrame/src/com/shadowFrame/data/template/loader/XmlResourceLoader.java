@@ -12,12 +12,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
-import com.shadowFrame.data.template.ResourceLogger;
-import com.shadowFrame.data.template.base.IResourceLoader;
+import com.google.common.base.Strings;
 import com.shadowFrame.data.template.base.ResourceFmt;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * xml格式资源加载器
@@ -27,33 +25,15 @@ import com.shadowFrame.util.FileUtil;
  * @author Shadow
  * @version 1.0.0
  */
-public class XmlResourceLoader implements IResourceLoader {
-
-	@Override
-	public <T> Map<String, T> loadResources(Class<T> resource) {
-		return loadResourcesWithResourceId(resource, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
-		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.XML_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResources(resource, resAnnotation.fileName(), resourceId);
-	}
+public class XmlResourceLoader extends BaseResourceLoader {
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+
 		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
 		Map<String, T> resources = new HashMap<>();
 		SAXReader reader = new SAXReader();
 		try {
@@ -67,49 +47,33 @@ public class XmlResourceLoader implements IResourceLoader {
 				List<Attribute> attrs = element.attributes();
 				T resourceObject = resource.newInstance();
 				for (Attribute attribute : attrs) {
-					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
+					setAttr(resourceObject, attribute.getName(), attribute.getValue());
 					if (resourceId.equals(attribute.getName())) {
 						resourceIdValue = attribute.getValue();
-						if (resources.containsKey(resourceIdValue)) {
-							ResourceLogger.resourceContainDeplicateId(fileName, resourceIdValue);
-							return null;
-						}
+
+						PreconditionUtil.checkState(!resources.containsKey(resourceIdValue),
+								fileName + " contain duplicate id:" + resourceIdValue);
+
 						resources.put(resourceIdValue, resourceObject);
 					}
 				}
 			}
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
+		ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName);
 		return resources;
 	}
 
 	@Override
-	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
-		return loadResourceWithResourceId(resource, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.XML_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
-		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceIdValue),
+				"argument resourceIdValue is null or empty");
+
 		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
 		SAXReader reader = new SAXReader();
 		try {
 			Document doc = reader.read(file);
@@ -119,7 +83,7 @@ public class XmlResourceLoader implements IResourceLoader {
 			for (Element element : elements) {
 				Attribute idAttr = element.attribute(resourceId);
 				if (idAttr == null) {
-					ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
+					ResourceLoaderLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 					return null;
 				}
 				if (!idAttr.getValue().equals(resourceIdValue)) {
@@ -129,20 +93,22 @@ public class XmlResourceLoader implements IResourceLoader {
 				List<Attribute> attrs = element.attributes();
 				T resourceObject = resource.newInstance();
 				for (Attribute attribute : attrs) {
-					ResourceLoader.setAttr(resourceObject, attribute.getName(), attribute.getValue());
+					setAttr(resourceObject, attribute.getName(), attribute.getValue());
 				}
-				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
+				ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
 				return resourceObject;
 			}
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
+		ResourceLoaderLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 		return null;
 	}
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+
 		File file = FileUtil.getExistFile(fileName);
 		List<Map<String, String>> datas = new ArrayList<>();
 		SAXReader reader = new SAXReader();
@@ -160,20 +126,16 @@ public class XmlResourceLoader implements IResourceLoader {
 				}
 				datas.add(data);
 			}
-			ResourceLogger.loadSuccess(fileName);
+			ResourceLoaderLogger.loadSuccess(fileName);
 		} catch (DocumentException e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
 		return datas;
 	}
 
-	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
-		File file = FileUtil.getExistFile(fileName);
-		if (!ClassUtil.isContainField(resource, resourceId)) {
-			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
-			return null;
-		}
-		return file;
+	@Override
+	public ResourceFmt getResourceFmt() {
+		return ResourceFmt.XML_RES;
 	}
 
 }

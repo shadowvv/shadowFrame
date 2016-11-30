@@ -16,13 +16,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
-import com.shadowFrame.data.template.ResourceLogger;
-import com.shadowFrame.data.template.base.IResourceLoader;
+import com.google.common.base.Strings;
 import com.shadowFrame.data.template.base.ResourceFmt;
-import com.shadowFrame.log.ShadowLogger;
-import com.shadowFrame.util.ClassUtil;
 import com.shadowFrame.util.FileUtil;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * excel资源加载器
@@ -34,130 +31,103 @@ import com.shadowFrame.util.FileUtil;
  * @author Shadow
  * @version 1.0.0
  */
-public class ExcelResourceLoader implements IResourceLoader {
+public class ExcelResourceLoader extends BaseResourceLoader {
 
-	@Override
-	public <T> Map<String, T> loadResources(Class<T> resource) {
-		return loadResourcesWithResourceId(resource, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.EXCEL_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResources(resource, resAnnotation.fileName(), resourceId);
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
-		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
-	}
+	/**
+	 * excel07 文件格式
+	 */
+	static String EXCEL07 = "xlsx";
+	/**
+	 * excel03 文件格式
+	 */
+	static String EXCEL03 = "xls";
 
 	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+
 		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
 			String extension = fileName.substring(dotIndex + 1);
 			try {
-				if (FileUtil.EXCEL03.equals(extension)) {
+				if (EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
 					return loadExcelFile(book, fileName, resource, resourceId);
-				} else if (FileUtil.EXCEL07.equals(extension)) {
+				} else if (EXCEL07.equals(extension)) {
 					book = new XSSFWorkbook(new FileInputStream(file));
 					return loadExcelFile(book, fileName, resource, resourceId);
 				} else {
-					ShadowLogger.errorPrintln(fileName + " is not excel file");
-					return null;
+					PreconditionUtil.checkState(false, fileName + " is not excel file");
 				}
 			} catch (Exception e) {
-				ResourceLogger.loadResourceException(fileName, e.getMessage());
-				return null;
+				PreconditionUtil.checkState(false, "load " + fileName + " catch exception " + e.getMessage());
 			}
 
 		}
+		PreconditionUtil.checkState(false, fileName + " is not excel file");
 		return null;
 	}
 
 	@Override
-	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
-		return loadResourceWithResourceId(resource, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.EXCEL_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
-		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceIdValue),
+				"argument resourceIdValue is null or empty");
+
 		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
 			String extension = fileName.substring(dotIndex + 1);
 			try {
-				if (FileUtil.EXCEL03.equals(extension)) {
+				if (EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
 					return loadExcelElement(book, fileName, resource, resourceId, resourceIdValue);
-				} else if (FileUtil.EXCEL07.equals(extension)) {
+				} else if (EXCEL07.equals(extension)) {
 					book = new XSSFWorkbook(new FileInputStream(file));
 					return loadExcelElement(book, fileName, resource, resourceId, resourceIdValue);
 				} else {
-					ShadowLogger.errorPrintln(fileName + " is not excel file");
-					return null;
+					PreconditionUtil.checkState(false, fileName + " is not excel file");
 				}
 			} catch (Exception e) {
-				ResourceLogger.loadResourceException(fileName, e.getMessage());
-				return null;
+				PreconditionUtil.checkState(false, "load " + fileName + " catch exception " + e.getMessage());
 			}
 
 		}
+		PreconditionUtil.checkState(false, fileName + " is not excel file");
 		return null;
 	}
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+
 		File file = FileUtil.getExistFile(fileName);
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex != -1) {
 			Workbook book = null;
 			String extension = fileName.substring(dotIndex + 1);
 			try {
-				if (FileUtil.EXCEL03.equals(extension)) {
+				if (EXCEL03.equals(extension)) {
 					book = new HSSFWorkbook(new FileInputStream(file));
 					return loadExcelDatas(book, fileName);
-				} else if (FileUtil.EXCEL07.equals(extension)) {
+				} else if (EXCEL07.equals(extension)) {
 					book = new XSSFWorkbook(new FileInputStream(file));
 					return loadExcelDatas(book, fileName);
 				} else {
-					ShadowLogger.errorPrintln(fileName + " is not excel file");
-					return null;
+					PreconditionUtil.checkState(false, fileName + " is not excel file");
 				}
 			} catch (Exception e) {
-				ResourceLogger.loadResourceException(fileName, e.getMessage());
-				return null;
+				PreconditionUtil.checkState(false, "load " + fileName + " catch exception " + e.getMessage());
 			}
-
 		}
+		PreconditionUtil.checkState(false, fileName + " is not excel file");
 		return null;
 	}
 
@@ -165,10 +135,9 @@ public class ExcelResourceLoader implements IResourceLoader {
 		try {
 			Sheet sheet = book.getSheetAt(0);
 			Row attrnameRow = sheet.getRow(0);
-			if (attrnameRow == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+
+			PreconditionUtil.checkState(attrnameRow != null, fileName + " is not contain segment data");
+
 			String resourceIdValue = null;
 			Map<String, T> resources = new HashMap<>();
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
@@ -182,22 +151,22 @@ public class ExcelResourceLoader implements IResourceLoader {
 					if (dataCell == null) {
 						continue;
 					}
-					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
+					setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
 					if (resourceId.equals(attrnameRow.getCell(j).toString())) {
 						resourceIdValue = getRealValue(dataCell);
-						if (resources.containsKey(resourceIdValue)) {
-							ResourceLogger.resourceContainDeplicateId(fileName, resourceIdValue);
-							return null;
-						}
+
+						PreconditionUtil.checkState(!resources.containsKey(resourceIdValue),
+								fileName + " contain duplicate id:" + resourceIdValue);
+
 						resources.put(resourceIdValue, resourceObject);
 					}
 				}
 			}
 			book.close();
-			ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
+			ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName);
 			return resources;
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		} finally {
 			if (book != null) {
 				try {
@@ -215,10 +184,9 @@ public class ExcelResourceLoader implements IResourceLoader {
 		try {
 			Sheet sheet = book.getSheetAt(0);
 			Row attrnameRow = sheet.getRow(0);
-			if (attrnameRow == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+
+			PreconditionUtil.checkState(attrnameRow != null, fileName + " is not contain segment data");
+
 			int idIndex = -1;
 			for (int i = attrnameRow.getFirstCellNum(); i <= attrnameRow.getLastCellNum(); i++) {
 				Cell attrNameCell = attrnameRow.getCell(i);
@@ -227,10 +195,9 @@ public class ExcelResourceLoader implements IResourceLoader {
 					break;
 				}
 			}
-			if (idIndex == -1) {
-				ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
-				return null;
-			}
+
+			PreconditionUtil.checkState(idIndex != -1,
+					resource.getSimpleName() + " class is not contain segment " + resourceId);
 
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
 				Row dataRow = sheet.getRow(i);
@@ -246,26 +213,26 @@ public class ExcelResourceLoader implements IResourceLoader {
 					if (dataCell == null) {
 						continue;
 					}
-					ResourceLoader.setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
+					setAttr(resourceObject, attrnameRow.getCell(j).toString(), getRealValue(dataCell));
 				}
-				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
+				ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
 				return resourceObject;
 			}
 			book.close();
-			ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
+			ResourceLoaderLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 			return null;
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		} finally {
 			if (book != null) {
 				try {
 					book.close();
 				} catch (IOException e) {
-					ResourceLogger.loadResourceException(fileName, e.getMessage());
+					ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 				}
 			}
 		}
-		ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
+		ResourceLoaderLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 		return null;
 	}
 
@@ -273,10 +240,9 @@ public class ExcelResourceLoader implements IResourceLoader {
 		try {
 			Sheet sheet = book.getSheetAt(0);
 			Row attrnameRow = sheet.getRow(0);
-			if (attrnameRow == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+
+			PreconditionUtil.checkState(attrnameRow != null, fileName + " is not contain segment data");
+
 			List<Map<String, String>> datas = new ArrayList<>();
 			for (int i = sheet.getFirstRowNum() + 2; i <= sheet.getPhysicalNumberOfRows(); i++) {
 				Row dataRow = sheet.getRow(i);
@@ -294,16 +260,16 @@ public class ExcelResourceLoader implements IResourceLoader {
 				datas.add(data);
 			}
 			book.close();
-			ResourceLogger.loadSuccess(fileName);
+			ResourceLoaderLogger.loadSuccess(fileName);
 			return datas;
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		} finally {
 			if (book != null) {
 				try {
 					book.close();
 				} catch (IOException e) {
-					ResourceLogger.loadResourceException(fileName, e.getMessage());
+					ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 				}
 			}
 		}
@@ -321,13 +287,9 @@ public class ExcelResourceLoader implements IResourceLoader {
 		return real;
 	}
 
-	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
-		File file = FileUtil.getExistFile(fileName);
-		if (!ClassUtil.isContainField(resource, resourceId)) {
-			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
-			return null;
-		}
-		return file;
+	@Override
+	public ResourceFmt getResourceFmt() {
+		return ResourceFmt.EXCEL_RES;
 	}
 
 }

@@ -27,11 +27,11 @@ public class LoaderSample {
 		System.out.println(
 				"properties:" + new PropertiesResourceLoader().loadResource("./resource/propertiesSample.cfg"));
 		System.out.println("========================================");
-		System.out.println("csv:" + ResourceLoader.loadAnnotationResources(CsvSample.class));
-		System.out.println("xml:" + ResourceLoader.loadAnnotationResources(XmlSample.class));
-		System.out.println("json:" + ResourceLoader.loadAnnotationResources(JsonSample.class));
-		System.out.println("properties:" + ResourceLoader.loadAnnotationResources(PropertiesSample.class));
-		System.out.println("Excel:" + ResourceLoader.loadAnnotationResources(ExcelSample.class));
+		System.out.println("csv:" + ResourceLoader.loadTemplate(CsvSample.class));
+		System.out.println("xml:" + ResourceLoader.loadTemplate(XmlSample.class));
+		System.out.println("json:" + ResourceLoader.loadTemplate(JsonSample.class));
+		System.out.println("properties:" + ResourceLoader.loadTemplate(PropertiesSample.class));
+		System.out.println("Excel:" + ResourceLoader.loadTemplate(ExcelSample.class));
 		System.out.println("========================================");
 		System.out.println("csv:" + new CsvResourceLoader().loadResource(CsvSample.class, "1"));
 		System.out.println("xml:" + new XmlResourceLoader().loadResource(XmlSample.class, "1"));

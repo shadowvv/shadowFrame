@@ -21,23 +21,8 @@ public class GeneratorCfg extends BaseTemplate {
 	private String toFormat;
 	private String targetDir;
 
-	/**
-	 * 资源转换原始格式
-	 * 
-	 * @return
-	 */
-	public String getFromFormat() {
-		return fromFormat;
-	}
-
-	/**
-	 * 资源转换目标格式
-	 * 
-	 * @return
-	 */
-	public String getToFormat() {
-		return toFormat;
-	}
+	private ResourceFmt fromFmt;
+	private ResourceFmt toFmt;
 
 	/**
 	 * 资源目录
@@ -84,8 +69,34 @@ public class GeneratorCfg extends BaseTemplate {
 		return generatorResource;
 	}
 
+	/**
+	 * 资源转换原始格式
+	 * 
+	 * @return
+	 */
+	public ResourceFmt getFromFmt() {
+		return fromFmt;
+	}
+
+	/**
+	 * 资源转换目标格式
+	 * 
+	 * @return
+	 */
+	public ResourceFmt getToFmt() {
+		return toFmt;
+	}
+
 	@Override
 	public boolean invalid() {
+		fromFmt = ResourceFmt.valueOf(fromFormat);
+		if (fromFmt == null) {
+			return true;
+		}
+		toFmt = ResourceFmt.valueOf(toFormat);
+		if (toFmt == null) {
+			return true;
+		}
 		return false;
 	}
 

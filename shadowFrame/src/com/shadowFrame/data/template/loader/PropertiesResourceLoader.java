@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import com.google.common.base.Strings;
 import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
-import com.shadowFrame.data.template.ResourceLogger;
-import com.shadowFrame.data.template.base.IResourceLoader;
 import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.util.FileUtil;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * 属性资源加载器
@@ -33,17 +33,19 @@ import com.shadowFrame.util.FileUtil;
  * @author Shadow
  * @version 1.0.0
  */
-public class PropertiesResourceLoader implements IResourceLoader {
+public class PropertiesResourceLoader extends BaseResourceLoader {
 
 	public <T> Map<String, T> loadResources(Class<T> resource) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.PROPERTIES_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+
+		ResourceFmtAnnotation resAnnotation = getFmtAnnotation(resource, getResourceFmt());
 		return loadResourcesFromFile(resource, resAnnotation.fileName());
 	}
 
 	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+
 		File file = FileUtil.getExistFile(fileName);
 		try {
 			ResourceBundle bundle = new PropertyResourceBundle(
@@ -53,15 +55,15 @@ public class PropertiesResourceLoader implements IResourceLoader {
 				T resourceObject = resource.newInstance();
 				while (keys.hasMoreElements()) {
 					String key = (String) keys.nextElement().trim();
-					ResourceLoader.setAttr(resourceObject, key, bundle.getString(key).trim());
+					setAttr(resourceObject, key, bundle.getString(key).trim());
 				}
 				Map<String, T> map = new HashMap<>();
 				map.put(resource.getName(), resourceObject);
-				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
+				ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName);
 				return map;
 			}
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
 		return null;
 	}
@@ -122,6 +124,8 @@ public class PropertiesResourceLoader implements IResourceLoader {
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+
 		File file = FileUtil.getExistFile(fileName);
 		List<Map<String, String>> datas = new ArrayList<>();
 		try {
@@ -138,10 +142,15 @@ public class PropertiesResourceLoader implements IResourceLoader {
 				return datas;
 			}
 		} catch (IOException e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ResourceLogger.loadSuccess(fileName);
+		ResourceLoaderLogger.loadSuccess(fileName);
 		return null;
+	}
+
+	@Override
+	public ResourceFmt getResourceFmt() {
+		return ResourceFmt.PROPERTIES_RES;
 	}
 
 }

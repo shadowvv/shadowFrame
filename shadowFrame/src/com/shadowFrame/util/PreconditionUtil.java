@@ -39,7 +39,7 @@ public class PreconditionUtil {
 	 */
 	public static void checkState(boolean expression, String message) {
 		if (!expression) {
-			ShadowLogger.exceptionPrintln(message);
+			ShadowLogger.logPrintln(message);
 			throw new IllegalStateException(message);
 		}
 	}

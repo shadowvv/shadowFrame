@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.shadowFrame.data.generator.resClassGen.ResClassFileWriter.ResClassFileArchitecture;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
 
 /**
@@ -40,13 +41,12 @@ public class ExcelToClassGenerator {
 	 *            类包
 	 * @param targetDir
 	 *            资源映射类目标目录
-	 * @param fromFMT
+	 * @param fromFmt
 	 *            资源源类型
-	 * @param toFMT
+	 * @param toFmt
 	 *            资源导出类型
 	 */
-	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir, String fromFMT,
-			String toFMT) {
+	public static void generateFromExcel(String resourceDir, String classPackage, String targetDir, ResourceFmt toFmt) {
 		File dir = new File(resourceDir);
 		if (dir == null || !dir.isDirectory()) {
 			ShadowLogger.errorPrintln("generate from " + resourceDir + " is not directory");
@@ -57,7 +57,7 @@ public class ExcelToClassGenerator {
 
 			@Override
 			public boolean accept(File file) {
-				if (file.isFile() && (file.getName().endsWith("." + fromFMT))) {
+				if (file.isFile() && (file.getName().endsWith(".xls") || file.getName().endsWith(".xlsx"))) {
 					return true;
 				}
 				return false;
@@ -65,7 +65,7 @@ public class ExcelToClassGenerator {
 		});
 
 		for (File file : files) {
-			generateFromExcel(file, classPackage, targetDir, toFMT);
+			generateFromExcel(file, classPackage, targetDir, toFmt);
 		}
 	}
 
@@ -78,10 +78,10 @@ public class ExcelToClassGenerator {
 	 *            类包
 	 * @param targetDir
 	 *            资源映射类目标目录
-	 * @param resourceFMT
+	 * @param toFmt
 	 *            资源导出类型
 	 */
-	public static void generateFromExcel(File resourceFile, String classPackage, String targetDir, String resourceFMT) {
+	public static void generateFromExcel(File resourceFile, String classPackage, String targetDir, ResourceFmt toFmt) {
 		File classDir = new File(targetDir);
 		if (classDir == null || !classDir.isDirectory()) {
 			ShadowLogger.errorPrintln("generate to " + targetDir + " is not directory");
@@ -89,28 +89,32 @@ public class ExcelToClassGenerator {
 		}
 
 		Workbook book = null;
+		ResClassFileArchitecture classFile = null;
 		try {
 			if (resourceFile.getName().endsWith(".xls")) {
 				book = new HSSFWorkbook(new FileInputStream(resourceFile));
+				classFile = new ResClassFileArchitecture(
+						resourceFile.getName().substring(0, resourceFile.getName().indexOf('.')), classPackage, "xls",
+						resourceFile.getParent() + File.separator);
 			} else if (resourceFile.getName().endsWith(".xlsx")) {
 				book = new XSSFWorkbook(new FileInputStream(resourceFile));
+				classFile = new ResClassFileArchitecture(
+						resourceFile.getName().substring(0, resourceFile.getName().indexOf('.')), classPackage, "xlsx",
+						resourceFile.getParent() + File.separator);
 			} else {
 				ShadowLogger.errorPrintln(resourceFile + " is not excel file");
 			}
 		} catch (Exception e) {
 			ShadowLogger.errorPrintln("generate class from " + resourceFile + " catch exception:" + e.getMessage());
 		}
-		generateFromExcel(book, resourceFile.getName(), classPackage, targetDir, resourceFMT,
-				resourceFile.getParent() + File.separator);
+		generateFromExcel(book, classFile, targetDir);
 	}
 
-	private static void generateFromExcel(Workbook book, String className, String classPackage, String targetDir,
-			String resourceFMT, String resourceDir) {
-		ResClassFileArchitecture classFile = new ResClassFileArchitecture(
-				className.substring(0, className.indexOf('.')), classPackage, resourceFMT, resourceDir);
+	private static void generateFromExcel(Workbook book, ResClassFileArchitecture classFile, String targetDir) {
+
 		Sheet sheet = book.getSheetAt(0);
 		if (sheet == null || sheet.getLastRowNum() < 3) {
-			ShadowLogger.errorPrintln(resourceDir + className + " format wrong");
+			ShadowLogger.errorPrintln(classFile.getResDir() + classFile.getClassName() + " format wrong");
 			return;
 		}
 		Row fieldRow = sheet.getRow(0);

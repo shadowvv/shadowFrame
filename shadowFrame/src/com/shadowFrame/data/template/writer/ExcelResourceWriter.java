@@ -16,8 +16,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.shadowFrame.data.template.ResourceLogger;
+import com.google.common.base.Strings;
 import com.shadowFrame.data.template.base.IResourceWriter;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * excel格式资源导出器
@@ -31,6 +32,10 @@ public class ExcelResourceWriter implements IResourceWriter {
 
 	@Override
 	public void writeResource(String resourceName, String targetDir, List<Map<String, String>> datas) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceName), "argument resourceName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(targetDir), "argument targetDir is null or empty");
+		PreconditionUtil.checkArgument(datas != null, "argument datas is null");
+		
 		String name = targetDir + File.separator + resourceName + ".xls";
 		File file = new File(name);
 		if (file.exists()) {
@@ -47,9 +52,9 @@ public class ExcelResourceWriter implements IResourceWriter {
 			book.close();
 			output.flush();
 			output.close();
-			ResourceLogger.writeSuccess(name);
+			ResourceWriterLogger.writeSuccess(name);
 		} catch (IOException e) {
-			ResourceLogger.writeResourceException(name, e.getMessage());
+			ResourceWriterLogger.writeResourceException(name, e.getMessage());
 		}
 	}
 

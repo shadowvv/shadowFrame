@@ -5,14 +5,8 @@ import java.io.FileFilter;
 import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.data.template.loader.ExcelResourceLoader;
-import com.shadowFrame.data.template.writer.CsvResourceWriter;
-import com.shadowFrame.data.template.writer.ExcelResourceWriter;
-import com.shadowFrame.data.template.writer.JsonResourceWriter;
-import com.shadowFrame.data.template.writer.PropertiesResourceWriter;
-import com.shadowFrame.data.template.writer.XmlResourceWriter;
+import com.shadowFrame.data.template.base.ResourceFmt;
 import com.shadowFrame.log.ShadowLogger;
-import com.shadowFrame.util.FileUtil;
 
 /**
  * 资源格式转换器
@@ -38,7 +32,7 @@ public class ResourceFormatConverter {
 	 * @param toFmt
 	 *            导出格式
 	 */
-	public static void generateResource(String resourceDir, String targetDir, String fromFmt, String toFmt) {
+	public static void generateResource(String resourceDir, String targetDir, ResourceFmt fromFmt, ResourceFmt toFmt) {
 		if (fromFmt.equals(toFmt)) {
 			ShadowLogger.logPrintln("resoruce from format is same with to format:" + fromFmt);
 			return;
@@ -61,40 +55,41 @@ public class ResourceFormatConverter {
 
 			@Override
 			public boolean accept(File file) {
-				if (file.isFile() && (file.getName().endsWith("." + fromFmt))) {
+				if (file.isFile() && (file.getName().contains("." + getResourceFmt(fromFmt)))) {
 					return true;
 				}
 				return false;
 			}
 		});
 		for (File file : files) {
-			List<Map<String, String>> datas = null;
-			if (FileUtil.isExcelFile(fromFmt)) {
-				datas = new ExcelResourceLoader().loadResource(file.getPath());
-			} else {
-				ShadowLogger.errorPrintln("converte resource from format:" + fromFmt + " is not supported");
-				return;
-			}
-
-			if (FileUtil.isExcelFile(toFmt)) {
-				new ExcelResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
-						targetDirT, datas);
-			} else if ("csv".equals(toFmt)) {
-				new CsvResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
-						targetDirT, datas);
-			} else if ("xml".equals(toFmt)) {
-				new XmlResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
-						targetDirT, datas);
-			} else if ("cfg".equals(toFmt)) {
-				new PropertiesResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
-						targetDirT, datas);
-			} else if ("json".equals(toFmt)) {
-				new JsonResourceWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")),
-						targetDirT, datas);
-			} else {
-				ShadowLogger.errorPrintln("converte resource to format:" + toFmt + " is not supported");
-			}
+			List<Map<String, String>> datas = fromFmt.getLoader().loadResource(file.getPath());
+			toFmt.getWriter().writeResource(file.getName().substring(0, file.getName().indexOf(".")), targetDirT,
+					datas);
 		}
 
+	}
+	
+	private static String getResourceFmt(ResourceFmt toFmt) {
+		String fmt = null;
+		switch (toFmt) {
+		case EXCEL_RES:
+			fmt = "xls";
+			break;
+		case CSV_RES:
+			fmt = "csv";
+			break;
+		case PROPERTIES_RES:
+			fmt = "cfg";
+			break;
+		case XML_RES:
+			fmt = "xml";
+			break;
+		case JSON_RES:
+			fmt = "json";
+			break;
+		default:
+			break;
+		}
+		return fmt;
 	}
 }

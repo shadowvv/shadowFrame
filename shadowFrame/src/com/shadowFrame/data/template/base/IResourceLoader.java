@@ -23,7 +23,7 @@ public interface IResourceLoader {
 	 * 
 	 * @param resource
 	 *            资源映射类
-	 * @return 资源map,加载失败返回null
+	 * @return 资源map
 	 */
 	public abstract <T> Map<String, T> loadResources(Class<T> resource);
 
@@ -36,7 +36,7 @@ public interface IResourceLoader {
 	 *            资源映射类
 	 * @param fileName
 	 *            资源名
-	 * @return 资源map,加载失败返回null
+	 * @return 资源map
 	 */
 	public abstract <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName);
 
@@ -49,7 +49,7 @@ public interface IResourceLoader {
 	 *            资源映射类
 	 * @param resourceId
 	 *            资源键
-	 * @return 资源map,加载失败返回null
+	 * @return 资源map
 	 */
 	public abstract <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId);
 
@@ -62,7 +62,7 @@ public interface IResourceLoader {
 	 *            资源名
 	 * @param resourceId
 	 *            资源Id名
-	 * @return 资源map,加载失败返回null
+	 * @return 资源map
 	 */
 	public abstract <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId);
 
@@ -77,7 +77,7 @@ public interface IResourceLoader {
 	 *            资源映射类
 	 * @param resourceIdValue
 	 *            资源键值
-	 * @return 资源，加载失败返回null
+	 * @return 资源,没找到返回null
 	 */
 	public abstract <T> T loadResource(Class<T> resource, String resourceIdValue);
 
@@ -92,7 +92,7 @@ public interface IResourceLoader {
 	 *            资源名
 	 * @param resourceIdValue
 	 *            资源键值
-	 * @return 资源，加载失败返回null
+	 * @return 资源,没找到返回null
 	 */
 	public abstract <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue);
 
@@ -107,7 +107,7 @@ public interface IResourceLoader {
 	 *            资源键
 	 * @param resourceIdValue
 	 *            资源键值
-	 * @return 资源，加载失败返回null
+	 * @return 资源,没找到返回null
 	 */
 	public abstract <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue);
 
@@ -122,7 +122,7 @@ public interface IResourceLoader {
 	 *            资源键
 	 * @param resourceIdValue
 	 *            资源键值
-	 * @return 资源，加载失败返回null
+	 * @return 资源,没找到返回null
 	 */
 	public abstract <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue);
 

@@ -9,12 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
-import com.shadowFrame.data.template.ResourceLogger;
-import com.shadowFrame.data.template.base.IResourceLoader;
+import com.google.common.base.Strings;
 import com.shadowFrame.data.template.base.ResourceFmt;
-import com.shadowFrame.util.ClassUtil;
-import com.shadowFrame.util.FileUtil;
+import com.shadowFrame.util.PreconditionUtil;
 
 /**
  * csv格式资源加载器
@@ -31,45 +28,25 @@ import com.shadowFrame.util.FileUtil;
  * @version 1.0.0
  *
  */
-public class CsvResourceLoader implements IResourceLoader {
+public class CsvResourceLoader extends BaseResourceLoader {
 
 	static String CSV_SEPERATOR = ",";
 
 	@Override
-	public <T> Map<String, T> loadResources(Class<T> resource) {
-		return loadResourcesWithResourceId(resource, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesWithResourceId(Class<T> resource, String resourceId) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.CSV_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResources(resource, resAnnotation.fileName(), resourceId);
-	}
-
-	@Override
-	public <T> Map<String, T> loadResourcesFromFile(Class<T> resource, String fileName) {
-		return loadResources(resource, fileName, ResourceLoader.getIdFieldName(resource));
-	}
-
-	@Override
 	public <T> Map<String, T> loadResources(Class<T> resource, String fileName, String resourceId) {
-		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+
 		Map<String, T> resources = new HashMap<>();
 		try {
 			String resourceIdValue = null;
 			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 			String attrString = reader.readLine();
-			if (attrString == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+
+			PreconditionUtil.checkState(attrString != null, fileName + " is not contain segment data");
+			
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
 			int elementIndex = 1;
 			for (;;) {
@@ -78,20 +55,19 @@ public class CsvResourceLoader implements IResourceLoader {
 					break;
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
-				if (attrNames.length != attrValues.length) {
-					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
-					return null;
-				}
+				
+				PreconditionUtil.checkState(attrNames.length == attrValues.length, fileName + "'s " + elementIndex + "th elemnt attribute is not match with segment");
+
 				T resourceObject = resource.newInstance();
 				int index = 0;
 				for (String name : attrNames) {
-					ResourceLoader.setAttr(resourceObject, name, attrValues[index]);
+					setAttr(resourceObject, name, attrValues[index]);
 					if (resourceId.equals(name)) {
 						resourceIdValue = attrValues[index];
-						if (resources.containsKey(resourceIdValue)) {
-							ResourceLogger.resourceContainDeplicateId(fileName, resourceIdValue);
-							return null;
-						}
+
+						PreconditionUtil.checkState(!resources.containsKey(resourceIdValue),
+								fileName + " contain duplicate id:" + resourceIdValue);
+						
 						resources.put(resourceIdValue, resourceObject);
 					}
 					index++;
@@ -99,45 +75,28 @@ public class CsvResourceLoader implements IResourceLoader {
 				elementIndex++;
 			}
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ResourceLogger.loadSuccess(resource.getSimpleName(), fileName);
+		ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName);
 		return resources;
 	}
 
 	@Override
-	public <T> T loadResource(Class<T> resource, String resourceIdValue) {
-		return loadResourceWithResourceId(resource, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceWithResourceId(Class<T> resource, String resourceId, String resourceIdValue) {
-		ResourceFmtAnnotation resAnnotation = ResourceLoader.getFmtAnnotation(resource, ResourceFmt.CSV_RES);
-		if (resAnnotation == null) {
-			return null;
-		}
-		return loadResource(resource, resAnnotation.fileName(), resourceId, resourceIdValue);
-	}
-
-	@Override
-	public <T> T loadResourceFromFile(Class<T> resource, String fileName, String resourceIdValue) {
-		return loadResource(resource, fileName, ResourceLoader.getIdFieldName(resource), resourceIdValue);
-	}
-
-	@Override
 	public <T> T loadResource(Class<T> resource, String fileName, String resourceId, String resourceIdValue) {
+		PreconditionUtil.checkArgument(resource != null, "argument resource is null");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceId), "argument resourceId is null or empty");
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(resourceIdValue),
+				"argument resourceIdValue is null or empty");
+
 		File file = checkFileFormat(resource, fileName, resourceId);
-		if (file == null) {
-			return null;
-		}
 		try {
 			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 			String attrString = reader.readLine();
-			if (attrString == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+			
+			PreconditionUtil.checkState(attrString != null, fileName + " is not contain segment data");
+			
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
 			int idIndex = -1;
 			for (int i = 0; i < attrNames.length; i++) {
@@ -146,10 +105,9 @@ public class CsvResourceLoader implements IResourceLoader {
 					break;
 				}
 			}
-			if (idIndex == -1) {
-				ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
-				return null;
-			}
+			
+			PreconditionUtil.checkState(idIndex != -1, resource.getSimpleName() + " class is not contain segment " + resourceId);
+
 			int elementIndex = 0;
 			for (;;) {
 				elementIndex++;
@@ -161,37 +119,37 @@ public class CsvResourceLoader implements IResourceLoader {
 				if (!attrValues[idIndex].equals(resourceIdValue)) {
 					continue;
 				}
-				if (attrNames.length != attrValues.length) {
-					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
-					return null;
-				}
+				
+				PreconditionUtil.checkState(attrNames.length == attrValues.length, fileName + "'s " + elementIndex + "th elemnt attribute is not match with segment");
+				
 				T resourceObject = resource.newInstance();
 				int index = 0;
 				for (String name : attrNames) {
-					ResourceLoader.setAttr(resourceObject, name, attrValues[index]);
+					setAttr(resourceObject, name, attrValues[index]);
 					index++;
 				}
-				ResourceLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
+				ResourceLoaderLogger.loadSuccess(resource.getSimpleName(), fileName, resourceIdValue);
 				return resourceObject;
 			}
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
-		ResourceLogger.resourceNotContainIdValue(fileName, resourceIdValue);
+		ResourceLoaderLogger.resourceNotContainIdValue(fileName, resourceIdValue);
 		return null;
 	}
 
 	@Override
 	public List<Map<String, String>> loadResource(String fileName) {
+		PreconditionUtil.checkArgument(!Strings.isNullOrEmpty(fileName), "argument fileName is null or empty");
+		
 		List<Map<String, String>> datas = new ArrayList<>();
 		try {
 			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 			String attrString = reader.readLine();
-			if (attrString == null) {
-				ResourceLogger.resourceNotContainSegments(fileName);
-				return null;
-			}
+			
+			PreconditionUtil.checkState(attrString != null, fileName + " is not contain segment data");
+			
 			String[] attrNames = attrString.split(CSV_SEPERATOR);
 			int elementIndex = 1;
 			for (;;) {
@@ -200,10 +158,9 @@ public class CsvResourceLoader implements IResourceLoader {
 					break;
 				}
 				String[] attrValues = attrValueString.split(CSV_SEPERATOR);
-				if (attrNames.length != attrValues.length) {
-					ResourceLogger.resourceElementNotMatchSegment(fileName, elementIndex);
-					return null;
-				}
+				
+				PreconditionUtil.checkState(attrNames.length == attrValues.length, fileName + "'s " + elementIndex + "th elemnt attribute is not match with segment");
+				
 				int index = 0;
 				Map<String, String> data = new HashMap<>();
 				for (String name : attrNames) {
@@ -213,21 +170,17 @@ public class CsvResourceLoader implements IResourceLoader {
 				datas.add(data);
 				elementIndex++;
 			}
-			ResourceLogger.loadSuccess(fileName);
+			ResourceLoaderLogger.loadSuccess(fileName);
 			return datas;
 		} catch (Exception e) {
-			ResourceLogger.loadResourceException(fileName, e.getMessage());
+			ResourceLoaderLogger.loadResourceException(fileName, e.getMessage());
 		}
 		return datas;
 	}
 
-	private File checkFileFormat(Class<?> resource, String fileName, String resourceId) {
-		File file = FileUtil.getExistFile(fileName);
-		if (!ClassUtil.isContainField(resource, resourceId)) {
-			ResourceLogger.resourceClassNotContainResourceId(resource.getSimpleName(), resourceId);
-			return null;
-		}
-		return file;
+	@Override
+	public ResourceFmt getResourceFmt() {
+		return ResourceFmt.CSV_RES;
 	}
 
 }
