@@ -1,4 +1,4 @@
-package com.shadowFrame.data.cache;
+package com.shadowFrame.cache.base;
 
 /**
  * 资源缓存策略
