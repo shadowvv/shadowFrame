@@ -17,7 +17,7 @@ public interface ICacheIO<T> {
 	 *            资源键
 	 * @return 资源
 	 */
-	public T loadResource(String resourceKey);
+	public T load(String resourceKey);
 
 	/**
 	 * 保存资源
@@ -26,5 +26,5 @@ public interface ICacheIO<T> {
 	 *            资源
 	 * @return
 	 */
-	public boolean saveResource(T resource);
+	public void save(T resource);
 }

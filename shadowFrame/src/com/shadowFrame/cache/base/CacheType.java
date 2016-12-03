@@ -6,7 +6,7 @@ package com.shadowFrame.cache.base;
  * @author Shadow
  * @version 1.0.0
  */
-public enum ResourceCacheType {
+public enum CacheType {
 	/**
 	 * 使用redis缓存
 	 */

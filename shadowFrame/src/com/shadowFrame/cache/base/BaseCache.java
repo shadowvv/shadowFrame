@@ -10,25 +10,41 @@ import java.util.Map;
  * @param <T>
  *            资源映射类
  */
-public abstract class BaseCache<K, T> implements ICache<K, T> {
+public abstract class BaseCache<K, V> implements ICache<K, V> {
+
+	static final int MAX_CAPACITY = 1 << 30;
+	static final int MAX_SEGMENTS = 1 << 16;
+	static final int CONTAINS_VALUE_RETRIES = 3;
+	static final int DRAIN_THRESHOLD = 0x3F;
+	static final int DRAIN_MAX = 16;
+	
+	int segmentMask;
+	int segmentShift;
+	int concurrencyLevel;
+	Segment<K, V>[] segments;
+	
+	public BaseCache() {
+		
+	}
+
 
 	@Override
-	public T get(K key) {
+	public V get(K key) {
 		return null;
 	}
 
 	@Override
-	public Map<K, T> getAll(Iterable<K> keys) {
+	public Map<K, V> getAll(Iterable<K> keys) {
 		return null;
 	}
 
 	@Override
-	public void put(K key, T value) {
+	public void put(K key, V value) {
 
 	}
 
 	@Override
-	public void putAll(Map<K, T> map) {
+	public void putAll(Map<K, V> map) {
 
 	}
 
@@ -48,7 +64,7 @@ public abstract class BaseCache<K, T> implements ICache<K, T> {
 	}
 
 	@Override
-	public Map<K, T> clone() {
+	public Map<K, V> clone() {
 		return null;
 	}
 
