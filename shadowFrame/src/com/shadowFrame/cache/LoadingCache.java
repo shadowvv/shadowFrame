@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.shadowFrame.cache.base.ICache;
 import com.shadowFrame.cache.base.ICacheIO;
+import com.shadowFrame.cache.base.ICondition;
 
 public class LoadingCache<K, V> implements ICache<K, V> {
 
@@ -51,6 +52,36 @@ public class LoadingCache<K, V> implements ICache<K, V> {
 	@Override
 	public Map<K, V> clone() {
 		return null;
+	}
+
+	@Override
+	public void putIfAbsent(K key, V value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeAll(Iterable<K> keys) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void remove(ICondition<V> condition) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean contain(K key) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean containValue(V value) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

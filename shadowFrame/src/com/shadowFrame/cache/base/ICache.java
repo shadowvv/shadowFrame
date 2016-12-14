@@ -39,6 +39,14 @@ public interface ICache<K, V> {
 	public void put(K key, V value);
 
 	/**
+	 * 如果没有缓存则添加
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void putIfAbsent(K key, V value);
+
+	/**
 	 * 批量添加资源
 	 * 
 	 * @param map
@@ -55,6 +63,18 @@ public interface ICache<K, V> {
 	public void remove(K key);
 
 	/**
+	 * 批量移除
+	 * 
+	 * @param keys
+	 */
+	public void removeAll(Iterable<K> keys);
+
+	/**
+	 * 条件移除
+	 */
+	public void remove(ICondition<V> condition);
+
+	/**
 	 * 清空缓存
 	 * 
 	 * @return
@@ -62,16 +82,23 @@ public interface ICache<K, V> {
 	public void clear();
 
 	/**
+	 * 包含
+	 * 
+	 * @param key
+	 */
+	public boolean contain(K key);
+
+	/**
+	 * 包含值
+	 * 
+	 * @param value
+	 */
+	public boolean containValue(V value);
+
+	/**
 	 * 缓存数量
 	 * 
 	 * @return
 	 */
 	public long size();
-
-	/**
-	 * 缓存克隆
-	 * 
-	 * @return
-	 */
-	public Map<K, V> clone();
 }
