@@ -27,6 +27,11 @@ public class ShadowLogger {
 	 */
 	final Logger performanceLOGGER = LoggerFactory.getLogger("Performance");
 
+	/**
+	 * 是否日志
+	 */
+	private static boolean USE_LOG = false;
+	
 	private static ShadowLogger instance;
 
 	private ShadowLogger() {
@@ -47,7 +52,9 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void debugPrintln(String log, Object... params) {
-		getInstance().LOGGER.debug(log, params);
+		if(USE_LOG){
+			getInstance().LOGGER.debug(log, params);
+		}
 	}
 
 	/**
@@ -57,7 +64,9 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void logPrintln(String log, Object... params) {
-		getInstance().LOGGER.info(log, params);
+		if(USE_LOG){
+			getInstance().LOGGER.info(log, params);			
+		}
 	}
 
 	/**
@@ -67,7 +76,9 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void errorPrintln(String log, Object... params) {
-		getInstance().LOGGER.error(log, params);
+		if(USE_LOG){
+			getInstance().LOGGER.error(log, params);			
+		}
 	}
 
 	/**
@@ -77,7 +88,9 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void performancePrintln(String log, Object... params) {
-		getInstance().performanceLOGGER.info(log, params);
+		if(USE_LOG){
+			getInstance().performanceLOGGER.info(log, params);			
+		}
 	}
 
 	/**
@@ -87,7 +100,9 @@ public class ShadowLogger {
 	 * @param params
 	 */
 	public static void exceptionPrintln(String log, Object... params) {
-		getInstance().exceptionLOGGER.info(log, params);
+		if(USE_LOG){
+			getInstance().exceptionLOGGER.info(log, params);			
+		}
 	}
 
 }
