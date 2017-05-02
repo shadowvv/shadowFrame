@@ -32,7 +32,7 @@ public class ResourceFormatConverter {
 	 * @param toFmt
 	 *            导出格式
 	 */
-	public static void generateResource(String resourceDir, String targetDir, ResourceFmt fromFmt, ResourceFmt toFmt) {
+	public static void generateResource(String resourceDir, String targetDir,final ResourceFmt fromFmt,final ResourceFmt toFmt) {
 		if (fromFmt.equals(toFmt)) {
 			ShadowLogger.logPrintln("resoruce from format is same with to format:" + fromFmt);
 			return;

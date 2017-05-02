@@ -26,7 +26,7 @@ public class LockTest {
 		
 		
 		
-		Vector<Integer> vec = new Vector<Integer>();
+		final Vector<Integer> vec = new Vector<Integer>();
 		
 		ExecutorService fixExecutorService = Executors.newFixedThreadPool(5);
 		fixExecutorService.submit(new Runnable() {

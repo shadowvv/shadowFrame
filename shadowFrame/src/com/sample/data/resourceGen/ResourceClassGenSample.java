@@ -10,12 +10,12 @@ import com.shadowFrame.data.generator.ResourceClassAndFmtGen;
  */
 public class ResourceClassGenSample {
 
-	private ResourceClassGenSample() {
-
-	}
-
 	public static void main(String[] args) {
 		ResourceClassAndFmtGen.generate();
+	}
+
+	private ResourceClassGenSample() {
+
 	}
 
 }

@@ -4,7 +4,7 @@ public class WaitTest {
 
 	public static void main(String[] args) throws Exception {
 
-		Object lock = new Object();
+		final Object lock = new Object();
 
 		Thread t = new Thread(new Runnable() {
 			@Override
