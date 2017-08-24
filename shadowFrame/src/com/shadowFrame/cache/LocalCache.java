@@ -55,31 +55,26 @@ public class LocalCache<K, T> implements ICache<K, T> {
 
 	@Override
 	public void putIfAbsent(K key, T value) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void removeAll(Iterable<K> keys) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void remove(ICondition<T> condition) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean contain(K key) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean containValue(T value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
