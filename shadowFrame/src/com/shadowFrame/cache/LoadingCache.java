@@ -56,31 +56,26 @@ public class LoadingCache<K, V> implements ICache<K, V> {
 
 	@Override
 	public void putIfAbsent(K key, V value) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void removeAll(Iterable<K> keys) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void remove(ICondition<V> condition) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean contain(K key) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean containValue(V value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
