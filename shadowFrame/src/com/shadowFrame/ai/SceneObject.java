@@ -44,6 +44,5 @@ public class SceneObject {
 
 	public void stopMove() {
 		// TODO 自动生成的方法存根
-		
 	}
 }
