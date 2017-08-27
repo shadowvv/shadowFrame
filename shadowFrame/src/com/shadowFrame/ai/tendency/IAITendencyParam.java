@@ -1,14 +1,25 @@
 package com.shadowFrame.ai.tendency;
 
-import java.util.List;
-
-import com.shadowFrame.ai.action.IAIAction;
+import com.shadowFrame.ai.action.IAIActionParam;
 import com.shadowFrame.ai.aoiEvent.IAIAOIEvent;
+import com.shadowFrame.ai.threshold.IAIThreshold;
 
 public interface IAITendencyParam {
 	
-	List<IAIAOIEvent> getWaitingEvents();
+	int getTendencyId();
 	
-	IAIAction getNextAction();
+	int getPriorty();
+	
+	int getWeight();
+	
+	IAIThreshold getEnterTendencyThreshold();
+	
+	IAIAOIEvent getEnterTendencyEvent();
+	
+	IAIActionParam getHeadAction();
+	
+	IAIActionParam getMiddleAction();
+	
+	IAIActionParam getTailAction();
 	
 }

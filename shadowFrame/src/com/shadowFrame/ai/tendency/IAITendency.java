@@ -8,7 +8,11 @@ import com.shadowFrame.ai.aoiEvent.IAIAOIEvent;
 
 
 public interface IAITendency {
+	
+	boolean CanEnterTendency(SceneObject self,List<IAIAOIEvent> event,IAITendencyParam param);
 
 	IAIActionParam getNextAction(SceneObject self,List<IAIAOIEvent> event,IAITendencyParam param);
+
+	void stop();
 	
 }

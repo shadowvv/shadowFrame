@@ -15,4 +15,17 @@ public class AIVigilanceTendency implements IAITendency {
 		return null;
 	}
 
+	@Override
+	public boolean CanEnterTendency(SceneObject self, List<IAIAOIEvent> event,
+			IAITendencyParam param) {
+		// TODO 自动生成的方法存根
+		return false;
+	}
+
+	@Override
+	public void stop() {
+		// TODO 自动生成的方法存根
+		
+	}
+
 }
