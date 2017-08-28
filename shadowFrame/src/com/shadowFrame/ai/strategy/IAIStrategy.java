@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.strategy;
 
-import com.shadowFrame.ai.tendency.IAITendency;
+import com.shadowFrame.ai.tendency.IAITendencyParam;
 
 public interface IAIStrategy {
 
@@ -8,8 +8,6 @@ public interface IAIStrategy {
 	
 	int getId();
 
-	IAITendency getTendency();
-	
-	
+	IAITendencyParam getTendency();
 	
 }

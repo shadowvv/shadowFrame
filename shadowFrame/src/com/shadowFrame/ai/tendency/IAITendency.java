@@ -1,12 +1,18 @@
 package com.shadowFrame.ai.tendency;
 
-import com.shadowFrame.ai.IAIAction;
+import java.util.List;
+
 import com.shadowFrame.ai.SceneObject;
+import com.shadowFrame.ai.action.IAIActionParam;
+import com.shadowFrame.ai.aoiEvent.IAIAOIEvent;
+
 
 public interface IAITendency {
+	
+	boolean CanEnterTendency(SceneObject self,List<IAIAOIEvent> event,IAITendencyParam param);
 
-	IAIAction getMoveAction(SceneObject sceneObject);
+	IAIActionParam getNextAction(SceneObject self,List<IAIAOIEvent> event,IAITendencyParam param);
 
-	IAIAction getSkillAction(SceneObject sceneObject);
-
+	void stop();
+	
 }

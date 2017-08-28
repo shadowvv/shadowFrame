@@ -2,7 +2,7 @@ package com.shadowFrame.ai.strategy;
 
 import com.shadowFrame.ai.tendency.IAITendencyParam;
 
-public class AIStopTheWorldStrategy implements IAIStrategy {
+public class AICommonStrategy implements IAIStrategy{
 
 	@Override
 	public String getName() {
