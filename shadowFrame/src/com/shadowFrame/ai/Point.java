@@ -1,5 +1,5 @@
 package com.shadowFrame.ai;
 
-public interface IAOIEvent {
+public class Point {
 
 }

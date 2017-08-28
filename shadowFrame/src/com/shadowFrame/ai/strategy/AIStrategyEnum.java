@@ -1,8 +1,5 @@
-package com.shadowFrame.ai.strategy;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
 
 public enum AIStrategyEnum {
-	vigilance,
-	battle,
-	stopWorld,
-	escape,
+
 }

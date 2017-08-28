@@ -1,12 +1,18 @@
-package com.shadowFrame.ai.tendency;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
 
-import com.shadowFrame.ai.IAIAction;
-import com.shadowFrame.ai.SceneObject;
+import java.util.List;
+
+import com.game2sky.prilib.core.socket.logic.battle.newAi.action.IAIActionParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEventParam;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+
 
 public interface IAITendency {
+	
+	boolean CanEnterTendency(DmcSceneObject self,List<IAIAOIEventParam> event,IAITendencyParam param);
 
-	IAIAction getMoveAction(SceneObject sceneObject);
+	IAIActionParam getNextAction(DmcSceneObject self,List<IAIAOIEventParam> event,IAITendencyParam param, IAIActionParam currentAction);
 
-	IAIAction getSkillAction(SceneObject sceneObject);
-
+	void stop();
+	
 }
