@@ -1,26 +1,21 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi;
+package com.shadowFrame.ai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.game2sky.prilib.core.socket.logic.battle.ai.event.AIEventTypeEnum;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.IAIActionParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIAOIEventParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIAOIEventType;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEvent;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEventParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AICommonStrategy;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStopTheWorldStrategy;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.IAIStrategyParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.IAITendencyParam;
-import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
-import com.game2sky.prilib.core.socket.logic.scene.unit.monster.PhaseEnum;
-import com.game2sky.publib.Globals;
+import com.shadowFrame.ai.action.IAIActionParam;
+import com.shadowFrame.ai.event.AIAOIEventParam;
+import com.shadowFrame.ai.event.AIAOIEventType;
+import com.shadowFrame.ai.event.IAIAOIEvent;
+import com.shadowFrame.ai.event.IAIAOIEventParam;
+import com.shadowFrame.ai.hatred.AIHatredMeter;
+import com.shadowFrame.ai.strategy.AICommonStrategy;
+import com.shadowFrame.ai.strategy.AIStopTheWorldStrategy;
+import com.shadowFrame.ai.strategy.AIStrategyParam;
+import com.shadowFrame.ai.strategy.IAIStrategyParam;
+import com.shadowFrame.ai.tendency.IAITendencyParam;
 
 public class NewAIComponent {
 
@@ -49,7 +44,7 @@ public class NewAIComponent {
 		phaseState = new byte[2];
 
 		hatredMeter = new AIHatredMeter(self);
-		spawnTime = this.self.getSpawnTime() + Globals.getTimeService().now();
+		spawnTime = this.self.getSpawnTime() + 10000;
 
 		StrategyData = new HashMap<PhaseEnum, List<IAIStrategyParam>>();
 		phaseHp = new HashMap<PhaseEnum, Double>();
@@ -68,7 +63,7 @@ public class NewAIComponent {
 		IAIStrategyParam commonStrategy = new AIStrategyParam(new AICommonStrategy(), null, null);
 		strategyList.add(commonStrategy);
 		for (IAITendencyParam tendency : tendencyData) {
-			if (tendency.getEnterTendencyEvent().getEventType().equals(AIEventTypeEnum.ENTERPHASE)) {
+			if (tendency.getEnterTendencyEvent().getEventType().equals(AIAOIEventType.SwitchPhase)) {
 				IAIStrategyParam stopWorldStrategy = new AIStrategyParam(new AIStopTheWorldStrategy(),
 						tendency.getEnterTendencyThreshold(), tendency.getEnterTendencyEvent());
 				stopWorldStrategy.addTendency(tendency);
@@ -88,9 +83,9 @@ public class NewAIComponent {
 	}
 
 	public void tick(long current, long interval) {
-		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < spawnTime) {
-			return;
-		}
+//		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < spawnTime) {
+//			return;
+//		}
 		aoiEventList.add(new AIAOIEventParam(AIAOIEventType.Time, current, AISceneObjectCampType.self));
 		perception();
 	}

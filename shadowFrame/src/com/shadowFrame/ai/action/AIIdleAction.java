@@ -1,7 +1,6 @@
 package com.shadowFrame.ai.action;
 
-import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.DmcSceneObject;
 
 public class AIIdleAction implements IAIAction {
 

@@ -1,11 +1,11 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
+package com.shadowFrame.ai.tendency;
 
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.AITransfer;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.IAIActionParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEventParam;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.AITransfer;
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.action.IAIActionParam;
+import com.shadowFrame.ai.event.IAIAOIEventParam;
 
 public class AIVigilanceTendency implements IAITendency {
 

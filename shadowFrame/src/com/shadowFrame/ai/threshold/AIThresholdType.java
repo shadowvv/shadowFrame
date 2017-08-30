@@ -1,4 +1,4 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.threshold;
+package com.shadowFrame.ai.threshold;
 
 public enum AIThresholdType {
 	

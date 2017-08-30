@@ -1,9 +1,9 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
+package com.shadowFrame.ai.event;
 
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.AISceneObjectCampType;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.AISceneObjectCampType;
+import com.shadowFrame.ai.DmcSceneObject;
 
 public interface IAIAOIEvent {
 	

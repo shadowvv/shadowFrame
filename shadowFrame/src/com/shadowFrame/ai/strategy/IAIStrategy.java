@@ -1,6 +1,6 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
+package com.shadowFrame.ai.strategy;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.IAITendencyParam;
+import com.shadowFrame.ai.tendency.IAITendencyParam;
 
 public interface IAIStrategy {
 

@@ -1,4 +1,4 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi;
+package com.shadowFrame.ai;
 
 public enum AISceneObjectCampType {
 	self,

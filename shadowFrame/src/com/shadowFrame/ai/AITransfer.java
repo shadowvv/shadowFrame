@@ -1,11 +1,10 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi;
+package com.shadowFrame.ai;
 
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEvent;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEventParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.IAIThresholdParam;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.event.IAIAOIEvent;
+import com.shadowFrame.ai.event.IAIAOIEventParam;
+import com.shadowFrame.ai.threshold.IAIThresholdParam;
 
 public class AITransfer {
 

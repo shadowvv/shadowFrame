@@ -1,13 +1,7 @@
 package com.shadowFrame.ai.action;
 
-import com.game2sky.prilib.core.dict.domain.DictCopyEnemy;
-import com.game2sky.prilib.core.socket.logic.battle.ai.AIInternalStaticData;
-import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
-import com.game2sky.publib.Globals;
-import com.game2sky.publib.communication.game.struct.FPoint3;
-import com.game2sky.publib.framework.util.MathUtils;
-import com.game2sky.publib.socket.logic.scene.SceneUtils;
+import com.shadowFrame.ai.DmcSceneObject;
+import com.sun.javafx.scene.SceneUtils;
 
 public class AIRevolutionToObjectAction implements IAIAction{
 

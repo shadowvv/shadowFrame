@@ -1,8 +1,8 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
+package com.shadowFrame.ai.tendency;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.IAIActionParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEventParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.IAIThresholdParam;
+import com.shadowFrame.ai.action.IAIActionParam;
+import com.shadowFrame.ai.event.IAIAOIEventParam;
+import com.shadowFrame.ai.threshold.IAIThresholdParam;
 
 public interface IAITendencyParam {
 	

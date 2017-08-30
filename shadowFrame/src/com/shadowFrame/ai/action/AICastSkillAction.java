@@ -1,5 +1,7 @@
 package com.shadowFrame.ai.action;
 
+import com.shadowFrame.ai.DmcSceneObject;
+
 
 public class AICastSkillAction implements IAIAction{
 

@@ -1,12 +1,12 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.hatred;
+package com.shadowFrame.ai.hatred;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIAOIEvent;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.skill.IAISkillTargetFilter;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.event.IAIAOIEvent;
+import com.shadowFrame.ai.skill.IAISkillTargetFilter;
 
 public class AIHatredMeter {
 

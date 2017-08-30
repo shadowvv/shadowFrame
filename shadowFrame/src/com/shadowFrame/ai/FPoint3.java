@@ -1,5 +1,5 @@
 package com.shadowFrame.ai;
 
-public class Point {
+public class FPoint3 {
 
 }

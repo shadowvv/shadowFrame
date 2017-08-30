@@ -1,9 +1,9 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.skill;
+package com.shadowFrame.ai.skill;
 
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
-import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.hatred.AIHatredMeter;
 
 public interface IAISkillTargetFilter {
 

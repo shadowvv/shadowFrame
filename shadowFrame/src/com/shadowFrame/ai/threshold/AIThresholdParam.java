@@ -1,6 +1,6 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.threshold;
+package com.shadowFrame.ai.threshold;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.AISceneObjectCampType;
+import com.shadowFrame.ai.AISceneObjectCampType;
 
 public class AIThresholdParam implements IAIThresholdParam{
 	

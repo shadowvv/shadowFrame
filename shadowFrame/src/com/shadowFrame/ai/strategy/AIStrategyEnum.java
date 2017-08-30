@@ -1,4 +1,4 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
+package com.shadowFrame.ai.strategy;
 
 public enum AIStrategyEnum {
 
