@@ -1,7 +1,7 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
 /**
- * AI行为原因
+ * AI动作原因
  * @author shadow
  *
  */

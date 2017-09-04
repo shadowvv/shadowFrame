@@ -1,21 +1,20 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import java.util.List;
 
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventEnum;
+import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+
+/**
+ * 待机动作
+ * @author shadow
+ *
+ */
 public class AIIdleAction implements IAIAction {
 
 	@Override
-	public int getActionId() {
-		return AIActionEnum.Idle.getId();
-	}
-
-	@Override
-	public String getActionName() {
-		return AIActionEnum.Idle.getName();
-	}
-
-	@Override
-	public boolean doAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -24,7 +23,7 @@ public class AIIdleAction implements IAIAction {
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
 		if(self.getRoleStateManager().getCurActionState().equals(ActionState.STANDING)){
 			return false;
 		}
@@ -36,8 +35,13 @@ public class AIIdleAction implements IAIAction {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<AOIEventEnum> getStopActionEvent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

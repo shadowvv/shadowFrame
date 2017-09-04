@@ -1,27 +1,60 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
+
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 
 /**
- * AI行为枚举
+ * AI动作枚举
  * @author shadow
  *
  */
 public enum AIActionEnum {
 	
-	Idle(0,"Idle",new AIIdleAction()),
-	MoveToObject(1,"MoveToObject",new AIMoveToObjectAction()),
-	MoveToPoint(2,"MoveToPoint",new AIMoveToPointAction()),
-	TurnToObject(3,"TurnToObject",new AITurnToObjectAction()),
-	TurnToPoint(4,"TurnToPoint",new AITurnToPointAction()),
-	RevolutionToObject(5,"RevolutionToObject",new AIRevolutionToObjectAction()),
-	RevolutionToPoint(6,"RevolutionToPoint",new AIRevolutionToPointAction()),
-	CastSkill(7,"CastSkill",new AICastSkillAction()),
-	Dead(8,"Dead",new AIDeadAction()),
-	
+	/**
+	 * 待机
+	 */
+	Idle(1,"Idle",new AIIdleAction()),
+	/**
+	 * 移动到物体
+	 */
+	MoveToObject(2,"MoveToObject",new AIMoveToObjectAction()),
+	/**
+	 * 移动到点
+	 */
+	MoveToPoint(3,"MoveToPoint",new AIMoveToPointAction()),
+	/**
+	 * 转向到物体
+	 */
+	TurnToObject(4,"TurnToObject",new AITurnToObjectAction()),
+	/**
+	 * 转向到点
+	 */
+	TurnToPoint(5,"TurnToPoint",new AITurnToPointAction()),
+	/**
+	 * 围着物体公转
+	 */
+	RevolutionToObject(6,"RevolutionToObject",new AIRevolutionToObjectAction()),
+	/**
+	 * 围着点公转
+	 */
+	RevolutionToPoint(7,"RevolutionToPoint",new AIRevolutionToPointAction()),
+	/**
+	 * 释放技能
+	 */
+	CastSkill(8,"CastSkill",new AICastSkillAction()),
+	/**
+	 * 死亡
+	 */
+	Dead(9,"Dead",new AIDeadAction()),
 	;
 	
 	private static AIActionEnum[] enums = AIActionEnum.values();
 
+	/**
+	 * 获得动作
+	 * @param id 动作id
+	 * @return
+	 */
 	public static AIActionEnum getAction(int id) {
 		for (AIActionEnum aiEnum : enums) {
 			if (aiEnum.id == id) {
@@ -41,15 +74,35 @@ public enum AIActionEnum {
 		this.action = action;
 	}
 	
-	public IAIAction getAction() {
-		return action;
-	}
-	
+	/**
+	 * 
+	 * @return 动作Id
+	 */
 	public int getId() {
 		return id;
 	}
 	
+	/**
+	 * 
+	 * @return 动作名
+	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * 执行动作
+	 * @param self 执行动作的单位
+	 * @param param 动作参数
+	 */
+	public void doAction(DmcSceneObject self, AOIActionParam param) {
+		action.doAction(self, param);
+	}
+
+	/**
+	 * 停止动作
+	 */
+	public void stop() {
+		action.stop();
 	}
 }

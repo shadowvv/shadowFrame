@@ -1,36 +1,35 @@
-package com.shadowFrame.ai.hatred;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.hatred;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.shadowFrame.ai.DmcSceneObject;
-import com.shadowFrame.ai.event.IAIAOIEvent;
-import com.shadowFrame.ai.skill.IAISkillTargetFilter;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
+/**
+ * 仇恨值统计系统
+ * @author shadow
+ *
+ */
 public class AIHatredMeter {
 
 	private Map<Long, DmcSceneObject> hatredObject;
 	private Map<Long, Integer> hatredMeter;
 	private Map<Long, Long> damageMeter;
-	
-	private DmcSceneObject self;
 
-	public AIHatredMeter(DmcSceneObject self) {
-		this.self = self;
+	public AIHatredMeter() {
 		hatredObject = new HashMap<Long, DmcSceneObject>();
 		hatredMeter = new HashMap<Long, Integer>();
 		damageMeter = new HashMap<Long, Long>();
 	}
-
-	public List<DmcSceneObject> getTarget(IAISkillTargetFilter skillTargetFilter) {
-		return skillTargetFilter.filter(this);
-	}
 	
-	public void onAoiEvent(IAIAOIEvent event){
+	/**
+	 * 
+	 * @param event
+	 */
+	public void onAoiEvent(IAIEvent event){
 		DmcSceneObject source = event.getSource();
 		int value = event.getEventHatredValue();
-		
 		if (hatredObject.containsKey(source.getId())) {
 			value = value + hatredMeter.get(source.getId());
 		} else {

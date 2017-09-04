@@ -1,49 +1,116 @@
-package com.shadowFrame.ai.strategy;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shadowFrame.ai.event.IAIAOIEventParam;
-import com.shadowFrame.ai.tendency.IAITendencyParam;
-import com.shadowFrame.ai.threshold.IAIThresholdParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.AITendencyParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.AIThresholdParam;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
-public class AIStrategyParam implements IAIStrategyParam{
+/**
+ * ai策略参数
+ * @author shadow
+ *
+ */
+public class AIStrategyParam {
 	
-	private IAIStrategy strategy;
-	private IAIThresholdParam threshold;
-	private IAIAOIEventParam event;
-	private List<IAITendencyParam> tendencys;
+	/**
+	 * 策略Id
+	 */
+	private int id;
+	/**
+	 * 进入策略的门槛
+	 */
+	private AIThresholdParam threshold;
+	/**
+	 * 进入策略的事件
+	 */
+	private IAIEvent event;
+	/**
+	 * 策略行为列表
+	 */
+	private List<AITendencyParam> tendencys;
 	
-	public AIStrategyParam(IAIStrategy strategy,IAIThresholdParam threshold,IAIAOIEventParam event) {
-		this.strategy = strategy;
+	/**
+	 * 
+	 * @param id 策略Id
+	 * @param threshold 进入策略门槛
+	 * @param event 进入策略事件
+	 */
+	public AIStrategyParam(int id,AIThresholdParam threshold,IAIEvent event) {
+		this.id = id;
 		this.threshold = threshold;
 		this.event = event;
-		tendencys = new ArrayList<IAITendencyParam>();
+		tendencys = new ArrayList<AITendencyParam>();
+	}
+	
+	/**
+	 * 
+	 * @return 策略Id
+	 */
+	public int getId() {
+		return id;
+	}
+	
+	/**
+	 * 
+	 * @return 策略名
+	 */
+	public String getName(){
+		return AIStrategyEnum.getStrategy(id).getName();
 	}
 
-	@Override
-	public IAIStrategy getStrategy() {
-		return strategy;
-	}
-
-	@Override
-	public IAIThresholdParam getEnterStrategyThreshold() {
+	/**
+	 * 
+	 * @return 进入策略门槛
+	 */
+	public AIThresholdParam getEnterStrategyThreshold() {
 		return threshold;
 	}
 
-	@Override
-	public IAIAOIEventParam getEnterStrategyEvent() {
+	/**
+	 * 
+	 * @return 进入策略事件
+	 */
+	public IAIEvent getEnterStrategyEvent() {
 		return event;
 	}
 
-	@Override
-	public void addTendency(IAITendencyParam tendency) {
+	/**
+	 * 添加策略行为
+	 * @param tendency 行为
+	 */
+	public void addTendency(AITendencyParam tendency) {
 		tendencys.add(tendency);		
 	}
 
-	@Override
-	public List<IAITendencyParam> getTendencyList() {
+	/**
+	 * 
+	 * @return 获得行为列表
+	 */
+	public List<AITendencyParam> getTendencyList() {
 		return tendencys;
+	}
+
+	/**
+	 * 是否可进入策略
+	 * @param self ai物体
+	 * @param aoiEventList 事件列表
+	 * @return
+	 */
+	public boolean CanEnterStrategy(DmcSceneObject self, List<IAIEvent> aoiEventList) {
+		return AIStrategyEnum.getStrategy(id).CanEnterStrategy(self, aoiEventList, this);
+	}
+
+	/**
+	 * 获得ai行为
+	 * @param self ai物体
+	 * @param aoiEventList 事件列表
+	 * @return ai行为
+	 */
+	public AITendencyParam getTendency(DmcSceneObject self, List<IAIEvent> aoiEventList) {
+		return AIStrategyEnum.getStrategy(id).getTendency(self, aoiEventList, this);
 	}
 
 }

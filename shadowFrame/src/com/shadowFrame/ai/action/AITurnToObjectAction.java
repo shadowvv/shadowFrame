@@ -1,22 +1,24 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import com.shadowFrame.ai.DmcSceneObject;
-import com.sun.javafx.scene.SceneUtils;
+import java.util.List;
 
+import com.game2sky.prilib.core.socket.logic.battle.ai.AIInternalStaticData;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventEnum;
+import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.game2sky.publib.Globals;
+import com.game2sky.publib.communication.game.struct.FPoint3;
+import com.game2sky.publib.socket.logic.scene.SceneUtils;
+
+/**
+ * 转向场景物体动作
+ * @author shadow
+ *
+ */
 public class AITurnToObjectAction implements IAIAction {
 
 	@Override
-	public int getActionId() {
-		return AIActionEnum.TurnToObject.getId();
-	}
-
-	@Override
-	public String getActionName() {
-		return AIActionEnum.TurnToObject.getName();
-	}
-
-	@Override
-	public boolean doAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -27,7 +29,7 @@ public class AITurnToObjectAction implements IAIAction {
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
 		DmcSceneObject target = param.getActionTargetObjects().get(0);
 		if (target == null) {
 			return false;
@@ -45,8 +47,13 @@ public class AITurnToObjectAction implements IAIAction {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<AOIEventEnum> getStopActionEvent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

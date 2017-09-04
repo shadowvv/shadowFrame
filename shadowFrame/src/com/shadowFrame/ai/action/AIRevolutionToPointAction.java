@@ -1,35 +1,36 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import java.util.List;
 
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventEnum;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+
+/**
+ * 围绕场景点公转动作
+ * @author shadow
+ *
+ */
 public class AIRevolutionToPointAction implements IAIAction{
 
 	@Override
-	public int getActionId() {
-		return AIActionEnum.RevolutionToPoint.getId();
-	}
-
-	@Override
-	public String getActionName() {
-		return AIActionEnum.RevolutionToPoint.getName();
-	}
-
-	@Override
-	public boolean doAction(DmcSceneObject self, IAIActionParam param) {
-		// TODO Auto-generated method stub
+	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
 		return false;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, IAIActionParam param) {
-		// TODO Auto-generated method stub
+	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
 		return false;
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<AOIEventEnum> getStopActionEvent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

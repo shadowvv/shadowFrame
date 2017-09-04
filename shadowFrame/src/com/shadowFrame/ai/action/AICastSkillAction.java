@@ -1,22 +1,25 @@
-package com.shadowFrame.ai.action;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import java.util.List;
 
+import com.game2sky.prilib.core.dict.domain.DictHeroSkill;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventEnum;
+import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
+import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.game2sky.prilib.core.socket.logic.skill.ActiveSkill;
+import com.game2sky.prilib.core.socket.logic.skill.SkillService;
+import com.game2sky.publib.Globals;
+import com.game2sky.publib.framework.boot.AMFrameWorkBoot;
 
+/**
+ * 释放技能动作
+ * @author shadow
+ *
+ */
 public class AICastSkillAction implements IAIAction{
 
 	@Override
-	public int getActionId() {
-		return AIActionEnum.CastSkill.getId();
-	}
-
-	@Override
-	public String getActionName() {
-		return AIActionEnum.CastSkill.getName();
-	}
-
-	@Override
-	public boolean doAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -29,7 +32,7 @@ public class AICastSkillAction implements IAIAction{
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, IAIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
 		if (!self.getRoleStateManager().canEnter(ActionState.USING_SKILL)) {
 			return false;
 		}
@@ -53,8 +56,13 @@ public class AICastSkillAction implements IAIAction{
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<AOIEventEnum> getStopActionEvent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
