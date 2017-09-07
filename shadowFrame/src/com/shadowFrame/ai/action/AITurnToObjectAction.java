@@ -18,7 +18,7 @@ import com.game2sky.publib.socket.logic.scene.SceneUtils;
 public class AITurnToObjectAction implements IAIAction {
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -29,7 +29,7 @@ public class AITurnToObjectAction implements IAIAction {
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
 		DmcSceneObject target = param.getActionTargetObjects().get(0);
 		if (target == null) {
 			return false;
@@ -52,7 +52,6 @@ public class AITurnToObjectAction implements IAIAction {
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

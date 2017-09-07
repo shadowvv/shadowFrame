@@ -1,9 +1,6 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
 
-import java.util.List;
-
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AOIActionParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 
@@ -80,24 +77,22 @@ public enum AITendencyEnum {
 	/**
 	 * 获得行为的下一个动作
 	 * @param self ai绑定的单位
-	 * @param aoiEventList 事件集合
 	 * @param param 行为参数
 	 * @param currentAction 当前动作
 	 * @return 下一个动作
 	 */
-	public AOIActionParam getNextAction(DmcSceneObject self, List<IAIEvent> aoiEventList, AITendencyParam param, AOIActionParam currentAction) {
-		return tendency.getNextAction(self, aoiEventList, param, currentAction);
+	public AIActionParam getNextAction(DmcSceneObject self, AITendencyParam param, AIActionParam currentAction) {
+		return tendency.getNextAction(self, param, currentAction);
 	}
 
 	/**
 	 * 是否可进入行为
 	 * @param self ai绑定的单位
-	 * @param aoiEventList 事件集合
 	 * @param param 行为参数
 	 * @return
 	 */
-	public boolean CanEnterTendency(DmcSceneObject self, List<IAIEvent> aoiEventList, AITendencyParam param) {
-		return tendency.CanEnterTendency(self, aoiEventList, param);
+	public boolean CanEnterTendency(DmcSceneObject self, AITendencyParam param) {
+		return tendency.CanEnterTendency(self, param);
 	}
 	
 }

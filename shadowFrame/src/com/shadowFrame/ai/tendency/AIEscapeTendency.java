@@ -7,4 +7,9 @@ package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
  */
 public class AIEscapeTendency extends AbstractAITendency {
 
+	@Override
+	public void stop() {
+		
+	}
+
 }

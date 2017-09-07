@@ -18,7 +18,7 @@ public interface IAIAction {
 	 * @param param 动作参数
 	 * @return 执行动作成功
 	 */
-	boolean doAction(DmcSceneObject self,AOIActionParam param);
+	boolean doAction(DmcSceneObject self,AIActionParam param);
 
 	/**
 	 * 是否可以执行动作
@@ -26,7 +26,7 @@ public interface IAIAction {
 	 * @param param 动作参数
 	 * @return
 	 */
-	boolean checkAction(DmcSceneObject self,AOIActionParam param);
+	boolean checkAction(DmcSceneObject self,AIActionParam param);
 
 	/**
 	 * 停止动作

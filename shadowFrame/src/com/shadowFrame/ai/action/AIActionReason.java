@@ -6,5 +6,6 @@ package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
  *
  */
 public enum AIActionReason {
+	Init, chaseObject, Create, Common
 	
 }

@@ -19,24 +19,28 @@ import com.game2sky.publib.framework.boot.AMFrameWorkBoot;
 public class AICastSkillAction implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
-		int skillId = self.getSkillId();
+		int skillId = 102001;//self.getSkillId();
 		long now = Globals.getTimeService().now();
 		self.getController().getComponentRoleSkill().initPrepareSkill(DictHeroSkill.getDictHeroSkill(skillId).getKind(), now);
 		SkillService service = AMFrameWorkBoot.getBean(SkillService.class);
-		service.useSkill(self, skillId, param.getActionTargetObjects().get(0));
+		service.useSkill(self, skillId, null);
+		param.setFirstAction(false);
 		return true;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+		if(!param.isFirstDo()){
+			return false;
+		}
 		if (!self.getRoleStateManager().canEnter(ActionState.USING_SKILL)) {
 			return false;
 		}
-		int skillId = Integer.parseInt(param.getParam());
+		int skillId = 102001;//Integer.parseInt(param.getParam());
 		if(skillId == 0){
 			return false;
 		}
@@ -61,7 +65,6 @@ public class AICastSkillAction implements IAIAction{
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

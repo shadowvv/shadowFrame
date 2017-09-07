@@ -14,19 +14,19 @@ public enum AITargetObjectCampEnum {
 	/**
 	 * 自己
 	 */
-	self(1,"self",null),
+	self(1,"self",new AISelfTargetObjectFilter()),
 	/**
 	 * 队友
 	 */
-	team(2,"team",null),
+	team(2,"team",new AITeamTargetObjectFilter()),
 	/**
 	 * 所有敌人
 	 */
-	enemy(3,"enemy",null),
+	enemy(3,"enemy",new AIEnemyTargetObjectFilter()),
 	/**
 	 * 目标
 	 */
-	target(4,"target",null),
+	target(4,"target",new AICommonTargetObjectFilter()),
 	;
 	
 	private static AITargetObjectCampEnum[] enums = AITargetObjectCampEnum.values();

@@ -5,10 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AOIActionParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEventEnum;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyParam;
@@ -38,7 +37,7 @@ public class NewAIComponent {
 	/**
 	 * ai事件收集列表
 	 */
-	private List<IAIEvent> aoiEventList;
+	private List<AIEvent> aiEvents;
 	/**
 	 * ai仇恨管理器
 	 */
@@ -63,7 +62,7 @@ public class NewAIComponent {
 	/**
 	 * 当前动作
 	 */
-	private AOIActionParam currentAction;
+	private AIActionParam currentAction;
 	
 	/**
 	 * ai结附的场景物体
@@ -77,6 +76,10 @@ public class NewAIComponent {
 	 * ai起效时间
 	 */
 	private long aiValidTime;
+	/**
+	 * 时候可以获得下一个行为
+	 */
+	private boolean canGetNextTendency;
 
 	/**
 	 * 
@@ -86,6 +89,8 @@ public class NewAIComponent {
 	public NewAIComponent(DmcSceneObject self, boolean isAiValid) {
 		this.self = self;
 		this.valid = isAiValid;
+		
+		canGetNextTendency = true;
 
 		currentphase = PhaseEnum.OnePhase;
 		phaseState = new byte[2];
@@ -96,11 +101,13 @@ public class NewAIComponent {
 		StrategyData = new HashMap<PhaseEnum, List<AIStrategyParam>>();
 		phaseHp = new HashMap<PhaseEnum, Double>();
 
-		aoiEventList = new ArrayList<IAIEvent>();
+		aiEvents = new ArrayList<AIEvent>();
+		
+		aiEvents.add(AIEvent.CREATE);
 	}
 
 	/**
-	 * 设置ai数据（默认只有一个阶段）
+	 * 设置ai数据（只设置一阶段）
 	 * @param tendencyData ai数据
 	 */
 	public void setCommonAIData(List<AITendencyParam> tendencyData) {
@@ -120,26 +127,50 @@ public class NewAIComponent {
 		AIStrategyParam commonStrategy = new AIStrategyParam(AIStrategyEnum.CommonStrategy.getId(), null, null);
 		strategyList.add(commonStrategy);
 		for (AITendencyParam tendency : tendencyData) {
-			if (tendency.getEnterTendencyEvent().getEventType().equals(AIEventEnum.SwitchPhase)) {
-				AIStrategyParam stopWorldStrategy = new AIStrategyParam(AIStrategyEnum.StopTheWorldStrategy.getId(),tendency.getEnterTendencyThreshold(), tendency.getEnterTendencyEvent());
-				stopWorldStrategy.addTendency(tendency);
-				strategyList.add(stopWorldStrategy);
-				continue;
-			}
+//			if (tendency.getEnterTendencyEvents().getEventType().equals(AIEventEnum.SwitchPhase)) {
+//				AIStrategyParam stopWorldStrategy = new AIStrategyParam(AIStrategyEnum.StopTheWorldStrategy.getId(),tendency.getEnterTendencyThresholds(), tendency.getEnterTendencyEvents());
+//				stopWorldStrategy.addTendency(tendency);
+//				strategyList.add(stopWorldStrategy);
+//				continue;
+//			}
 			commonStrategy.addTendency(tendency);
 		}
 
-		StrategyData.put(phase, strategyList);
+		StrategyData.put(phase, strategyList); 
 		phaseHp.put(phase, phaseHpPersent);
 	}
 
 	/**
-	 * 
+	 * 发生事件
 	 * @param event 事件
 	 */
-	public void onAoiActionEvent(IAIEvent event) {
+	public void onAoiActionEvent(AIEvent event) {
 		hatredMeter.onAoiEvent(event);
-		aoiEventList.add(event);
+		aiEvents.add(event);
+	}
+	
+	/**
+	 * 
+	 * @return 仇恨列表数量
+	 */
+	public int getHatredListSize() {
+		return hatredMeter.getSize();
+	}
+	
+	/**
+	 * 
+	 * @return 事件列表
+	 */
+	public List<AIEvent> getAIEvents() {
+		return aiEvents;
+	}
+
+	/**
+	 * 
+	 * @return 仇恨列表里的所有场景物体
+	 */
+	public List<DmcSceneObject> getAllHatredObjects() {
+		return hatredMeter.getAllHatredObjects();
 	}
 
 	/**
@@ -151,17 +182,22 @@ public class NewAIComponent {
 		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
 			return;
 		}
-		aoiEventList.add(new AIEvent(AIEventEnum.Time, current, AITargetObjectCampEnum.self));
+		aiEvents.add(new AIEvent(AIEventEnum.Time, current, AITargetObjectCampEnum.self,self));
 		perception();
 	}
 
 	private void perception() {
 		
+		if(StrategyData.size() == 0){
+			aiEvents.clear();
+			return;
+		}
+		
 		//获得策略
 		AIStrategyParam nextStrategy = null;
 		for (AIStrategyParam strategyParam : StrategyData.get(currentphase)) {
 			if (!strategyParam.equals(currentStrategy)) {
-				if(strategyParam.CanEnterStrategy(self, aoiEventList)){
+				if(strategyParam.CanEnterStrategy(self)){
 					nextStrategy = strategyParam;
 					break;
 				}
@@ -180,19 +216,37 @@ public class NewAIComponent {
 		}
 		
 		//获得行为
-		if (currentTendency == null) {
-			currentTendency = currentStrategy.getTendency(self, aoiEventList);
+		AITendencyParam nextTendency = null;
+		if (currentTendency == null || canGetNextTendency) {
+			nextTendency = currentStrategy.getTendency(self);
+			if(nextTendency != null){
+				currentTendency = nextTendency;
+				canGetNextTendency = false;
+				currentAction = null;
+			}
 		}
 		if(currentTendency == null){
-			return;
+			aiEvents.clear();
+			return; 
 		}
 		
 		//获得动作
-		currentAction = currentTendency.getNextAction(self, aoiEventList,currentAction);
-		if (currentAction == null) {
-			currentTendency = null;
+		AIActionParam nextAction = currentTendency.getNextAction(self,currentAction);
+		if (nextAction == null) {
+			canGetNextTendency = true;
 		} else {
-			currentAction.doAction(self);
+			currentAction = nextAction;
 		}
+		if(currentAction != null){
+			currentAction.doAction(self);			
+		}
+		
+		aiEvents.clear();
+//		System.out.println("***************"+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName());
 	}
+
+	public DmcSceneObject getCommonTarget() {
+		return hatredMeter.getCommonTarget();
+	}
+
 }

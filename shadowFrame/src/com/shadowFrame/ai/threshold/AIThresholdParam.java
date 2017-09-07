@@ -12,9 +12,15 @@ import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
  */
 public class AIThresholdParam {
 	
+	/**
+	 * 无门槛
+	 */
+	public static final AIThresholdParam EMPTY_THRESHOLD = new AIThresholdParam(AIThresholdEnum.Empty.getId(), 0, AITargetObjectCampEnum.self.getId(),0);
+	
 	private int id;
 	private int campType;
 	private double value;
+	private int compareType;
 	
 	/**
 	 * 
@@ -22,10 +28,11 @@ public class AIThresholdParam {
 	 * @param value 门槛值
 	 * @param campType 目标类型
 	 */
-	public AIThresholdParam(int id,double value,int campType) {
+	public AIThresholdParam(int id,double value,int campType,int compareType) {
 		this.id = id;
 		this.campType = campType;
 		this.value = value;
+		this.compareType = compareType;
 	}
 
 	/**
@@ -45,21 +52,21 @@ public class AIThresholdParam {
 	}
 
 	/**
-	 * 
-	 * @param self 获得目标的场景物体
-	 * @return 门槛目标
-	 */
-	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self) {
-		return AITargetObjectCampEnum.getTargetComp(campType).getTargetObjects(self);
-	}
-
-	/**
 	 * 是否过门槛
 	 * @param self ai结附的场景物体
 	 * @return
 	 */
 	public boolean overThreshold(DmcSceneObject self) {
-		return AIThresholdEnum.getThreshold(id).overThreshold(self, this);
+		List<DmcSceneObject> targets = AITargetObjectCampEnum.getTargetComp(campType).getTargetObjects(self);
+		if(targets.size() == 0){
+			return false;
+		}
+		for (DmcSceneObject target : targets) {
+			if(!AIThresholdEnum.getThreshold(id).overThreshold(self,target, value,AIValueCompareEnum.getCompare(compareType))){
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

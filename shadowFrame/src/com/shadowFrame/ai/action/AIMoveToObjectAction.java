@@ -19,18 +19,18 @@ import com.game2sky.publib.socket.logic.scene.SceneUtils;
 public class AIMoveToObjectAction implements IAIAction {
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
-		DmcSceneObject target = param.getActionTargetObjects().get(0);
+		DmcSceneObject target = self.getAiCompnent().getCommonTarget();
 		self.getController().getRoleActionManager().move(target, Globals.getTimeService().now());
 		return false;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
-		DmcSceneObject target = param.getActionTargetObjects().get(0);
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+		DmcSceneObject target = self.getAiCompnent().getCommonTarget();
 		if (target == null) {
 			return false;
 		}
@@ -64,7 +64,6 @@ public class AIMoveToObjectAction implements IAIAction {
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

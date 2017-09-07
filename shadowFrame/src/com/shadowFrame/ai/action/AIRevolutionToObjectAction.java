@@ -20,7 +20,7 @@ import com.game2sky.publib.socket.logic.scene.SceneUtils;
 public class AIRevolutionToObjectAction implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -49,7 +49,7 @@ public class AIRevolutionToObjectAction implements IAIAction{
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
 		DictCopyEnemy config = DictCopyEnemy.getDictCopyEnemy(self.getDictId());
 		if (config == null) {
 			return false;
@@ -78,7 +78,6 @@ public class AIRevolutionToObjectAction implements IAIAction{
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

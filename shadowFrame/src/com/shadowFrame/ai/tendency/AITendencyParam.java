@@ -2,8 +2,8 @@ package com.game2sky.prilib.core.socket.logic.battle.newAi.tendency;
 
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AOIActionParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.AIThresholdParam;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
@@ -17,9 +17,9 @@ public class AITendencyParam {
 	private int id;
 	private int priority;
 	private int weight;
-	private AIThresholdParam threshold;
-	private IAIEvent event;
-	private AOIActionParam firstAction;
+	private List<AIThresholdParam> thresholds;
+	private List<AIEvent> events;
+	private AIActionParam firstAction;
 
 	/**
 	 * 
@@ -30,12 +30,12 @@ public class AITendencyParam {
 	 * @param event 进入行为事件
 	 * @param firstAction 行为第一个动作
 	 */
-	public AITendencyParam(int id,int priority,int weight,AIThresholdParam threshold,IAIEvent event,AOIActionParam firstAction) {
+	public AITendencyParam(int id,int priority,int weight,AIActionParam firstAction) {
 		this.id = id;
 		this.priority = priority;
 		this.weight = weight;
-		this.threshold = threshold;
-		this.event = event;
+		this.thresholds = firstAction.getWaitingThresholds();
+		this.events = firstAction.getWaitingEvents();
 		this.firstAction = firstAction;
 	}
 	
@@ -67,23 +67,23 @@ public class AITendencyParam {
 	 * 
 	 * @return 进入行为门槛
 	 */
-	public AIThresholdParam getEnterTendencyThreshold() {
-		return threshold;
+	public List<AIThresholdParam> getEnterTendencyThresholds() {
+		return thresholds;
 	}
 
 	/**
 	 * 
 	 * @return 进入行为事件
 	 */
-	public IAIEvent getEnterTendencyEvent() {
-		return event;
+	public List<AIEvent> getEnterTendencyEvents() {
+		return events;
 	}
 
 	/**
 	 * 
 	 * @return 行为第一个动作
 	 */
-	public AOIActionParam getFirstAction() {
+	public AIActionParam getFirstAction() {
 		return firstAction;
 	}
 
@@ -101,8 +101,8 @@ public class AITendencyParam {
 	 * @param currentAction 当前动作
 	 * @return 下一个动作
 	 */
-	public AOIActionParam getNextAction(DmcSceneObject self, List<IAIEvent> aoiEventList,AOIActionParam currentAction) {
-		return AITendencyEnum.getTendency(id).getNextAction(self, aoiEventList, this, currentAction);
+	public AIActionParam getNextAction(DmcSceneObject self,AIActionParam currentAction) {
+		return AITendencyEnum.getTendency(id).getNextAction(self, this, currentAction);
 	}
 
 	/**
@@ -111,8 +111,16 @@ public class AITendencyParam {
 	 * @param aoiEventList 事件集合
 	 * @return
 	 */
-	public boolean CanEnterTendency(DmcSceneObject self, List<IAIEvent> aoiEventList) {
-		return AITendencyEnum.getTendency(id).CanEnterTendency(self, aoiEventList, this);
+	public boolean CanEnterTendency(DmcSceneObject self) {
+		return AITendencyEnum.getTendency(id).CanEnterTendency(self, this);
+	}
+
+	/**
+	 * 
+	 * @return 行为名
+	 */
+	public String getName() {
+		return AITendencyEnum.getTendency(id).getName();
 	}
 
 }

@@ -13,12 +13,12 @@ import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 public class AIRevolutionToPointAction implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		return false;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
 		return false;
 	}
 
@@ -29,7 +29,6 @@ public class AIRevolutionToPointAction implements IAIAction{
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

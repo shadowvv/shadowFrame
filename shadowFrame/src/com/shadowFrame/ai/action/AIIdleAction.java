@@ -14,7 +14,7 @@ import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 public class AIIdleAction implements IAIAction {
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -23,7 +23,7 @@ public class AIIdleAction implements IAIAction {
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AOIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
 		if(self.getRoleStateManager().getCurActionState().equals(ActionState.STANDING)){
 			return false;
 		}
@@ -40,7 +40,6 @@ public class AIIdleAction implements IAIAction {
 
 	@Override
 	public List<AOIEventEnum> getStopActionEvent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -95,7 +95,7 @@ public enum AIActionEnum {
 	 * @param self 执行动作的单位
 	 * @param param 动作参数
 	 */
-	public void doAction(DmcSceneObject self, AOIActionParam param) {
+	public void doAction(DmcSceneObject self, AIActionParam param) {
 		action.doAction(self, param);
 	}
 
@@ -104,5 +104,13 @@ public enum AIActionEnum {
 	 */
 	public void stop() {
 		action.stop();
+	}
+
+	/**
+	 * 重置动作参数
+	 * @param aiActionParam
+	 */
+	public void resetParam(AIActionParam aiActionParam) {
+		
 	}
 }

@@ -3,7 +3,7 @@ package com.game2sky.prilib.core.socket.logic.battle.newAi;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.AIThresholdParam;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
@@ -13,41 +13,76 @@ import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
  *
  */
 public class AITransfer {
-
+	
 	/**
-	 * 转换检测
-	 * @param threshold 待检测门槛
-	 * @param event 待接触事件
-	 * @param self 转换的场景物体
-	 * @param aoiEventList 事件列表
+	 * AI切换检测
+	 * @param threshold 待检测门槛,null为要求
+	 * @param event 待检测事件,null为无要求
+	 * @param self ai场景物体 
 	 * @return
 	 */
-	public static boolean transfer(AIThresholdParam threshold, IAIEvent event, DmcSceneObject self, List<IAIEvent> aoiEventList) {
-		List<IAIEvent> list = new ArrayList<IAIEvent>();
+	public static boolean transfer(AIThresholdParam threshold, AIEvent event, DmcSceneObject self) {
+		List<AIEvent> events = new ArrayList<AIEvent>();
 		if(event != null){
-			list.add(event);			
+			events.add(event);			
 		}
-		return transfer(threshold, list, self, aoiEventList);
+		List<AIThresholdParam> thresholds = new ArrayList<AIThresholdParam>();
+		if(threshold != null){
+			thresholds.add(threshold);
+		}
+		return transfer(thresholds, events, self);
+	}
+	
+	/**
+	 * AI切换检测
+	 * @param thresholds 待检测门槛,null为要求
+	 * @param event 待检测事件,null为要求
+	 * @param self ai场景物体 
+	 * @return
+	 */
+	public static boolean transfer(List<AIThresholdParam> thresholds, AIEvent event, DmcSceneObject self){
+		List<AIEvent> events = new ArrayList<AIEvent>();
+		if(event != null){
+			events.add(event);			
+		}
+		return transfer(thresholds, events, self);
 	}
 
 	/**
-	 * 转换检测
-	 * @param threshold 待检测门槛
-	 * @param event 待接触事件
-	 * @param self 转换的场景物体
-	 * @param aoiEventList 事件列表
+	 * AI切换检测
+	 * @param threshold 待检测门槛,null为要求
+	 * @param events 待检测事件,null为要求
+	 * @param self ai场景物体 
 	 * @return
 	 */
-	public static boolean transfer(AIThresholdParam threshold, List<IAIEvent> event, DmcSceneObject self,List<IAIEvent> aoiEventList) {
-		if(threshold == null && event.size() == 0){
+	public static boolean transfer(AIThresholdParam threshold, List<AIEvent> events, DmcSceneObject self) {
+		List<AIThresholdParam> thresholds = new ArrayList<AIThresholdParam>();
+		if(threshold != null){
+			thresholds.add(threshold);
+		}
+		return transfer(thresholds, events, self);
+	}
+	
+	/**
+	 * AI切换检测
+	 * @param thresholds 待检测门槛,null为要求
+	 * @param events 待检测事件,null为要求
+	 * @param self ai场景物体 
+	 * @return
+	 */
+	public static boolean transfer(List<AIThresholdParam> thresholds, List<AIEvent> events, DmcSceneObject self){
+		if(thresholds == null && events == null){
 			return true;
 		}
-		if(!threshold.overThreshold(self)){
-			return false;
+		for (AIThresholdParam threshold : thresholds) {
+			if(!threshold.overThreshold(self)){
+				return false;
+			}
 		}
-		for (IAIEvent param : event) {
+
+		for (AIEvent param : events) {
 			boolean match = false;
-			for (IAIEvent aoiEvent : aoiEventList) {
+			for (AIEvent aoiEvent : self.getAIEvents()) {
 				if(param.match(aoiEvent)){
 					match = true;
 					break;

@@ -14,11 +14,11 @@ public class AICommonTargetObjectFilter implements IAITargetObjectFilter{
 
 	@Override
 	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self) {
-		List<DmcSceneObject> list = new ArrayList<DmcSceneObject>();
-		if(self.getTarget() != null){
-			list.add(self.getTarget());			
+		List<DmcSceneObject> targets = new ArrayList<DmcSceneObject>();
+		if(self.getAiCompnent().getCommonTarget() != null){
+			targets.add(self.getAiCompnent().getCommonTarget());
 		}
-		return list;
+		return targets;
 	}
 	
 }

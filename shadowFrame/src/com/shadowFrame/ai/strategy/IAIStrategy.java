@@ -1,8 +1,5 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
 
-import java.util.List;
-
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IAIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.AITendencyParam;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
@@ -20,7 +17,7 @@ public interface IAIStrategy {
 	 * @param strategyParam 当前策略参数
 	 * @return ai行为
 	 */
-	AITendencyParam getTendency(DmcSceneObject self, List<IAIEvent> aoiEventList, AIStrategyParam strategyParam);
+	AITendencyParam getTendency(DmcSceneObject self, AIStrategyParam strategyParam);
 
 	/**
 	 * 验证是否可进入当前策略
@@ -29,6 +26,6 @@ public interface IAIStrategy {
 	 * @param strategyParam 策略参数
 	 * @return
 	 */
-	boolean CanEnterStrategy(DmcSceneObject self, List<IAIEvent> aoiEventList, AIStrategyParam strategyParam);
+	boolean CanEnterStrategy(DmcSceneObject self, AIStrategyParam strategyParam);
 	
 }
