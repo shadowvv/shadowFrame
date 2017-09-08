@@ -111,4 +111,12 @@ public class AIStrategyParam {
 		return AIStrategyEnum.getStrategy(id).getTendency(self, this);
 	}
 
+	public boolean isOver(DmcSceneObject self, List<AIEvent> aiEvents) {
+		return true;
+	}
+
+	public void reset() {
+		
+	}
+
 }

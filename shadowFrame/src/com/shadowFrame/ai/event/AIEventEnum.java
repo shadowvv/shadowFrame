@@ -38,6 +38,10 @@ public enum AIEventEnum {
 	 * 创建
 	 */
 	Create(7),
+	/**
+	 * 使用技能结束
+	 */
+	finishSkill(8),
 	;
 	
 	private int id;

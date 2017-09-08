@@ -123,4 +123,13 @@ public class AITendencyParam {
 		return AITendencyEnum.getTendency(id).getName();
 	}
 
+	public boolean isOver(DmcSceneObject self, List<AIEvent> aiEvents) {
+		return false;
+	}
+
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

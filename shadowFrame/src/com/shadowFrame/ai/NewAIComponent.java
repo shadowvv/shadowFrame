@@ -127,12 +127,6 @@ public class NewAIComponent {
 		AIStrategyParam commonStrategy = new AIStrategyParam(AIStrategyEnum.CommonStrategy.getId(), null, null);
 		strategyList.add(commonStrategy);
 		for (AITendencyParam tendency : tendencyData) {
-//			if (tendency.getEnterTendencyEvents().getEventType().equals(AIEventEnum.SwitchPhase)) {
-//				AIStrategyParam stopWorldStrategy = new AIStrategyParam(AIStrategyEnum.StopTheWorldStrategy.getId(),tendency.getEnterTendencyThresholds(), tendency.getEnterTendencyEvents());
-//				stopWorldStrategy.addTendency(tendency);
-//				strategyList.add(stopWorldStrategy);
-//				continue;
-//			}
 			commonStrategy.addTendency(tendency);
 		}
 
@@ -193,56 +187,57 @@ public class NewAIComponent {
 			return;
 		}
 		
-		//获得策略
-		AIStrategyParam nextStrategy = null;
-		for (AIStrategyParam strategyParam : StrategyData.get(currentphase)) {
-			if (!strategyParam.equals(currentStrategy)) {
+		if(currentStrategy == null || currentStrategy.isOver(self,aiEvents)){
+			for (AIStrategyParam strategyParam : StrategyData.get(currentphase)) {
 				if(strategyParam.CanEnterStrategy(self)){
-					nextStrategy = strategyParam;
+					currentStrategy = strategyParam;
+					currentStrategy.reset();
+					canGetNextTendency = true;
 					break;
 				}
 			}
 		}
-		if (nextStrategy != null) {
-			currentStrategy = nextStrategy;
+
+		if(currentTendency == null || currentTendency.isOver(self,aiEvents)){
+			canGetNextTendency = true;
+		}
+		
+		if(canGetNextTendency){
 			if (currentTendency != null) {
 				currentTendency.stop();
-				currentTendency = null;
 			}
 			if(currentAction != null){
 				currentAction.stop();
-				currentAction = null;
 			}
-		}
-		
-		//获得行为
-		AITendencyParam nextTendency = null;
-		if (currentTendency == null || canGetNextTendency) {
+			AITendencyParam nextTendency = null;
 			nextTendency = currentStrategy.getTendency(self);
 			if(nextTendency != null){
 				currentTendency = nextTendency;
+				currentTendency.reset();
 				canGetNextTendency = false;
 				currentAction = null;
 			}
 		}
-		if(currentTendency == null){
-			aiEvents.clear();
-			return; 
+
+		if(currentAction == null || currentAction.isOver(self,aiEvents)){
+			AIActionParam nextAction = currentTendency.getNextAction(self,currentAction);
+			if (nextAction == null) {
+				canGetNextTendency = true;
+			} else {
+				currentAction = nextAction;
+			}
 		}
 		
-		//获得动作
-		AIActionParam nextAction = currentTendency.getNextAction(self,currentAction);
-		if (nextAction == null) {
-			canGetNextTendency = true;
-		} else {
-			currentAction = nextAction;
-		}
 		if(currentAction != null){
-			currentAction.doAction(self);			
+			currentAction.doAction(self);
+			AIActionParam middleAction = currentAction.getMiddleAction(self,aiEvents);
+			if(middleAction != null){
+				middleAction.doAction(self);
+			}
 		}
-		
+
 		aiEvents.clear();
-//		System.out.println("***************"+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName());
+		System.out.println("***************"+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName());
 	}
 
 	public DmcSceneObject getCommonTarget() {

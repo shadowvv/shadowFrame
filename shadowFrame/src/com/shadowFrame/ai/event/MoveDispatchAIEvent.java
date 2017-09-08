@@ -10,7 +10,7 @@ import com.game2sky.publib.socket.logic.scene.SceneUtils;
  * @author shadow
  *
  */
-public class MoveDispatchAIEvent implements IDispatchAIEvent{
+public class MoveDispatchAIEvent implements IAOI2AIEvent{
 
 	@Override
 	public void dispatchAIEvent(AOIEvent aoiEvent) {

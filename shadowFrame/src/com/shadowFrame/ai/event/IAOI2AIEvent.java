@@ -1,14 +1,15 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
 
 /**
- * 讲aoi事件转换为ai事件并广播
+ * 讲aoi事件转换为ai事件
  * @author shadow
  *
  */
-public interface IDispatchAIEvent {
-	
+public interface IAOI2AIEvent {
+
 	/**
-	 * 广播ai事件
+	 * 派发ai事件
+	 * @param aoiEvent
 	 */
 	void dispatchAIEvent(AOIEvent aoiEvent);
 	

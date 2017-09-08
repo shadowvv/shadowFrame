@@ -1,5 +1,6 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
 
+
 /**
  * 事件类型枚举
  * @author shadow
@@ -37,15 +38,15 @@ public enum AOIEventEnum {
 	ReboundAttack(new ReboundAttackDispatchAIEvent()),
 	;
 	
-	private IDispatchAIEvent dispatcher;
+	private IAOI2AIEvent dispatcher;
 	
-	private AOIEventEnum(IDispatchAIEvent dispatcher) {
+	private AOIEventEnum(IAOI2AIEvent dispatcher) {
 		this.dispatcher = dispatcher;
 	}
 
 	/**
-	 * 
-	 * @param aoiEvent 转换为ai事件
+	 * 派发事件
+	 * @param aoiEvent aoi事件
 	 */
 	public void dispatchAIEvent(AOIEvent aoiEvent) {
 		dispatcher.dispatchAIEvent(aoiEvent);

@@ -136,4 +136,14 @@ public class AIActionParam {
 		return AIActionEnum.getAction(id).getName();
 	}
 
+	public boolean isOver(DmcSceneObject self, List<AIEvent> aiEvents) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public AIActionParam getMiddleAction(DmcSceneObject self, List<AIEvent> aiEvents) {
+		
+		return null;
+	}
+
 }
