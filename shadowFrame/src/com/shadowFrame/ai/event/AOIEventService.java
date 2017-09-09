@@ -1,5 +1,7 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
 
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEventEnum;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 import com.game2sky.prilib.core.socket.logic.scene.unit.SceneObjectType;
 import com.game2sky.publib.communication.game.struct.FPoint3;
@@ -15,6 +17,7 @@ public final class AOIEventService {
 
 	/**
 	 * 场景物体移动
+	 * 
 	 * @param source
 	 * @param from
 	 * @param to
@@ -27,6 +30,7 @@ public final class AOIEventService {
 
 	/**
 	 * 场景物体停止移动
+	 * 
 	 * @param source
 	 * @param position
 	 * @param direction
@@ -38,6 +42,7 @@ public final class AOIEventService {
 
 	/**
 	 * 使用技能
+	 * 
 	 * @param source
 	 * @param skillId
 	 */
@@ -49,6 +54,7 @@ public final class AOIEventService {
 
 	/**
 	 * 结算技能伤害
+	 * 
 	 * @param source
 	 * @param target
 	 * @param skillId
@@ -62,53 +68,86 @@ public final class AOIEventService {
 
 	/**
 	 * 添加buff
+	 * 
 	 * @param source
 	 * @param target
 	 * @param buffId
 	 */
 	public static void onSceneObjectAddBuff(DmcSceneObject source, DmcSceneObject target, int buffId) {
 		AOIEvent event = new AOIEvent(AOIEventEnum.AddBuff, source);
-		event.setParam(buffId+"");
+		event.setParam(buffId + "");
 		onSceneObjectEvent(event, source, target);
 	}
 
 	/**
+	 * 结算buff
+	 * 
+	 * @param source
+	 * @param buffId
+	 * @param buffValue
+	 */
+	public static void onSceneObjectBuffTick(DmcSceneObject source, int buffId, int buffValue) {
+		AOIEvent event = new AOIEvent(AOIEventEnum.BuffTick, source);
+		event.setParam(buffId + ":" + buffValue);
+		onSceneObjectEvent(event, source, null);
+	}
+
+	/**
 	 * 移除buff
+	 * 
 	 * @param source
 	 * @param buffId
 	 */
 	public static void onSceneObjectRemoveBuff(DmcSceneObject source, int buffId) {
 		AOIEvent event = new AOIEvent(AOIEventEnum.RemoveBuff, source);
-		event.setParam(buffId+"");
+		event.setParam(buffId + "");
 		onSceneObjectEvent(event, source, null);
 	}
 
 	/**
 	 * 技能释放结束
+	 * 
 	 * @param source
 	 * @param skillId
 	 */
 	public static void onSceneObjectUseSkillFinish(DmcSceneObject source, int skillId) {
 		AOIEvent event = new AOIEvent(AOIEventEnum.FinishSkill, source);
-		event.setParam(skillId+"");
+		event.setParam(skillId + "");
+		onSceneObjectEvent(event, source, null);
+	}
+	
+	/**
+	 * 死亡
+	 * @param source
+	 */
+	public static void onSceneObjectDead(DmcSceneObject source){
+		AOIEvent event = new AOIEvent(AOIEventEnum.Dead, source);
 		onSceneObjectEvent(event, source, null);
 	}
 
 	/**
 	 * 弹刀
+	 * 
 	 * @param source
 	 * @param target
 	 */
 	public static void onSceneObjectReboundAttack(DmcSceneObject source, DmcSceneObject target) {
 		AOIEvent event = new AOIEvent(AOIEventEnum.ReboundAttack, source);
-		onSceneObjectEvent(event, source, null);
+		onSceneObjectEvent(event, source, target);
 	}
 
 	private static void onSceneObjectEvent(AOIEvent event, DmcSceneObject source, DmcSceneObject target) {
-		for (SceneObject object : source.getScene().getSceneController().getAoiManager().getViewSceneObjects(source, SceneObjectType.values())) {
-			if(object instanceof DmcSceneObject){
+		for (SceneObject object : source.getScene().getSceneController().getAoiManager()
+				.getViewSceneObjects(source, SceneObjectType.values())) {
+			if (object instanceof DmcSceneObject) {
+				if (object.equals(source)) {
+					continue;
+				}
+				if (target != null && object.equals(target)) {
+					continue;
+				}
 				DmcSceneObject dmcObject = (DmcSceneObject) object;
-				event.addObserver(dmcObject);				
+				event.addObserver(dmcObject);
 			}
 		}
 		if (target != null) {

@@ -11,17 +11,17 @@ public enum AIEventEnum {
 	 */
 	EmptyEvent(0),
 	/**
-	 * 进入区域
+	 * 进入警戒区域
 	 */
-	Range(1),
+	EnterVigilanceRange(1),
 	/**
-	 * 使用技能中
+	 * 使用技能
 	 */
-	castSkill(2),
+	UseSkill(2),
 	/**
-	 * 被攻击
+	 * 结算技能
 	 */
-	BeHit(3),
+	ReleaseSkill(3),
 	/**
 	 * 心跳
 	 */
@@ -42,6 +42,22 @@ public enum AIEventEnum {
 	 * 使用技能结束
 	 */
 	finishSkill(8),
+	/**
+	 * 添加buff
+	 */
+	AddBuff(9),
+	/**
+	 * 移除buff
+	 */
+	RemoveBuff(10),
+	/**
+	 * buff tick结算
+	 */
+	BuffTick(11),
+	/**
+	 * 死亡
+	 */
+	Dead(12),
 	;
 	
 	private int id;
@@ -56,5 +72,13 @@ public enum AIEventEnum {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	public int getEventHatredValue(AIEvent aiEvent) {
+		return 0;
+	}
+
+	public long getEventDamage() {
+		return 0;
 	}
 }

@@ -1,4 +1,4 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.List;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 /**
- * AOI事件 
+ * AOI事件
+ *  
  * @author shadow
  *
  */
@@ -16,7 +17,7 @@ public class AOIEvent {
 	private String param;
 	private DmcSceneObject source;
 	private List<DmcSceneObject> observers;
-	private List<DmcSceneObject> targets;
+	private DmcSceneObject target;
 	
 	/**
 	 * 
@@ -28,7 +29,6 @@ public class AOIEvent {
 		this.type = type;
 		this.source = source;
 		observers = new ArrayList<DmcSceneObject>();
-		targets = new ArrayList<DmcSceneObject>();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class AOIEvent {
 	 * @param target 事件目标
 	 */
 	public void addTarget(DmcSceneObject target){
-		targets.add(target);
+		this.target = target;
 	}
 
 	/**
@@ -91,8 +91,8 @@ public class AOIEvent {
 	 * 
 	 * @return 事件目标
 	 */
-	public List<DmcSceneObject> getTargets() {
-		return targets;
+	public DmcSceneObject getTarget() {
+		return target;
 	}
 
 	/**

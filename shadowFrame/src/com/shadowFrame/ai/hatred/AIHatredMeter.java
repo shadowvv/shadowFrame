@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEventEnum;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.target.AITargetObjectCampEnum;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 /**
@@ -31,15 +33,42 @@ public class AIHatredMeter {
 	 * @param event 事件
 	 */
 	public void onAoiEvent(AIEvent event){
-		DmcSceneObject source = event.getSource();
-		int value = event.getEventHatredValue();
-		if (hatredObject.containsKey(source.getId())) {
-			value = value + hatredMeter.get(source.getId());
-		} else {
-			hatredObject.put(source.getId(), source);
+		if(event.getEventCampType().equals(AITargetObjectCampEnum.enemy)){
+			DmcSceneObject source = event.getSource();
+			
+			if(event.getEventType().equals(AIEventEnum.Dead)){
+				removeObject(source.getId());
+				return;
+			}
+			if(event.getEventType().equals(AIEventEnum.EnterVigilanceRange)){
+				if(!hatredObject.containsKey(source.getId())){
+					hatredObject.put(source.getId(), source);
+					hatredMeter.put(source.getId(), event.getEventHatredValue());
+					damageMeter.put(source.getId(), 0L);					
+				}
+				return;
+			}
+			if(!hatredObject.containsKey(source.getId())){
+				return;
+			}
+			
+			int value = event.getEventHatredValue() + hatredMeter.get(source.getId());
+			value = value < 0 ? 0 : value;
+			if(value <= 0){
+				removeObject(source.getId());
+				return;
+			}
+			
+			hatredMeter.put(source.getId(), value);
+			long damage = event.getEventDamage() + damageMeter.get(source.getId());
+			damageMeter.put(source.getId(), damage);
 		}
-		value = value < 0 ? 0 : value;
-		hatredMeter.put(source.getId(), value);
+	}
+	
+	private void removeObject(long id){
+		hatredObject.remove(id);
+		hatredMeter.remove(id);
+		damageMeter.remove(id);
 	}
 
 	/**

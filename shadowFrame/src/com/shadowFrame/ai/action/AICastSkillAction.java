@@ -3,7 +3,7 @@ package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 import java.util.List;
 
 import com.game2sky.prilib.core.dict.domain.DictHeroSkill;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventEnum;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEventEnum;
 import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 import com.game2sky.prilib.core.socket.logic.skill.ActiveSkill;

@@ -1,8 +1,11 @@
-package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
+package com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent;
+
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.IDispatchAIEvent;
 
 
 /**
  * 事件类型枚举
+ * 
  * @author shadow
  *
  */
@@ -29,6 +32,10 @@ public enum AOIEventEnum {
 	 */
 	AddBuff(new AddBuffDispatchAIEvent()),
 	/**
+	 * buff tick结算
+	 */
+	BuffTick(new BuffTickDispatchAIEvent()),
+	/**
 	 * 移除buff
 	 */
 	RemoveBuff(new RemoveBuffDispatchAIEvent()),
@@ -36,11 +43,15 @@ public enum AOIEventEnum {
 	 * 弹刀
 	 */
 	ReboundAttack(new ReboundAttackDispatchAIEvent()),
+	/**
+	 * 死亡事件
+	 */
+	Dead(new DeadDispatchAIEvent()),
 	;
 	
-	private IAOI2AIEvent dispatcher;
+	private IDispatchAIEvent dispatcher;
 	
-	private AOIEventEnum(IAOI2AIEvent dispatcher) {
+	private AOIEventEnum(IDispatchAIEvent dispatcher) {
 		this.dispatcher = dispatcher;
 	}
 

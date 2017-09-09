@@ -13,27 +13,27 @@ public class AIEvent {
 	/**
 	 * 空事件
 	 */
-	public static final AIEvent EMPTY_EVENT = new AIEvent(AIEventEnum.EmptyEvent, 0, AITargetObjectCampEnum.self,null);
+	public static final AIEvent EMPTY_EVENT = new AIEvent(AIEventEnum.EmptyEvent, "", AITargetObjectCampEnum.self,null);
 	/**
 	 * 创建物体事件
 	 */
-	public static final AIEvent CREATE = new AIEvent(AIEventEnum.Create, 0, AITargetObjectCampEnum.self,null);
+	public static final AIEvent CREATE = new AIEvent(AIEventEnum.Create, "", AITargetObjectCampEnum.self,null);
 	
 	private AIEventEnum type;
 	private AITargetObjectCampEnum campType;
-	private double value;
+	private String param;
 	private DmcSceneObject source;
 
 	/**
 	 * 
 	 * @param type 事件类型
-	 * @param value 事件参数
+	 * @param param 事件参数
 	 * @param campType 事件目标类型
 	 */
-	public AIEvent(AIEventEnum type,double value,AITargetObjectCampEnum campType,DmcSceneObject source) {
+	public AIEvent(AIEventEnum type,String param,AITargetObjectCampEnum campType,DmcSceneObject source) {
 		this.type = type;
 		this.campType = campType;
-		this.value = value;
+		this.param = param;
 		this.source = source;
 	}
 	
@@ -49,8 +49,8 @@ public class AIEvent {
 	 * 
 	 * @return 事件参数
 	 */
-	public double getEventValue() {
-		return value;
+	public String getEventParam() {
+		return param;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class AIEvent {
 	 * @return 事件仇恨值
 	 */
 	public int getEventHatredValue() {
-		return 0;
+		return type.getEventHatredValue(this);
 	}
 
 	/**
@@ -92,18 +92,14 @@ public class AIEvent {
 		if(!aiEvent.getEventCampType().equals(campType)){
 			return false;
 		}
-		if(aiEvent.getEventValue() == value){
+		if(aiEvent.getEventParam() == param){
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * 设置事件源
-	 * @param source
-	 */
-	public void setSource(DmcSceneObject source) {
-		this.source = source;
+	public Long getEventDamage() {
+		return type.getEventDamage();
 	}
 
 }

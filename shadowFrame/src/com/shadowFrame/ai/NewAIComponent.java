@@ -8,6 +8,7 @@ import java.util.Map;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEventEnum;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventService;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyParam;
@@ -20,6 +21,7 @@ import com.game2sky.publib.Globals;
 
 /**
  * ai模块
+ * 
  * @author shadow
  *
  */
@@ -102,8 +104,6 @@ public class NewAIComponent {
 		phaseHp = new HashMap<PhaseEnum, Double>();
 
 		aiEvents = new ArrayList<AIEvent>();
-		
-		aiEvents.add(AIEvent.CREATE);
 	}
 
 	/**
@@ -132,6 +132,18 @@ public class NewAIComponent {
 
 		StrategyData.put(phase, strategyList); 
 		phaseHp.put(phase, phaseHpPersent);
+		
+		//设置AI规则后，重新发起AI事件
+		aiEvents.add(AIEvent.CREATE);
+		AOIEventService.onSceneObjectMove(self, self.getPos(), self.getPos(), self.getDir());
+	}
+	
+	/**
+	 * 设置ai起效
+	 * @param valid
+	 */
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 	/**
@@ -176,7 +188,7 @@ public class NewAIComponent {
 		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
 			return;
 		}
-		aiEvents.add(new AIEvent(AIEventEnum.Time, current, AITargetObjectCampEnum.self,self));
+		aiEvents.add(new AIEvent(AIEventEnum.Time, current+"", AITargetObjectCampEnum.self,self));
 		perception();
 	}
 
