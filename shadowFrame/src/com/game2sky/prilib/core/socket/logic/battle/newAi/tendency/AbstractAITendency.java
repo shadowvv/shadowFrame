@@ -39,6 +39,9 @@ public abstract class AbstractAITendency implements IAITendency{
 	
 	@Override
 	public boolean isOver(DmcSceneObject self, AITendencyParam param) {
+		if((param.getOverThresholds() == null || param.getOverThresholds().size() == 0) && (param.getOverEvents() == null || param.getOverEvents().size() == 0)){
+			return false;
+		}
 		if (AITransfer.transfer(param.getOverThresholds(), param.getOverEvents(), self)) {
 			return true;
 		}

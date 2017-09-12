@@ -76,6 +76,14 @@ public class AIEvent {
 	public int getEventHatredValue() {
 		return type.getEventHatredValue(this);
 	}
+	
+	/**
+	 * 
+	 * @return 获得事件伤害值
+	 */
+	public long getEventDamage() {
+		return type.getEventDamage(this);
+	}
 
 	/**
 	 * 事件是否相符
@@ -92,14 +100,18 @@ public class AIEvent {
 		if(!aiEvent.getEventCampType().equals(campType)){
 			return false;
 		}
-		if(aiEvent.getEventParam() == param){
+		if(!getMainParam().equals(aiEvent.getMainParam())){
 			return false;
 		}
 		return true;
 	}
 
-	public Long getEventDamage() {
-		return type.getEventDamage();
+	/**
+	 * 
+	 * @return 获得主要参数
+	 */
+	public String getMainParam() {
+		return type.getMainParam(param);
 	}
 
 }

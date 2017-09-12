@@ -1,8 +1,5 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import java.util.List;
-
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEventEnum;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 /**
@@ -14,34 +11,31 @@ public class AIDeadAction implements IAIAction{
 
 	@Override
 	public boolean doAction(DmcSceneObject self, AIActionParam param) {
-		return false;
+		if(!checkAction(self, param)){
+			return false;
+		}
+		self.changeHp(self.getDmcHp() * -1);
+		return true;
 	}
 
 	@Override
 	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
-		return false;
+		return true;
 	}
 
 	@Override
-	public void stop() {
+	public void stop(DmcSceneObject self) {
 		
 	}
 
 	@Override
-	public List<AOIEventEnum> getStopActionEvent() {
-		return null;
-	}
-
-	@Override
 	public void reset(AIActionParam param) {
-		// TODO 自动生成的方法存根
 		
 	}
 
 	@Override
 	public boolean isOver(DmcSceneObject self, AIActionParam param) {
-		// TODO 自动生成的方法存根
-		return false;
+		return true;
 	}
 
 }

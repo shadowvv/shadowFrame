@@ -24,6 +24,8 @@ public class RemoveBuffDispatchAIEvent implements IDispatchAIEvent{
 			AIEvent aiEvent = new AIEvent(AIEventEnum.RemoveBuff, aoiEvent.getParam(), targetCamp, source);			
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
+		AIEvent aiEvent = new AIEvent(AIEventEnum.RemoveBuff, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		source.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 
 }

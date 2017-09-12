@@ -88,7 +88,7 @@ public enum AIValueCompareEnum {
 
 	/**
 	 * 
-	 * @return
+	 * @return Id
 	 */
 	public int getId() {
 		return id;

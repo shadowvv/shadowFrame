@@ -1,8 +1,5 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import java.util.List;
-
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEventEnum;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 
 /**
@@ -31,13 +28,7 @@ public interface IAIAction {
 	/**
 	 * 停止动作
 	 */
-	void stop();
-	
-	/**
-	 * 
-	 * @return 停止动作的事件
-	 */
-	List<AOIEventEnum> getStopActionEvent();
+	void stop(DmcSceneObject self);
 
 	/**
 	 * 重置动作参数

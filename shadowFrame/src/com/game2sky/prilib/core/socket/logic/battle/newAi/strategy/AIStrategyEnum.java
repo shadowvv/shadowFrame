@@ -84,8 +84,8 @@ public enum AIStrategyEnum {
 	 * @param strategyParam
 	 * @return
 	 */
-	public boolean isOverStrategy(DmcSceneObject self,AIStrategyParam strategyParam) {
-		return strategy.isOverStrategy(self, strategyParam);
+	public boolean isOver(DmcSceneObject self,AIStrategyParam strategyParam) {
+		return strategy.isOver(self, strategyParam);
 	}
 	
 }

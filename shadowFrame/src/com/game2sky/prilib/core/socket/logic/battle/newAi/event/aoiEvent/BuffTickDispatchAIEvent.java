@@ -24,6 +24,8 @@ public class BuffTickDispatchAIEvent implements IDispatchAIEvent{
 			AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick, aoiEvent.getParam(), targetCamp, source);			
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
+		AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		source.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 
 }

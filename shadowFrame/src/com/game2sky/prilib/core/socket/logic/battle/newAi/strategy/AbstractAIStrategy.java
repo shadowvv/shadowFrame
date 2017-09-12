@@ -32,7 +32,10 @@ public abstract class AbstractAIStrategy implements IAIStrategy {
 	}
 	
 	@Override
-	public boolean isOverStrategy(DmcSceneObject self,AIStrategyParam strategyParam) {
+	public boolean isOver(DmcSceneObject self,AIStrategyParam strategyParam) {
+		if((strategyParam.getOverThresholds() == null || strategyParam.getOverThresholds().size() == 0) && (strategyParam.getOverEvents() == null || strategyParam.getOverEvents().size() == 0)){
+			return false;
+		}
 		if(AITransfer.transfer(strategyParam.getOverThresholds(), strategyParam.getOverEvents(), self)){
 			return true;
 		}

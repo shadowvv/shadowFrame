@@ -34,6 +34,6 @@ public interface IAIStrategy {
 	 * @param strategyParam
 	 * @return
 	 */
-	boolean isOverStrategy(DmcSceneObject self, AIStrategyParam strategyParam);
+	boolean isOver(DmcSceneObject self, AIStrategyParam strategyParam);
 	
 }

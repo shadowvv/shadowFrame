@@ -24,6 +24,8 @@ public class UseSkillDispatchAIEvent implements IDispatchAIEvent{
 			AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill, aoiEvent.getParam(), targetCamp, source);	
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
+		AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		source.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 
 }

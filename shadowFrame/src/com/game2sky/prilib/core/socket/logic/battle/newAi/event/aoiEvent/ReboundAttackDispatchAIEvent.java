@@ -33,6 +33,9 @@ public class ReboundAttackDispatchAIEvent implements IDispatchAIEvent{
 		}		
 		AIEvent aiEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), targetCamp, source);	
 		target.getAiCompnent().onAoiActionEvent(aiEvent);
+		
+		AIEvent selfEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		source.getAiCompnent().onAoiActionEvent(selfEvent);
 	}
 
 }

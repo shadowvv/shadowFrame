@@ -7,12 +7,10 @@ import java.util.Map;
 
 import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEventEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventService;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyParam;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.target.AITargetObjectCampEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.AITendencyParam;
 import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
@@ -82,6 +80,9 @@ public class NewAIComponent {
 	 * 时候可以获得下一个行为
 	 */
 	private boolean canGetNextTendency;
+	
+	private boolean firstTick;
+	private int tickTime;
 
 	/**
 	 * 
@@ -104,6 +105,9 @@ public class NewAIComponent {
 		phaseHp = new HashMap<PhaseEnum, Double>();
 
 		aiEvents = new ArrayList<AIEvent>();
+		
+		firstTick = true;
+		tickTime = 0;
 	}
 
 	/**
@@ -134,10 +138,6 @@ public class NewAIComponent {
 
 		StrategyData.put(phase, strategyList); 
 		phaseHp.put(phase, phaseHpPersent);
-		
-		//设置AI规则后，重新发起AI事件
-		aiEvents.add(AIEvent.CREATE);
-		AOIEventService.onSceneObjectMove(self, self.getPos(), self.getPos(), self.getDir());
 	}
 	
 	/**
@@ -153,6 +153,9 @@ public class NewAIComponent {
 	 * @param event 事件
 	 */
 	public void onAoiActionEvent(AIEvent event) {
+		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
+			return;
+		}
 		hatredMeter.onAoiEvent(event);
 		aiEvents.add(event);
 	}
@@ -180,6 +183,38 @@ public class NewAIComponent {
 	public List<DmcSceneObject> getAllHatredObjects() {
 		return hatredMeter.getAllHatredObjects();
 	}
+	
+	/**
+	 * 
+	 * @return 仇恨值最大的目标
+	 */
+	public DmcSceneObject getCommonTarget() {
+		return hatredMeter.getCommonTarget();
+	}
+	
+	/**
+	 * 
+	 * @return 当前策略
+	 */
+	public AIStrategyParam getCurrentStrategy() {
+		return currentStrategy;
+	}
+	
+	/**
+	 * 
+	 * @return 当前行为
+	 */
+	public AITendencyParam getCurrentTendency() {
+		return currentTendency;
+	}
+	
+	/**
+	 * 
+	 * @return 当前动作
+	 */
+	public AIActionParam getCurrentAction() {
+		return currentAction;
+	}
 
 	/**
 	 * 心跳
@@ -187,11 +222,20 @@ public class NewAIComponent {
 	 * @param interval 与上次心跳的间隔时间
 	 */
 	public void tick(long current, long interval) {
+		tickTime++;
 		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
 			return;
 		}
-		aiEvents.add(new AIEvent(AIEventEnum.Time, current+"", AITargetObjectCampEnum.self,self));
-		perception();
+		if(firstTick){
+			firstTick = false;
+			//设置AI规则后，重新发起AI事件
+			aiEvents.add(AIEvent.CREATE);
+			AOIEventService.onSceneObjectMove(self, self.getPos(), self.getPos(), self.getDir());
+		}
+		if(tickTime > 10){
+			tickTime = 0;
+			perception();
+		}
 	}
 
 	private void perception() {
@@ -218,7 +262,7 @@ public class NewAIComponent {
 		
 		if(canGetNextTendency){
 			if(currentAction != null){
-				currentAction.stop();
+				currentAction.stop(self);
 			}
 			AITendencyParam nextTendency = null;
 			nextTendency = currentStrategy.getTendency(self);
@@ -242,7 +286,7 @@ public class NewAIComponent {
 		}
 		
 		if(currentAction.isInterrupt(self)){
-			currentAction.stop();
+			currentAction.stop(self);
 			canGetNextTendency = true;
 			return;
 		}
@@ -257,10 +301,6 @@ public class NewAIComponent {
 
 		aiEvents.clear();
 		System.out.println("***************"+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName());
-	}
-
-	public DmcSceneObject getCommonTarget() {
-		return hatredMeter.getCommonTarget();
 	}
 
 }

@@ -24,6 +24,8 @@ public class FinishSkillDispatchAIEvent implements IDispatchAIEvent{
 			AIEvent aiEvent = new AIEvent(AIEventEnum.finishSkill, aoiEvent.getParam(), targetCamp, source);			
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
+		AIEvent aiEvent = new AIEvent(AIEventEnum.finishSkill, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);
+		source.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 
 }

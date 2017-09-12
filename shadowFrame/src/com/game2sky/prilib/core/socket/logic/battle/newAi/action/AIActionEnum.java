@@ -102,8 +102,8 @@ public enum AIActionEnum {
 	/**
 	 * 停止动作
 	 */
-	public void stop() {
-		action.stop();
+	public void stop(DmcSceneObject self) {
+		action.stop(self);
 	}
 
 	/**

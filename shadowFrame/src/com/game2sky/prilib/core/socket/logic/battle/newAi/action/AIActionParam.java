@@ -8,6 +8,7 @@ import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.target.AITargetObjectCampEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.threshold.AIThresholdParam;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.game2sky.publib.Globals;
 import com.game2sky.publib.communication.game.struct.FPoint3;
 
 /**
@@ -27,6 +28,7 @@ public class AIActionParam {
 	private List<AIEvent> interruptEvents;
 	private AIActionParam nextAction;
 	private AIActionParam middleAction;
+	private long beginTime;
 	
 	private boolean done;
 	private List<FPoint3> targetPoints;
@@ -38,6 +40,7 @@ public class AIActionParam {
 		this.enterThresholds = enterThresholds;
 		this.interruptEvents = interruptAIEvents;
 		this.interruptThresholds = interruptThresholds;
+		this.beginTime = Globals.getTimeService().now();
 		targetPoints = new ArrayList<FPoint3>();
 	}
 	
@@ -133,8 +136,16 @@ public class AIActionParam {
 	 * 
 	 * @return 动作目标点
 	 */
-	public List<FPoint3> getActionTargetPoints(DmcSceneObject self) {
+	public List<FPoint3> getActionTargetPoints() {
 		return targetPoints;
+	}
+	
+	/**
+	 * 
+	 * @return 开始时间
+	 */
+	public long getBeginTime() {
+		return beginTime;
 	}
 	
 	/**
@@ -158,14 +169,15 @@ public class AIActionParam {
 	 */
 	public void reset() {
 		done = false;
+		beginTime = Globals.getTimeService().now();
 		AIActionEnum.getAction(id).reset(this);
 	}
 
 	/**
 	 * 停止动作
 	 */
-	public void stop() {
-		AIActionEnum.getAction(id).stop();
+	public void stop(DmcSceneObject self) {
+		AIActionEnum.getAction(id).stop(self);
 	}
 
 	/**
@@ -197,6 +209,9 @@ public class AIActionParam {
 	 * @return
 	 */
 	public boolean isInterrupt(DmcSceneObject self) {
+		if((interruptThresholds == null || interruptThresholds.size() == 0) && (interruptEvents == null || interruptEvents.size() == 0)){
+			return false;
+		}
 		if (AITransfer.transfer(interruptThresholds,interruptEvents, self)) {
 			return true;
 		}

@@ -1,10 +1,7 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
-import java.util.List;
-
 import com.game2sky.prilib.core.socket.logic.battle.ai.AIInternalStaticData;
 import com.game2sky.prilib.core.socket.logic.battle.ai.AIService;
-import com.game2sky.prilib.core.socket.logic.battle.newAi.event.aoiEvent.AOIEventEnum;
 import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 import com.game2sky.publib.Globals;
@@ -23,14 +20,14 @@ public class AIMoveToObjectAction implements IAIAction {
 		if(!checkAction(self, param)){
 			return false;
 		}
-		DmcSceneObject target = self.getAiCompnent().getCommonTarget();
+		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
 		self.getController().getRoleActionManager().move(target, Globals.getTimeService().now());
 		return false;
 	}
 
 	@Override
 	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
-		DmcSceneObject target = self.getAiCompnent().getCommonTarget();
+		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
 		if (target == null) {
 			return false;
 		}
@@ -58,24 +55,22 @@ public class AIMoveToObjectAction implements IAIAction {
 	}
 
 	@Override
-	public void stop() {
-		
-	}
-
-	@Override
-	public List<AOIEventEnum> getStopActionEvent() {
-		return null;
+	public void stop(DmcSceneObject self) {
+		self.getController().getRoleActionManager().stopMove(null, true, false);
 	}
 
 	@Override
 	public void reset(AIActionParam param) {
-		// TODO 自动生成的方法存根
 		
 	}
 
 	@Override
 	public boolean isOver(DmcSceneObject self, AIActionParam param) {
-		// TODO 自动生成的方法存根
+		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
+		int dis = Integer.parseInt(param.getParam());
+		if (SceneUtils.isObjectInCircle(self.getPos(), self.getRadius(), self.getDir(), target.getPos(), dis, AIInternalStaticData.FACE_ANGLE)) {
+			return true;
+		}
 		return false;
 	}
 

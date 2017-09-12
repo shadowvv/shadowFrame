@@ -32,6 +32,9 @@ public class ReleaseSkillDispatchAIEvent implements IDispatchAIEvent{
 		}		
 		AIEvent aiEvent = new AIEvent(AIEventEnum.ReleaseSkill, aoiEvent.getParam(), targetCamp, source);	
 		target.getAiCompnent().onAoiActionEvent(aiEvent);
+		
+		AIEvent selfEvent = new AIEvent(AIEventEnum.ReleaseSkill, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		source.getAiCompnent().onAoiActionEvent(selfEvent);
 	}
 
 }

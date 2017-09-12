@@ -169,7 +169,7 @@ public class AIStrategyParam {
 	 * @return
 	 */
 	public boolean isOver(DmcSceneObject self, List<AIEvent> aiEvents) {
-		return AIStrategyEnum.getStrategy(id).isOverStrategy(self, this);
+		return AIStrategyEnum.getStrategy(id).isOver(self, this);
 	}
 
 }
