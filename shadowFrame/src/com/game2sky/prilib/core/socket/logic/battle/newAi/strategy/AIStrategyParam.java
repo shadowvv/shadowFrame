@@ -1,6 +1,5 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.strategy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
@@ -55,14 +54,14 @@ public class AIStrategyParam {
 	 * @param threshold 进入策略门槛
 	 * @param event 进入策略事件
 	 */
-	public AIStrategyParam(int id,List<AIThresholdParam> enterThresholds,List<AIEvent> enterEvents,List<AIThresholdParam> overThresholds,List<AIEvent> overEvents) {
+	public AIStrategyParam(int id,List<AITendencyParam> tendencys,List<AIThresholdParam> enterThresholds,List<AIEvent> enterEvents,List<AIThresholdParam> overThresholds,List<AIEvent> overEvents) {
 		this.id = id;
 		this.enterThresholds = enterThresholds;
 		this.enterEvents = enterEvents;
 		this.overThresholds = overThresholds;
 		this.overEvents = overEvents;
+		this.tendencys = tendencys;
 		this.beginTime = Globals.getTimeService().now();
-		tendencys = new ArrayList<AITendencyParam>();
 	}
 	
 	/**
@@ -111,14 +110,6 @@ public class AIStrategyParam {
 	 */
 	public List<AIThresholdParam> getOverThresholds() {
 		return overThresholds;
-	}
-
-	/**
-	 * 添加策略行为
-	 * @param tendency 行为
-	 */
-	public void addTendency(AITendencyParam tendency) {
-		tendencys.add(tendency);		
 	}
 
 	/**

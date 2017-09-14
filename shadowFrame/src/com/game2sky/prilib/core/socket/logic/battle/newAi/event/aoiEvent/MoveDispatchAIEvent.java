@@ -24,11 +24,11 @@ public class MoveDispatchAIEvent implements IDispatchAIEvent{
 				AIEvent aiEvent = null;
 				AIEvent backSelfEvent = null;
 				if(observer.getType().equals(source.getType())){
-					aiEvent = new AIEvent(AIEventEnum.EnterVigilanceRange, dis+"", AITargetObjectCampEnum.team, source);
-					backSelfEvent = new AIEvent(AIEventEnum.EnterVigilanceRange, dis+"", AITargetObjectCampEnum.team,observer);	
+					aiEvent = new AIEvent(AIEventEnum.EnterVigilanceRange.getId(), dis+"", AITargetObjectCampEnum.team.getId(), source);
+					backSelfEvent = new AIEvent(AIEventEnum.EnterVigilanceRange.getId(), dis+"", AITargetObjectCampEnum.team.getId(),observer);	
 				}else{
-					aiEvent = new AIEvent(AIEventEnum.EnterVigilanceRange, dis+"", AITargetObjectCampEnum.enemy, source);
-					backSelfEvent = new AIEvent(AIEventEnum.EnterVigilanceRange, dis+"", AITargetObjectCampEnum.enemy,observer);	
+					aiEvent = new AIEvent(AIEventEnum.EnterVigilanceRange.getId(), dis+"", AITargetObjectCampEnum.enemy.getId(), source);
+					backSelfEvent = new AIEvent(AIEventEnum.EnterVigilanceRange.getId(), dis+"", AITargetObjectCampEnum.enemy.getId(),observer);	
 				}			
 				observer.getAiCompnent().onAoiActionEvent(aiEvent);
 				source.getAiCompnent().onAoiActionEvent(backSelfEvent);

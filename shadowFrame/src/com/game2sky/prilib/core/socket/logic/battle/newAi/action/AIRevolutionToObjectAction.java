@@ -36,11 +36,11 @@ public class AIRevolutionToObjectAction implements IAIAction{
 				.getRadius() + self.getRadius();
 		float wanderSpeed = config.getWanderSpeed() > 0 ? config.getWanderSpeed() : AIInternalStaticData.DEFAULT_WANDER_SPEED;
 		if (dis > wanderRadius + 0.5) {
-//			FPoint3 moveV3D = SceneUtils.multiply(SceneUtils.normalize(dir), wanderRadius);
-//			FPoint3 rotation3D = SceneUtils.rotation(moveV3D, wanderSpeed * 1 * MathUtils.randomSign());
-//			FPoint3 targetPos = SceneUtils.add(target.getPos(), rotation3D);
-//			targetPos.setY(self.getPos().getY());
-//			self.getController().getRoleActionManager().move(targetPos);
+			FPoint3 moveV3D = SceneUtils.multiply(SceneUtils.normalize(dir), wanderRadius);
+			FPoint3 rotation3D = SceneUtils.rotation(moveV3D, wanderSpeed * 1 * MathUtils.randomSign());
+			FPoint3 targetPos = SceneUtils.add(target.getPos(), rotation3D);
+			targetPos.setY(self.getPos().getY());
+			self.getController().getRoleActionManager().move(targetPos);
 		} else {
 			FPoint3 moveV3D = SceneUtils.multiply(SceneUtils.normalize(dir), dis);
 			FPoint3 rotation3D = SceneUtils.rotation(moveV3D, wanderSpeed * 1 * MathUtils.randomSign());

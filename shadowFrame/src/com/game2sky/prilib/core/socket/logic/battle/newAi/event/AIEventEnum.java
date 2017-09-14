@@ -1,5 +1,7 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.event;
 
+import com.game2sky.prilib.core.dict.domain.DictBattleConfig;
+import com.game2sky.prilib.core.dict.domain.DictHero;
 import com.game2sky.prilib.core.dict.domain.DictHeroSkillDamage;
 import com.google.common.base.Strings;
 
@@ -21,7 +23,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -42,7 +44,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -63,7 +65,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 1;
 		}
 		
@@ -84,7 +86,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -111,7 +113,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			String param = event.getEventParam();
 			if(Strings.isNullOrEmpty(param)){
 				return 0;
@@ -119,8 +121,14 @@ public enum AIEventEnum {
 			String[] params = param.split(":");
 			int skillId = Integer.parseInt(params[0]);
 			long damage = Long.parseLong(params[1]);
-			int hatred = (int) (DictHeroSkillDamage.cache.get(skillId).getHatredDefaultNumber()+damage*0.01);
-			return hatred;
+			float skillBase = DictHeroSkillDamage.cache.get(skillId).getHatredDefaultNumber();
+			float damageRate = DictBattleConfig.getValue("damageHatredRate");
+			float careerRate = DictHero.getDictHero(event.getSource().getHeroId()).getCareerHatredRate();
+			float hatred = (skillBase+damage*damageRate)*careerRate;
+			float buffValue = event.getSource().getController().getComponentRoleBuff().getEffectHatredValue();
+			float buffPersent = (float) (1 + event.getSource().getController().getComponentRoleBuff().getEffectHatredPercent());
+			float fianlHatred = (hatred+buffValue)*buffPersent;
+			return fianlHatred;
 		}
 		
 		@Override
@@ -144,7 +152,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -165,7 +173,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -186,7 +194,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
@@ -207,17 +215,13 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
 		@Override
 		public String getMainParam(String param) {
-			if(Strings.isNullOrEmpty(param)){
-				return "";
-			}
-			String[] params = param.split(":");
-			return params[0];
+			return param;
 		}
 		
 	}),
@@ -232,17 +236,13 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
 		@Override
 		public String getMainParam(String param) {
-			if(Strings.isNullOrEmpty(param)){
-				return "";
-			}
-			String[] params = param.split(":");
-			return params[0];
+			return param;
 		}
 		
 	}),
@@ -258,7 +258,7 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			// TODO Auto-generated method stub
 			return 0;
 		}
@@ -284,13 +284,13 @@ public enum AIEventEnum {
 		}
 		
 		@Override
-		public int getEventHatredValue(AIEvent event) {
+		public float getEventHatredValue(AIEvent event) {
 			return 0;
 		}
 		
 		@Override
 		public String getMainParam(String param) {
-			return "";
+			return param;
 		}
 		
 	}),
@@ -303,7 +303,7 @@ public enum AIEventEnum {
 		 * @param event
 		 * @return
 		 */
-		public int getEventHatredValue(AIEvent event);
+		public float getEventHatredValue(AIEvent event);
 
 		/**
 		 * 伤害
@@ -319,6 +319,22 @@ public enum AIEventEnum {
 		 */
 		public String getMainParam(String param);
 		
+	}
+	
+	private static AIEventEnum[] enums = AIEventEnum.values();
+
+	/**
+	 * 获得动作
+	 * @param id 动作id
+	 * @return
+	 */
+	public static AIEventEnum getEvent(int id) {
+		for (AIEventEnum aiEnum : enums) {
+			if (aiEnum.id == id) {
+				return aiEnum;
+			}
+		}
+		return null;
 	}
 	
 	private int id;
@@ -342,7 +358,7 @@ public enum AIEventEnum {
 	 * @param event
 	 * @return
 	 */
-	public int getEventHatredValue(AIEvent event) {
+	public float getEventHatredValue(AIEvent event) {
 		return operation.getEventHatredValue(event);
 	}
 

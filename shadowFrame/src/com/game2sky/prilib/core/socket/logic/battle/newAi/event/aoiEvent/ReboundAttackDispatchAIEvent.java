@@ -19,22 +19,22 @@ public class ReboundAttackDispatchAIEvent implements IDispatchAIEvent{
 		for (DmcSceneObject observer : aoiEvent.getObservers()) {
 			AIEvent aiEvent = null;
 			if(observer.getType().equals(source.getType())){
-				aiEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), AITargetObjectCampEnum.team, source);	
+				aiEvent = new AIEvent(AIEventEnum.ReboundAttack.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.team.getId(), source);	
 			}else{
-				aiEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), AITargetObjectCampEnum.enemy, source);	
+				aiEvent = new AIEvent(AIEventEnum.ReboundAttack.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.enemy.getId(), source);	
 			}			
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
 		
 		DmcSceneObject target = aoiEvent.getTarget();
-		AITargetObjectCampEnum targetCamp = AITargetObjectCampEnum.team;
+		int targetCamp = AITargetObjectCampEnum.team.getId();
 		if(!target.getType().equals(source.getType())){
-			targetCamp = AITargetObjectCampEnum.enemy;
+			targetCamp = AITargetObjectCampEnum.enemy.getId();
 		}		
-		AIEvent aiEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), targetCamp, source);	
+		AIEvent aiEvent = new AIEvent(AIEventEnum.ReboundAttack.getId(), aoiEvent.getParam(), targetCamp, source);	
 		target.getAiCompnent().onAoiActionEvent(aiEvent);
 		
-		AIEvent selfEvent = new AIEvent(AIEventEnum.ReboundAttack, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		AIEvent selfEvent = new AIEvent(AIEventEnum.ReboundAttack.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.self.getId(), source);			
 		source.getAiCompnent().onAoiActionEvent(selfEvent);
 	}
 

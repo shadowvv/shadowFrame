@@ -1,5 +1,6 @@
 package com.game2sky.prilib.core.socket.logic.battle.newAi.action;
 
+import com.game2sky.prilib.core.dict.domain.DictHeroSkill;
 import com.game2sky.prilib.core.socket.logic.battle.ai.AIInternalStaticData;
 import com.game2sky.prilib.core.socket.logic.battle.ai.AIService;
 import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
@@ -66,9 +67,23 @@ public class AIMoveToObjectAction implements IAIAction {
 
 	@Override
 	public boolean isOver(DmcSceneObject self, AIActionParam param) {
+		if(param.getActionTargetObjects(self).size() == 0){
+			return true;
+		}
 		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
-		int dis = Integer.parseInt(param.getParam());
-		if (SceneUtils.isObjectInCircle(self.getPos(), self.getRadius(), self.getDir(), target.getPos(), dis, AIInternalStaticData.FACE_ANGLE)) {
+		String[] params = param.getParam().split(":");
+		String type = params[0];
+		float dis = 0;
+		if(type.equals("common")){
+			dis = Float.parseFloat(params[1]);
+		}else if(type.equals("skill")){
+			DictHeroSkill skill = DictHeroSkill.getDictHeroSkill(Integer.parseInt(params[1]));
+			if (skill == null) {
+				return false;
+			}
+			dis = skill.getReleaseRange();
+		}
+		if (SceneUtils.isObjectInCircle(target.getPos(), dis, self.getDir(), self.getPos(), self.getRadius(), AIInternalStaticData.FACE_ANGLE)) {
 			return true;
 		}
 		return false;

@@ -13,14 +13,14 @@ public class AIEvent {
 	/**
 	 * 空事件
 	 */
-	public static final AIEvent EMPTY_EVENT = new AIEvent(AIEventEnum.EmptyEvent, "", AITargetObjectCampEnum.self,null);
+	public static final AIEvent EMPTY_EVENT = new AIEvent(AIEventEnum.EmptyEvent.getId(), "", AITargetObjectCampEnum.self.getId(),null);
 	/**
 	 * 创建物体事件
 	 */
-	public static final AIEvent CREATE = new AIEvent(AIEventEnum.Create, "", AITargetObjectCampEnum.self,null);
+	public static final AIEvent CREATE = new AIEvent(AIEventEnum.Create.getId(), "", AITargetObjectCampEnum.self.getId(),null);
 	
-	private AIEventEnum type;
-	private AITargetObjectCampEnum campType;
+	private int type;
+	private int campType;
 	private String param;
 	private DmcSceneObject source;
 
@@ -30,7 +30,7 @@ public class AIEvent {
 	 * @param param 事件参数
 	 * @param campType 事件目标类型
 	 */
-	public AIEvent(AIEventEnum type,String param,AITargetObjectCampEnum campType,DmcSceneObject source) {
+	public AIEvent(int type,String param,int campType,DmcSceneObject source) {
 		this.type = type;
 		this.campType = campType;
 		this.param = param;
@@ -41,7 +41,7 @@ public class AIEvent {
 	 * 
 	 * @return 事件类型
 	 */
-	public AIEventEnum getEventType() {
+	public int getEventType() {
 		return type;
 	}
 
@@ -57,7 +57,7 @@ public class AIEvent {
 	 * 
 	 * @return 事件目标类型
 	 */
-	public AITargetObjectCampEnum getEventCampType() {
+	public int getEventCampType() {
 		return campType;
 	}
 
@@ -73,8 +73,8 @@ public class AIEvent {
 	 * 
 	 * @return 事件仇恨值
 	 */
-	public int getEventHatredValue() {
-		return type.getEventHatredValue(this);
+	public float getEventHatredValue() {
+		return AIEventEnum.getEvent(type).getEventHatredValue(this);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class AIEvent {
 	 * @return 获得事件伤害值
 	 */
 	public long getEventDamage() {
-		return type.getEventDamage(this);
+		return AIEventEnum.getEvent(type).getEventDamage(this);
 	}
 
 	/**
@@ -94,10 +94,10 @@ public class AIEvent {
 		if(this.equals(EMPTY_EVENT) || aiEvent.equals(EMPTY_EVENT)){
 			return true;
 		}
-		if(!aiEvent.getEventType().equals(type)){
+		if(aiEvent.getEventType() != type){
 			return false;
 		}
-		if(!aiEvent.getEventCampType().equals(campType)){
+		if(aiEvent.getEventCampType() != campType){
 			return false;
 		}
 		if(!getMainParam().equals(aiEvent.getMainParam())){
@@ -111,7 +111,7 @@ public class AIEvent {
 	 * @return 获得主要参数
 	 */
 	public String getMainParam() {
-		return type.getMainParam(param);
+		return AIEventEnum.getEvent(type).getMainParam(param);
 	}
 
 }

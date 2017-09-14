@@ -122,6 +122,7 @@ public final class AOIEventService {
 	 */
 	public static void onSceneObjectDead(DmcSceneObject source){
 		AOIEvent event = new AOIEvent(AOIEventEnum.Dead, source);
+		event.setParam(source.getHeroId()+"");
 		onSceneObjectEvent(event, source, null);
 	}
 

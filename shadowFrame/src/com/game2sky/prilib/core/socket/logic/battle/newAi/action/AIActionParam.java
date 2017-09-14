@@ -33,13 +33,16 @@ public class AIActionParam {
 	private boolean done;
 	private List<FPoint3> targetPoints;
 	
-	public AIActionParam(int id,int targetCampType,List<AIThresholdParam> enterThresholds,List<AIEvent> enterAiEvents,List<AIThresholdParam> interruptThresholds,List<AIEvent> interruptAIEvents) {
+	public AIActionParam(int id,int targetCampType,String param,AIActionParam middleAction,List<AIThresholdParam> enterThresholds,List<AIEvent> enterAiEvents,List<AIThresholdParam> interruptThresholds,List<AIEvent> interruptAIEvents) {
 		this.id = id;
 		this.targetCampType = targetCampType;
+		this.param = param;
+		this.middleAction = middleAction;
 		this.enterEvents = enterAiEvents;
 		this.enterThresholds = enterThresholds;
 		this.interruptEvents = interruptAIEvents;
 		this.interruptThresholds = interruptThresholds;
+		
 		this.beginTime = Globals.getTimeService().now();
 		targetPoints = new ArrayList<FPoint3>();
 	}
@@ -50,22 +53,6 @@ public class AIActionParam {
 	 */
 	public void setNextAction(AIActionParam nextAction) {
 		this.nextAction = nextAction;
-	}
-	
-	/**
-	 * 设置中间动作
-	 * @param middleAction
-	 */
-	public void setMiddleAction(AIActionParam middleAction) {
-		this.middleAction = middleAction;
-	}
-	
-	/**
-	 * 这只参数
-	 * @param param
-	 */
-	public void setParam(String param) {
-		this.param = param;
 	}
 	
 	/**

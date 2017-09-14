@@ -18,20 +18,20 @@ public class AddBuffDispatchAIEvent implements IDispatchAIEvent{
 	public void dispatchAIEvent(AOIEvent aoiEvent) {
 		DmcSceneObject source = aoiEvent.getSource();
 		for (DmcSceneObject observer : aoiEvent.getObservers()) {
-			AITargetObjectCampEnum targetCamp = AITargetObjectCampEnum.team;
+			int targetCamp = AITargetObjectCampEnum.team.getId();
 			if(!observer.getType().equals(source.getType())){
-				targetCamp = AITargetObjectCampEnum.enemy;
+				targetCamp = AITargetObjectCampEnum.enemy.getId();
 			}		
-			AIEvent aiEvent = new AIEvent(AIEventEnum.AddBuff, aoiEvent.getParam(), targetCamp, source);			
+			AIEvent aiEvent = new AIEvent(AIEventEnum.AddBuff.getId(), aoiEvent.getParam(), targetCamp, source);			
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
 		
 		DmcSceneObject target = aoiEvent.getTarget();
-		AITargetObjectCampEnum targetCamp = AITargetObjectCampEnum.team;
+		int targetCamp = AITargetObjectCampEnum.team.getId();
 		if(!target.getType().equals(source.getType())){
-			targetCamp = AITargetObjectCampEnum.enemy;
+			targetCamp = AITargetObjectCampEnum.enemy.getId();
 		}		
-		AIEvent aiEvent = new AIEvent(AIEventEnum.AddBuff, aoiEvent.getParam(), targetCamp, source);	
+		AIEvent aiEvent = new AIEvent(AIEventEnum.AddBuff.getId(), aoiEvent.getParam(), targetCamp, source);	
 		target.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 

@@ -39,13 +39,16 @@ public class AICastSkillAction implements IAIAction{
 		if(param.isDone()){
 			return false;
 		}
+		if(param.getActionTargetObjects(self).size() == 0){
+			return false;
+		}
 		if (!self.getRoleStateManager().canEnter(ActionState.USING_SKILL)) {
 			return false;
 		}
 		int skillId = Integer.parseInt(param.getParam());
 		if(skillId == 0){
 			return false;
-		}
+		}		
 		ActiveSkill useSkillCache = self.getController().getComponentRoleSkill().getUseSkillCache();
 		if (useSkillCache != null && !useSkillCache.isOverdue() && useSkillCache.getTmplId() == skillId) {
 			return false;
@@ -72,7 +75,7 @@ public class AICastSkillAction implements IAIAction{
 
 	@Override
 	public boolean isOver(DmcSceneObject self, AIActionParam param) {
-		AIEvent event = new AIEvent(AIEventEnum.finishSkill, param.getParam(), AITargetObjectCampEnum.self, null);
+		AIEvent event = new AIEvent(AIEventEnum.finishSkill.getId(), param.getParam(), AITargetObjectCampEnum.self.getId(), null);
 		if(AITransfer.transfer(AIThresholdParam.EMPTY_THRESHOLD, event, self)){
 			return true;
 		}

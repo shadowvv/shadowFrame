@@ -4,18 +4,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.game2sky.prilib.core.socket.logic.battle.newAi.action.AIActionParam;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEvent;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AIEventEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.event.AOIEventService;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.hatred.AIHatredMeter;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.strategy.AIStrategyParam;
+import com.game2sky.prilib.core.socket.logic.battle.newAi.target.AITargetObjectCampEnum;
 import com.game2sky.prilib.core.socket.logic.battle.newAi.tendency.AITendencyParam;
 import com.game2sky.prilib.core.socket.logic.human.state.ActionState;
+import com.game2sky.prilib.core.socket.logic.properties.BProperty;
 import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
+import com.game2sky.prilib.core.socket.logic.scene.unit.SceneObjectType;
 import com.game2sky.prilib.core.socket.logic.scene.unit.monster.PhaseEnum;
+import com.game2sky.prilib.core.socket.logic.scene.unit.monster.SceneMonsterObject;
+import com.game2sky.prilib.core.socket.logic.scene.unit.player.ScenePlayerObject;
 import com.game2sky.publib.Globals;
+import com.game2sky.publib.communication.common.SystemMessage;
+import com.game2sky.publib.communication.game.struct.SystemMessageType;
+import com.game2sky.publib.socket.logic.scene.unit.SceneObject;
 
 /**
  * ai模块
@@ -42,15 +52,11 @@ public class NewAIComponent {
 	 * ai仇恨管理器
 	 */
 	private AIHatredMeter hatredMeter;
-	/**
-	 * 阶段切换标记
-	 */
-	private byte[] phaseState;
 	
 	/**
 	 * 当前阶段
 	 */
-	private PhaseEnum currentphase;
+	private PhaseEnum currentPhase;
 	/**
 	 * 当前策略
 	 */
@@ -95,8 +101,7 @@ public class NewAIComponent {
 		
 		canGetNextTendency = true;
 
-		currentphase = PhaseEnum.OnePhase;
-		phaseState = new byte[2];
+		currentPhase = PhaseEnum.OnePhase;
 
 		hatredMeter = new AIHatredMeter();
 		aiValidTime = this.self.getSpawnTime() + Globals.getTimeService().now();
@@ -130,11 +135,8 @@ public class NewAIComponent {
 		List<AIStrategyParam> strategyList = new ArrayList<AIStrategyParam>();
 		StrategyData.put(phase, strategyList);
 
-		AIStrategyParam commonStrategy = new AIStrategyParam(AIStrategyEnum.CommonStrategy.getId(), null, null,null,null);
+		AIStrategyParam commonStrategy = new AIStrategyParam(AIStrategyEnum.CommonStrategy.getId(), tendencyData,null, null,null,null);
 		strategyList.add(commonStrategy);
-		for (AITendencyParam tendency : tendencyData) {
-			commonStrategy.addTendency(tendency);
-		}
 
 		StrategyData.put(phase, strategyList); 
 		phaseHp.put(phase, phaseHpPersent);
@@ -232,7 +234,7 @@ public class NewAIComponent {
 			aiEvents.add(AIEvent.CREATE);
 			AOIEventService.onSceneObjectMove(self, self.getPos(), self.getPos(), self.getDir());
 		}
-		if(tickTime > 10){
+		if(tickTime > 20){
 			tickTime = 0;
 			perception();
 		}
@@ -245,8 +247,12 @@ public class NewAIComponent {
 			return;
 		}
 		
+		if(isSwitchPhase()){
+			currentStrategy = null;
+		}
+		
 		if(currentStrategy == null || currentStrategy.isOver(self,aiEvents)){
-			for (AIStrategyParam strategyParam : StrategyData.get(currentphase)) {
+			for (AIStrategyParam strategyParam : StrategyData.get(currentPhase)) {
 				if(strategyParam.CanEnterStrategy(self)){
 					currentStrategy = strategyParam;
 					currentStrategy.reset();
@@ -300,7 +306,42 @@ public class NewAIComponent {
 		}
 
 		aiEvents.clear();
+		for (SceneObject object : self.getScene().getSceneController().getAoiManager().getViewSceneObjects(self, SceneObjectType.values())) {
+			if (object instanceof ScenePlayerObject) {
+				ScenePlayerObject human = (ScenePlayerObject) object;
+				SystemMessage resp = new SystemMessage(""+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName(), SystemMessageType.CENTER);
+				human.getHuman().push2Gateway(resp);
+			}
+		}
 		System.out.println("***************"+currentStrategy.getName()+"	"+currentTendency.getName()+"	"+currentAction.getName());
+	}
+	
+	private boolean isSwitchPhase(){
+		for (Entry<PhaseEnum, Double> phaseEnum : phaseHp.entrySet()) {
+			if (phaseEnum.getKey().getId() > currentPhase.getId()) {
+				double HPPersent = phaseEnum.getValue();
+				double filterHp = self.getBProperty(BProperty.HP_MAX) * HPPersent;
+				float currentHp = self.getDmcHp();
+				if (filterHp >= currentHp) {
+					currentPhase = phaseEnum.getKey();
+					aiEvents.clear();
+					aiEvents.add(new AIEvent(AIEventEnum.SwitchPhase.getId(), currentPhase.getId()+"", AITargetObjectCampEnum.self.getId(), self));
+					return true;
+				}
+			}
+		}
+		if (self instanceof SceneMonsterObject) {
+			SceneMonsterObject monster = (SceneMonsterObject) self;
+			if (phaseHp.containsKey(PhaseEnum.breakShieldPhase)) {
+				if (!monster.isHaveShield()) {
+					currentPhase = PhaseEnum.breakShieldPhase;
+					aiEvents.clear();
+					aiEvents.add(new AIEvent(AIEventEnum.SwitchPhase.getId(), currentPhase.getId()+"", AITargetObjectCampEnum.self.getId(), self));
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

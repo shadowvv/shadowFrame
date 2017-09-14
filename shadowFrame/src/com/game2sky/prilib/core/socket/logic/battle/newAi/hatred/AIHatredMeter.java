@@ -21,13 +21,13 @@ import com.game2sky.prilib.core.socket.logic.scene.unit.DmcSceneObject;
 public class AIHatredMeter {
 
 	private Map<Long, DmcSceneObject> hatredObject;
-	private Map<Long, Integer> hatredMeter;
+	private Map<Long, Float> hatredMeter;
 	private Map<Long, Long> damageMeter;
 	private DmcSceneObject commonTarget;
 
 	public AIHatredMeter() {
 		hatredObject = new HashMap<Long, DmcSceneObject>();
-		hatredMeter = new HashMap<Long, Integer>();
+		hatredMeter = new HashMap<Long, Float>();
 		damageMeter = new HashMap<Long, Long>();
 	}
 
@@ -38,15 +38,15 @@ public class AIHatredMeter {
 	 *            事件
 	 */
 	public void onAoiEvent(AIEvent event) {
-		if (event.getEventCampType().equals(AITargetObjectCampEnum.enemy)) {
+		if (event.getEventCampType() == AITargetObjectCampEnum.enemy.getId()) {
 			DmcSceneObject source = event.getSource();
 
-			if (event.getEventType().equals(AIEventEnum.Dead)) {
+			if (event.getEventType() == AIEventEnum.Dead.getId()) {
 				removeObject(source.getId());
 				return;
 			}
 			if (!hatredObject.containsKey(source.getId())) {
-				if (event.getEventType().equals(AIEventEnum.EnterVigilanceRange) || event.getEventType().equals(AIEventEnum.ReleaseSkill)) {
+				if (event.getEventType() == AIEventEnum.EnterVigilanceRange.getId() || event.getEventType() == AIEventEnum.ReleaseSkill.getId()) {
 					addObject(source, event);
 					if (hatredObject.size() == 1) {
 						commonTarget = source;
@@ -58,7 +58,7 @@ public class AIHatredMeter {
 				return;
 			}
 
-			int value = event.getEventHatredValue() + hatredMeter.get(source.getId());
+			float value = event.getEventHatredValue() + hatredMeter.get(source.getId());
 			value = value < 0 ? 0 : value;
 			if (value <= 0) {
 				removeObject(source.getId());
@@ -91,9 +91,9 @@ public class AIHatredMeter {
 	}
 
 	private DmcSceneObject getMaxHatredTarget() {
-		int max = -1;
+		float max = -1;
 		long playerId = 0;
-		for (Entry<Long, Integer> entry : hatredMeter.entrySet()) {
+		for (Entry<Long, Float> entry : hatredMeter.entrySet()) {
 			if (max < entry.getValue()) {
 				max = entry.getValue();
 				playerId = entry.getKey();
@@ -123,9 +123,12 @@ public class AIHatredMeter {
 	 * @return 仇恨值最高的目标
 	 */
 	public DmcSceneObject getCommonTarget() {
+		if(hatredObject.size() == 0){
+			return null;
+		}
 		DmcSceneObject maxObject = getMaxHatredTarget();
-		int maxHatred = hatredMeter.get(maxObject.getId());
-		int currentHatred = hatredMeter.get(commonTarget.getId());
+		float maxHatred = hatredMeter.get(maxObject.getId());
+		float currentHatred = hatredMeter.get(commonTarget.getId());
 		if(maxHatred > currentHatred*DictBattleConfig.getValue("overTauntedRate")){
 			commonTarget = maxObject;
 		}

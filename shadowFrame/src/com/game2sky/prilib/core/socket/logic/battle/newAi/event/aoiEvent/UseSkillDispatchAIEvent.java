@@ -17,14 +17,14 @@ public class UseSkillDispatchAIEvent implements IDispatchAIEvent{
 	public void dispatchAIEvent(AOIEvent aoiEvent) {
 		DmcSceneObject source = aoiEvent.getSource();
 		for (DmcSceneObject observer : aoiEvent.getObservers()) {
-			AITargetObjectCampEnum targetCamp = AITargetObjectCampEnum.team;
+			int targetCamp = AITargetObjectCampEnum.team.getId();
 			if(!observer.getType().equals(source.getType())){
-				targetCamp = AITargetObjectCampEnum.enemy;
+				targetCamp = AITargetObjectCampEnum.enemy.getId();
 			}		
-			AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill, aoiEvent.getParam(), targetCamp, source);	
+			AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill.getId(), aoiEvent.getParam(), targetCamp, source);	
 			observer.getAiCompnent().onAoiActionEvent(aiEvent);
 		}
-		AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill, aoiEvent.getParam(), AITargetObjectCampEnum.self, source);			
+		AIEvent aiEvent = new AIEvent(AIEventEnum.UseSkill.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.self.getId(), source);			
 		source.getAiCompnent().onAoiActionEvent(aiEvent);
 	}
 
