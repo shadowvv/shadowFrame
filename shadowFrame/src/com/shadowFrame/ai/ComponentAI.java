@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.shadowFrame.ai.action.AIActionEnum;
 import com.shadowFrame.ai.action.AIActionParam;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AIEventEnum;
@@ -65,7 +64,7 @@ public class ComponentAI {
 	/**
 	 * ai结附的场景物体
 	 */
-	private DmcSceneObject self;
+	private SceneObject self;
 	/**
 	 * ai是否起效
 	 */
@@ -96,7 +95,7 @@ public class ComponentAI {
 	 * @param self ai结附的场景物体
 	 * @param isAiValid ai是否起效
 	 */
-	public ComponentAI(DmcSceneObject self, boolean isAiValid) {
+	public ComponentAI(SceneObject self, boolean isAiValid) {
 		this.self = self;
 		this.valid = isAiValid;
 		
@@ -106,7 +105,7 @@ public class ComponentAI {
 		currentPhase = PhaseEnum.OnePhase;
 
 		hatredMeter = new AIHatredMeter();
-		aiValidTime = this.self.getSpawnTime() + Globals.getTimeService().now();
+		aiValidTime = 0;
 
 		StrategyData = new HashMap<PhaseEnum, List<AIStrategyParam>>();
 		phaseHp = new HashMap<PhaseEnum, Double>();
@@ -150,7 +149,7 @@ public class ComponentAI {
 	 * @param event 事件
 	 */
 	public void onAoiActionEvent(AIEvent event) {
-		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
+		if (!valid || System.currentTimeMillis() < aiValidTime) {
 			return;
 		}
 		hatredMeter.onAoiEvent(event);
@@ -170,7 +169,7 @@ public class ComponentAI {
 	 * 
 	 * @return 仇恨列表里的所有场景物体
 	 */
-	public List<DmcSceneObject> getAllHatredObjects() {
+	public List<SceneObject> getAllHatredObjects() {
 		return hatredMeter.getAllHatredObjects();
 	}
 	
@@ -178,7 +177,7 @@ public class ComponentAI {
 	 * 
 	 * @return 仇恨值最大的目标
 	 */
-	public DmcSceneObject getCommonTarget() {
+	public SceneObject getCommonTarget() {
 		return hatredMeter.getCommonTarget();
 	}
 	
@@ -211,7 +210,7 @@ public class ComponentAI {
 	 * @param current 当前事件
 	 */
 	public void tick() {
-		if (!valid || self.getRoleStateManager().getCurActionState().equals(ActionState.DEAD) || Globals.getTimeService().now() < aiValidTime) {
+		if (!valid || System.currentTimeMillis() < aiValidTime) {
 			if(currentAction != null){
 				currentAction.stop(self);
 			}
@@ -325,27 +324,9 @@ public class ComponentAI {
 		//执行ai动作
 		if(currentAction != null){
 			currentAction.doAction(self);
-			if(currentAction.getType() == AIActionEnum.CastSkill.getId() || currentAction.getType() == AIActionEnum.CastHeroRandomSkillAction.getId() || currentAction.getType() == AIActionEnum.SelectAndCastSkill.getId()){
-				for (AIEvent aiEvent : aiEvents.values()) {
-					if(aiEvent.getEventType() == AIEventEnum.UseSkill.getId() && aiEvent.getSource().equals(self)){
-						currentAction.setCurrentParam(aiEvent.getMainParam());
-					}
-				}
-			}
 		}
 		//清空ai事件
 		aiEvents.clear();
-		
-		//TODO:AI调试信息
-		if(self.getScene() != null){
-			for (SceneObject object : self.getScene().getSceneController().getAoiManager().getViewSceneObjects(self)) {
-				if (object instanceof ScenePlayerObject) {
-					ScenePlayerObject human = (ScenePlayerObject) object;
-					SCAIStatus resp = new SCAIStatus(self.getId()+"	"+currentStrategy.getName()+currentStrategy.getId()+"	"+currentTendency.getName()+currentTendency.getId()+"	"+currentAction.getName()+currentAction.getId());
-					human.getHuman().push2Gateway(resp);
-				}
-			}
-		}
 	}
 	
 	private void tendencyFinish(){
@@ -363,16 +344,13 @@ public class ComponentAI {
 	
 	private boolean isSwitchPhase(){
 		//判断碎盾阶段切换
-		if (self instanceof SceneMonsterObject) {
-			SceneMonsterObject monster = (SceneMonsterObject) self;
-			if (phaseHp.containsKey(PhaseEnum.breakShieldPhase)) {
-				if (!monster.isHaveShield() && !currentPhase.equals(PhaseEnum.breakShieldPhase)) {
-					currentPhase = PhaseEnum.breakShieldPhase;
-					AIEvent event = new AIEvent(AIEventEnum.SwitchPhase.getId(), currentPhase.getId()+"", AITargetObjectCampEnum.self.getId(), self);
-					aiEvents.put(self.getId()+":"+event.getEventType(), event);
-					aiFrameEvents.put(self.getId()+":"+event.getEventType(), event);
-					return true;
-				}
+		if (phaseHp.containsKey(PhaseEnum.breakShieldPhase)) {
+			if (!self.isHaveShield() && !currentPhase.equals(PhaseEnum.breakShieldPhase)) {
+				currentPhase = PhaseEnum.breakShieldPhase;
+				AIEvent event = new AIEvent(AIEventEnum.SwitchPhase.getId(), currentPhase.getId()+"", AITargetObjectCampEnum.self.getId(), self);
+				aiEvents.put(self.getId()+":"+event.getEventType(), event);
+				aiFrameEvents.put(self.getId()+":"+event.getEventType(), event);
+				return true;
 			}
 		}
 		//判断普通阶段切换
@@ -382,7 +360,7 @@ public class ComponentAI {
 					continue;
 				}
 				double HPPersent = phaseEnum.getValue();
-				double filterHp = self.getBProperty(BProperty.HP_MAX) * HPPersent;
+				double filterHp = self.getMaxHP() * HPPersent;
 				float currentHp = (float) self.getHp();
 				if (filterHp >= currentHp) {
 					currentPhase = phaseEnum.getKey();

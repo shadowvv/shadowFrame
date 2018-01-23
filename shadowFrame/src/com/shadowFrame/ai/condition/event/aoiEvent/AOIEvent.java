@@ -3,7 +3,7 @@ package com.shadowFrame.ai.condition.event.aoiEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 /**
  * AOI事件
@@ -15,9 +15,9 @@ public class AOIEvent {
 	
 	private AOIEventEnum type;
 	private String param;
-	private DmcSceneObject source;
-	private List<DmcSceneObject> observers;
-	private DmcSceneObject target;
+	private SceneObject source;
+	private List<SceneObject> observers;
+	private SceneObject target;
 	
 	/**
 	 * 
@@ -25,10 +25,10 @@ public class AOIEvent {
 	 * @param param 事件参数
 	 * @param source 事件发起人
 	 */
-	public AOIEvent(AOIEventEnum type,DmcSceneObject source) {
+	public AOIEvent(AOIEventEnum type,SceneObject source) {
 		this.type = type;
 		this.source = source;
-		observers = new ArrayList<DmcSceneObject>();
+		observers = new ArrayList<SceneObject>();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class AOIEvent {
 	 * 
 	 * @return 是否发起人
 	 */
-	public DmcSceneObject getSource() {
+	public SceneObject getSource() {
 		return source;
 	}
 	
@@ -67,7 +67,7 @@ public class AOIEvent {
 	 * 添加观察者
 	 * @param observer 事件观察者
 	 */
-	public void addObserver(DmcSceneObject observer){
+	public void addObserver(SceneObject observer){
 		observers.add(observer);
 	}
 	
@@ -75,7 +75,7 @@ public class AOIEvent {
 	 * 添加目标
 	 * @param target 事件目标
 	 */
-	public void addTarget(DmcSceneObject target){
+	public void addTarget(SceneObject target){
 		this.target = target;
 	}
 
@@ -83,7 +83,7 @@ public class AOIEvent {
 	 * 
 	 * @return 事件观察者
 	 */
-	public List<DmcSceneObject> getObservers() {
+	public List<SceneObject> getObservers() {
 		return observers;
 	}
 
@@ -91,7 +91,7 @@ public class AOIEvent {
 	 * 
 	 * @return 事件目标
 	 */
-	public DmcSceneObject getTarget() {
+	public SceneObject getTarget() {
 		return target;
 	}
 

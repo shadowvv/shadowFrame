@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.condition.event.aoiEvent;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AIEventEnum;
 import com.shadowFrame.ai.condition.event.IDispatchAIEvent;
@@ -15,8 +15,8 @@ public class ReleaseSkillDispatchAIEvent implements IDispatchAIEvent{
 
 	@Override
 	public void dispatchAIEvent(AOIEvent aoiEvent) {
-		DmcSceneObject source = aoiEvent.getSource();
-		for (DmcSceneObject observer : aoiEvent.getObservers()) {
+		SceneObject source = aoiEvent.getSource();
+		for (SceneObject observer : aoiEvent.getObservers()) {
 			int targetCamp = AITargetObjectCampEnum.team.getId();
 			if(observer.getCamp() != source.getCamp()){
 				targetCamp = AITargetObjectCampEnum.enemy.getId();
@@ -25,7 +25,7 @@ public class ReleaseSkillDispatchAIEvent implements IDispatchAIEvent{
 			observer.getComponentAI().onAoiActionEvent(aiEvent);
 		}
 		
-		DmcSceneObject target = aoiEvent.getTarget();
+		SceneObject target = aoiEvent.getTarget();
 		int targetCamp = AITargetObjectCampEnum.team.getId();
 		if(target.getCamp() != source.getCamp()){
 			targetCamp = AITargetObjectCampEnum.enemy.getId();

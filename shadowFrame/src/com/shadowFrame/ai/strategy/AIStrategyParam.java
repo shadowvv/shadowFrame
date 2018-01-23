@@ -3,7 +3,7 @@ package com.shadowFrame.ai.strategy;
 import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.AbstractAICondition;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
@@ -122,7 +122,7 @@ public class AIStrategyParam {
 	 * 重置
 	 * @param self 
 	 */
-	public void reset(DmcSceneObject self) {
+	public void reset(SceneObject self) {
 		this.beginTime = System.currentTimeMillis();
 	}
 	
@@ -131,7 +131,7 @@ public class AIStrategyParam {
 	 * @param self ai物体
 	 * @return
 	 */
-	public boolean CanEnterStrategy(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+	public boolean CanEnterStrategy(SceneObject self,Collection<AIEvent> aiEvents) {
 		if(enterCondition == null){
 			return true;
 		}
@@ -143,7 +143,7 @@ public class AIStrategyParam {
 	 * @param self ai物体
 	 * @return ai行为
 	 */
-	public AITendencyParam getTendency(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+	public AITendencyParam getTendency(SceneObject self,Collection<AIEvent> aiEvents) {
 		return AIStrategyEnum.getStrategy(type).getTendency(self, this,aiEvents);
 	}
 
@@ -153,7 +153,7 @@ public class AIStrategyParam {
 	 * @param aiEvents
 	 * @return
 	 */
-	public boolean isOver(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self,Collection<AIEvent> aiEvents) {
 		if(overCondition == null){
 			return false;
 		}

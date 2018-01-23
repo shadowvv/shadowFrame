@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.condition.event;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
 
 /**
@@ -24,7 +24,7 @@ public class AIEvent {
 	private int type;
 	private int campType;
 	private String param;
-	private DmcSceneObject source;
+	private SceneObject source;
 
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class AIEvent {
 	 * @param param 事件参数
 	 * @param campType 事件目标类型
 	 */
-	public AIEvent(int type, String param, int campType, DmcSceneObject source) {
+	public AIEvent(int type, String param, int campType, SceneObject source) {
 		this.type = type;
 		this.campType = campType;
 		this.param = param;
@@ -67,7 +67,7 @@ public class AIEvent {
 	 * 
 	 * @return 事件发起者
 	 */
-	public DmcSceneObject getSource() {
+	public SceneObject getSource() {
 		return source;
 	}
 

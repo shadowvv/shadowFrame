@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.tendency;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
 
 /**
@@ -11,7 +11,7 @@ import com.shadowFrame.ai.action.AIActionParam;
 public abstract class AbstractAITendency implements IAITendency{
 
 	@Override
-	public AIActionParam getNextAction(DmcSceneObject self, AITendencyParam param,AIActionParam currentAction) {
+	public AIActionParam getNextAction(SceneObject self, AITendencyParam param,AIActionParam currentAction) {
 		AIActionParam nextAction = null;
 		if(currentAction == null){
 			nextAction = param.getFirstAction();

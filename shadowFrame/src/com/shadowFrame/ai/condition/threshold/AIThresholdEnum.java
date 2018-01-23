@@ -1,6 +1,7 @@
 package com.shadowFrame.ai.condition.threshold;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.FPoint3;
+import com.shadowFrame.ai.SceneObject;
 
 
 
@@ -15,7 +16,7 @@ public enum AIThresholdEnum {
 	 */
 	Empty(0,"empty",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
+		public double getThresholdValue(SceneObject self, SceneObject target) {
 			return 0;
 		}
 	}),
@@ -25,8 +26,8 @@ public enum AIThresholdEnum {
 	HPPercent(1,"HPPercent",new IAIThreshold(){
 		
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
-			return target.getHp()/target.getBProperty(BProperty.HP_MAX);
+		public double getThresholdValue(SceneObject self, SceneObject target) {
+			return target.getHp()/target.getMaxHP();
 		}
 	}), 
 	/**
@@ -34,8 +35,8 @@ public enum AIThresholdEnum {
 	 */
 	HatredList(2,"HatredList",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
-			return target.getController().getComponentAI().getHatredListSize();
+		public double getThresholdValue(SceneObject self, SceneObject target) {
+			return target.getComponentAI().getHatredListSize();
 		}
 	}), 
 	/**
@@ -43,7 +44,7 @@ public enum AIThresholdEnum {
 	 */
 	Range(3,"Range",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
+		public double getThresholdValue(SceneObject self, SceneObject target) {
 			return SceneUtils.calcDis(self.getPos(), target.getPos());
 		}
 	}),
@@ -52,8 +53,8 @@ public enum AIThresholdEnum {
 	 */
 	StartegyDuation(4,"StartegyDuation",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
-			return Globals.getTimeService().now() - target.getController().getComponentAI().getCurrentStrategy().getBeginTime();
+		public double getThresholdValue(SceneObject self, SceneObject target) {
+			return System.currentTimeMillis() - target.getComponentAI().getCurrentStrategy().getBeginTime();
 		}
 	}),
 	/**
@@ -61,8 +62,8 @@ public enum AIThresholdEnum {
 	 */
 	TendencyDuation(5,"TendencyDuation",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
-			return Globals.getTimeService().now() - target.getController().getComponentAI().getCurrentTendency().getBeginTime();
+		public double getThresholdValue(SceneObject self, SceneObject target) {
+			return System.currentTimeMillis() - target.getComponentAI().getCurrentTendency().getBeginTime();
 		}
 	}),
 	/**
@@ -70,8 +71,8 @@ public enum AIThresholdEnum {
 	 */
 	ActionDuation(6,"ActionDuation",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
-			return Globals.getTimeService().now() - target.getController().getComponentAI().getCurrentAction().getBeginTime();
+		public double getThresholdValue(SceneObject self, SceneObject target) {
+			return System.currentTimeMillis() - target.getComponentAI().getCurrentAction().getBeginTime();
 		}
 	}),
 	/**
@@ -79,7 +80,7 @@ public enum AIThresholdEnum {
 	 */
 	FrontRange(7,"FrontRange",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
+		public double getThresholdValue(SceneObject self, SceneObject target) {
 			FPoint3 dir = SceneUtils.calcDir(target.getPos(),self.getPos());
 			double angle = SceneUtils.angle(self.getDir(),dir);
 			if(angle > self.getViewAngle()/2){
@@ -93,7 +94,7 @@ public enum AIThresholdEnum {
 	 */
 	BackRange(8,"BackRange",new IAIThreshold(){
 		@Override
-		public double getThresholdValue(DmcSceneObject self, DmcSceneObject target) {
+		public double getThresholdValue(SceneObject self, SceneObject target) {
 			FPoint3 dir = SceneUtils.calcDir(target.getPos(),self.getPos());
 			FPoint3 re = SceneUtils.rotation(self.getDir(),180);
 			double angle = SceneUtils.angle(re,dir);
@@ -118,7 +119,7 @@ public enum AIThresholdEnum {
 		 * @param target 检测的物体
 		 * @return 门槛值
 		 */
-		double getThresholdValue(DmcSceneObject self,DmcSceneObject target);
+		double getThresholdValue(SceneObject self,SceneObject target);
 		
 	}
 	
@@ -172,7 +173,7 @@ public enum AIThresholdEnum {
 	 * @param compare 比较方式
 	 * @return
 	 */
-	public boolean overThreshold(DmcSceneObject self,DmcSceneObject target,double value,AIValueCompareEnum compare){
+	public boolean overThreshold(SceneObject self,SceneObject target,double value,AIValueCompareEnum compare){
 		if(id == Empty.getId()){
 			return true;
 		}

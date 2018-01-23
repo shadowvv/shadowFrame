@@ -2,7 +2,7 @@ package com.shadowFrame.ai.target;
 
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 /**
  * 获得所有敌人为目标
@@ -12,7 +12,7 @@ import com.shadowFrame.ai.DmcSceneObject;
 public class AIEnemyTargetObjectFilter implements IAITargetObjectFilter{
 
 	@Override
-	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self) {
+	public List<SceneObject> getTargetObjects(SceneObject self) {
 		return self.getComponentAI().getAllHatredObjects();
 	}
 

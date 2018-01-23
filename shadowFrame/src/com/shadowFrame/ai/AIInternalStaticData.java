@@ -22,4 +22,9 @@ public final class AIInternalStaticData {
 	 * 默认徘徊速度
 	 */
 	public static final int DEFAULT_WANDER_SPEED = 30;
+	
+	/**
+	 * OT倍数
+	 */
+	public static final float OVER_TAUNTED_RATE = 1.2f;
 }

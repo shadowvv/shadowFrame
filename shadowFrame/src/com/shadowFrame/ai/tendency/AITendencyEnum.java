@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.tendency;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
 
 
@@ -75,7 +75,7 @@ public enum AITendencyEnum {
 	 * @param collection 
 	 * @return 下一个动作
 	 */
-	public AIActionParam getNextAction(DmcSceneObject self, AITendencyParam param, AIActionParam currentAction) {
+	public AIActionParam getNextAction(SceneObject self, AITendencyParam param, AIActionParam currentAction) {
 		return tendency.getNextAction(self, param, currentAction);
 	}
 	

@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.tendency;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
 
 /**
@@ -17,6 +17,6 @@ public interface IAITendency {
 	 * @param currentAction 当前行为
 	 * @return
 	 */
-	AIActionParam getNextAction(DmcSceneObject self,AITendencyParam param, AIActionParam currentAction);
+	AIActionParam getNextAction(SceneObject self,AITendencyParam param, AIActionParam currentAction);
 	
 }

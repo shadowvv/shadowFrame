@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.action;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 
 /**
@@ -12,7 +12,7 @@ import com.shadowFrame.ai.DmcSceneObject;
 public abstract class AbstractAIAction implements IAIAction {
 
 	@Override
-	public final boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public final boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -26,6 +26,6 @@ public abstract class AbstractAIAction implements IAIAction {
 	 * @param param
 	 * @return
 	 */
-	protected abstract boolean action(DmcSceneObject self, AIActionParam param);
+	protected abstract boolean action(SceneObject self, AIActionParam param);
 
 }

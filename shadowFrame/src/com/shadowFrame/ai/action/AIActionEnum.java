@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
@@ -119,7 +119,7 @@ public enum AIActionEnum {
 	 * @param self 执行动作的单位
 	 * @param param 动作参数
 	 */
-	public void doAction(DmcSceneObject self, AIActionParam param) {
+	public void doAction(SceneObject self, AIActionParam param) {
 		action.doAction(self, param);
 	}
 
@@ -127,7 +127,7 @@ public enum AIActionEnum {
 	 * 停止动作
 	 * @param self 执行动作的单位
 	 */
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		
 	}
 
@@ -137,7 +137,7 @@ public enum AIActionEnum {
 	 * @param self 
 	 * @param currentTendency
 	 */
-	public void reset(AIActionParam param,DmcSceneObject self,AITendencyParam currentTendency) {
+	public void reset(AIActionParam param,SceneObject self,AITendencyParam currentTendency) {
 		action.reset(param,self,currentTendency);
 	}
 
@@ -148,7 +148,7 @@ public enum AIActionEnum {
 	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(DmcSceneObject self, AIActionParam param, Collection<AIEvent> collection) {
+	public boolean isOver(SceneObject self, AIActionParam param, Collection<AIEvent> collection) {
 		return action.isOver(self,param,collection);
 	}
 }

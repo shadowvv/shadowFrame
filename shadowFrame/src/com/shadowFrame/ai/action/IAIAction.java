@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
@@ -19,7 +19,7 @@ public interface IAIAction {
 	 * @param param 动作参数
 	 * @return 执行动作成功
 	 */
-	boolean doAction(DmcSceneObject self,AIActionParam param);
+	boolean doAction(SceneObject self,AIActionParam param);
 
 	/**
 	 * 是否可以执行动作
@@ -27,12 +27,12 @@ public interface IAIAction {
 	 * @param param 动作参数
 	 * @return
 	 */
-	boolean checkAction(DmcSceneObject self,AIActionParam param);
+	boolean checkAction(SceneObject self,AIActionParam param);
 
 	/**
 	 * 停止动作
 	 */
-	void stop(DmcSceneObject self);
+	void stop(SceneObject self);
 
 	/**
 	 * 重置动作参数
@@ -40,7 +40,7 @@ public interface IAIAction {
 	 * @param self
 	 * @param currentTendency 
 	 */
-	void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency);
+	void reset(AIActionParam param,SceneObject self, AITendencyParam currentTendency);
 
 	/**
 	 * 是否结束动作
@@ -49,6 +49,6 @@ public interface IAIAction {
 	 * @param collection 
 	 * @return
 	 */
-	boolean isOver(DmcSceneObject self, AIActionParam param, Collection<AIEvent> collection);
+	boolean isOver(SceneObject self, AIActionParam param, Collection<AIEvent> collection);
 	
 }

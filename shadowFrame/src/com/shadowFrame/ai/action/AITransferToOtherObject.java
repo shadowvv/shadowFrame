@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
@@ -15,7 +15,7 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AITransferToOtherObject implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -37,7 +37,7 @@ public class AITransferToOtherObject implements IAIAction{
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+	public boolean checkAction(SceneObject self, AIActionParam param) {
 //		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
 //		if (target == null) {
 //			return false;
@@ -46,17 +46,17 @@ public class AITransferToOtherObject implements IAIAction{
 	}
 
 	@Override
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		
 	}
 
 	@Override
-	public void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(AIActionParam param,SceneObject self, AITendencyParam currentTendency) {
 		param.setCurrentParam(param.getParam());
 	}
 
 	@Override
-	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
 		return true;
 	}
 

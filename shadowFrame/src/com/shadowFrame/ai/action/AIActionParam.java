@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.FPoint3;
 import com.shadowFrame.ai.condition.AbstractAICondition;
 import com.shadowFrame.ai.condition.event.AIEvent;
@@ -106,7 +106,7 @@ public class AIActionParam {
 	 * 
 	 * @return 动作目标单位
 	 */
-	public List<DmcSceneObject> getActionTargetObjects(DmcSceneObject self) {
+	public List<SceneObject> getActionTargetObjects(SceneObject self) {
 		return AITargetObjectCampEnum.getTargetComp(targetCampType).getTargetObjects(self);
 	}
 
@@ -147,7 +147,7 @@ public class AIActionParam {
 	 * @param self 
 	 * @param currentTendency 
 	 */
-	public void reset(DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(SceneObject self, AITendencyParam currentTendency) {
 		done = false;
 		beginTime = System.currentTimeMillis();
 		AIActionEnum.getAction(type).reset(this,self,currentTendency);
@@ -174,7 +174,7 @@ public class AIActionParam {
 	/**
 	 * 停止动作
 	 */
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		AIActionEnum.getAction(type).stop(self);
 	}
 
@@ -182,7 +182,7 @@ public class AIActionParam {
 	 * 执行动作
 	 * @param self
 	 */
-	public void doAction(DmcSceneObject self) {
+	public void doAction(SceneObject self) {
 		AIActionEnum.getAction(type).doAction(self,this);
 	}
 
@@ -192,7 +192,7 @@ public class AIActionParam {
 	 * @param collection 
 	 * @return
 	 */
-	public boolean isInterrupt(DmcSceneObject self, Collection<AIEvent> aiEvents) {
+	public boolean isInterrupt(SceneObject self, Collection<AIEvent> aiEvents) {
 		if(interruptCondition == null){
 			return false;
 		}
@@ -205,7 +205,7 @@ public class AIActionParam {
 	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(DmcSceneObject self, Collection<AIEvent> collection) {
+	public boolean isOver(SceneObject self, Collection<AIEvent> collection) {
 		if(AIActionEnum.getAction(type).isOver(self, this,collection)){
 			return true;
 		}

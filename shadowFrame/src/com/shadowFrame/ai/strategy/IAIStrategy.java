@@ -2,7 +2,7 @@ package com.shadowFrame.ai.strategy;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
@@ -20,6 +20,6 @@ public interface IAIStrategy {
 	 * @param strategyParam 当前策略参数
 	 * @return ai行为
 	 */
-	AITendencyParam getTendency(DmcSceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents);
+	AITendencyParam getTendency(SceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents);
 	
 }

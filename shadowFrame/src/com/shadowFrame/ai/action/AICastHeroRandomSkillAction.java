@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AIEventEnum;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
@@ -17,7 +17,7 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AICastHeroRandomSkillAction implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -27,7 +27,7 @@ public class AICastHeroRandomSkillAction implements IAIAction{
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+	public boolean checkAction(SceneObject self, AIActionParam param) {
 		if(param.isDone()){
 			return false;
 		}
@@ -42,18 +42,18 @@ public class AICastHeroRandomSkillAction implements IAIAction{
 	}
 
 	@Override
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		self.getComponentAI().getCurrentAction().setDone(true);
 	}
 
 	@Override
-	public void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(AIActionParam param,SceneObject self, AITendencyParam currentTendency) {
 		int skillId = 0;
 		param.setCurrentParam(skillId+"");
 	}
 
 	@Override
-	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
 		AIEvent event = new AIEvent(AIEventEnum.finishSkill.getId(), param.getCurrentParam(), AITargetObjectCampEnum.self.getId(), null);
 		for (AIEvent aoiEvent : aiEvents) {
 			if(event.match(aoiEvent)){

@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.AIInternalStaticData;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AIEventEnum;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
@@ -19,13 +20,13 @@ import com.shadowFrame.ai.target.AITargetObjectCampEnum;
  */
 public class AIHatredMeter {
 
-	private Map<Long, DmcSceneObject> hatredObject;
+	private Map<Long, SceneObject> hatredObject;
 	private Map<Long, Float> hatredMeter;
 	private Map<Long, Long> damageMeter;
-	private DmcSceneObject commonTarget;
+	private SceneObject commonTarget;
 
 	public AIHatredMeter() {
-		hatredObject = new HashMap<Long, DmcSceneObject>();
+		hatredObject = new HashMap<Long, SceneObject>();
 		hatredMeter = new HashMap<Long, Float>();
 		damageMeter = new HashMap<Long, Long>();
 	}
@@ -38,7 +39,7 @@ public class AIHatredMeter {
 	 */
 	public void onAoiEvent(AIEvent event) {
 		if (event.getEventCampType() == AITargetObjectCampEnum.enemy.getId()) {
-			DmcSceneObject source = event.getSource();
+			SceneObject source = event.getSource();
 
 			if (event.getEventType() == AIEventEnum.Dead.getId()) {
 				removeObject(source.getId());
@@ -70,7 +71,7 @@ public class AIHatredMeter {
 		}
 	}
 
-	private void addObject(DmcSceneObject source, AIEvent event) {
+	private void addObject(SceneObject source, AIEvent event) {
 		hatredObject.put(source.getId(), source);
 		hatredMeter.put(source.getId(), event.getEventHatredValue());
 		damageMeter.put(source.getId(), event.getEventDamage());
@@ -89,7 +90,7 @@ public class AIHatredMeter {
 		}
 	}
 
-	private DmcSceneObject getMaxHatredTarget() {
+	private SceneObject getMaxHatredTarget() {
 		float max = -1;
 		long playerId = 0;
 		for (Entry<Long, Float> entry : hatredMeter.entrySet()) {
@@ -113,22 +114,22 @@ public class AIHatredMeter {
 	 * 
 	 * @return 仇恨列表所有单位
 	 */
-	public List<DmcSceneObject> getAllHatredObjects() {
-		return new ArrayList<DmcSceneObject>(hatredObject.values());
+	public List<SceneObject> getAllHatredObjects() {
+		return new ArrayList<SceneObject>(hatredObject.values());
 	}
 
 	/**
 	 * 
 	 * @return 仇恨值最高的目标
 	 */
-	public DmcSceneObject getCommonTarget() {
+	public SceneObject getCommonTarget() {
 		if(hatredObject.size() == 0){
 			return null;
 		}
-		DmcSceneObject maxObject = getMaxHatredTarget();
+		SceneObject maxObject = getMaxHatredTarget();
 		float maxHatred = hatredMeter.get(maxObject.getId());
 		float currentHatred = hatredMeter.get(commonTarget.getId());
-		if(maxHatred > currentHatred*DictBattleConfig.getValue("overTauntedRate")){
+		if(maxHatred > currentHatred*AIInternalStaticData.OVER_TAUNTED_RATE){
 			commonTarget = maxObject;
 		}
 		return commonTarget;

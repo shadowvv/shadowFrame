@@ -116,15 +116,10 @@ public enum AIEventEnum {
 				return 0;
 			}
 			String[] params = param.split(":");
+			@SuppressWarnings("unused")
 			int skillDamagetId = Integer.parseInt(params[1]);
 			long damage = Long.parseLong(params[2]);
-			float skillBase = DictHeroSkillDamage.cache.get(skillDamagetId).getHatredDefaultNumber();
-			float damageRate = DictBattleConfig.getValue("damageHatredRate");
-			float careerRate = DictHero.getDictHero(event.getSource().getHeroId()).getCareerHatredRate();
-			float hatred = (skillBase+damage*damageRate)*careerRate;
-			float buffValue = event.getSource().getController().getComponentRoleBuff().getEffectHatredValue();
-			float buffPersent = (float) (1 + event.getSource().getController().getComponentRoleBuff().getEffectHatredPercent());
-			float fianlHatred = (hatred+buffValue)*buffPersent;
+			float fianlHatred = damage;
 			return fianlHatred;
 		}
 		

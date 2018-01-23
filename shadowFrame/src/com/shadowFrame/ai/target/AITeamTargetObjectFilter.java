@@ -3,7 +3,7 @@ package com.shadowFrame.ai.target;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 /**
  * 获得队友为目标
@@ -13,8 +13,8 @@ import com.shadowFrame.ai.DmcSceneObject;
 public class AITeamTargetObjectFilter implements IAITargetObjectFilter{
 
 	@Override
-	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self) {
-		List<DmcSceneObject> list = new ArrayList<DmcSceneObject>();
+	public List<SceneObject> getTargetObjects(SceneObject self) {
+		List<SceneObject> list = new ArrayList<SceneObject>();
 		//TODO:getTeamMember
 		return list;
 	}

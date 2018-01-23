@@ -2,7 +2,7 @@ package com.shadowFrame.ai.tendency;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
 import com.shadowFrame.ai.condition.AbstractAICondition;
 import com.shadowFrame.ai.condition.event.AIEvent;
@@ -125,7 +125,7 @@ public class AITendencyParam {
 	 * @param collection 
 	 * @return 下一个动作
 	 */
-	public AIActionParam getNextAction(DmcSceneObject self,AIActionParam currentAction) {
+	public AIActionParam getNextAction(SceneObject self,AIActionParam currentAction) {
 		return AITendencyEnum.getTendency(type).getNextAction(self, this, currentAction);
 	}
 
@@ -134,7 +134,7 @@ public class AITendencyParam {
 	 * @param self ai绑定的单位
 	 * @return
 	 */
-	public boolean CanEnterTendency(DmcSceneObject self, Collection<AIEvent> collection) {
+	public boolean CanEnterTendency(SceneObject self, Collection<AIEvent> collection) {
 		if(enterCondition == null){
 			return true;
 		}
@@ -155,7 +155,7 @@ public class AITendencyParam {
 	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(DmcSceneObject self, Collection<AIEvent> collection) {
+	public boolean isOver(SceneObject self, Collection<AIEvent> collection) {
 		if(overCondition == null){
 			return false;
 		}
@@ -167,7 +167,7 @@ public class AITendencyParam {
 	 * @param currentStrategy 
 	 * @param self 
 	 */
-	public void reset(DmcSceneObject self, AIStrategyParam currentStrategy) {
+	public void reset(SceneObject self, AIStrategyParam currentStrategy) {
 		this.beginTime = System.currentTimeMillis();
 	}
 

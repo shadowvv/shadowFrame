@@ -2,11 +2,12 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AIEventEnum;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
 import com.shadowFrame.ai.tendency.AITendencyParam;
+import com.shadowFrame.util.MathUtil;
 
 /**
  * 选择并释放技能
@@ -17,55 +18,38 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AISelectAndCastSkill implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
+		@SuppressWarnings("unused")
 		int skillId = Integer.parseInt(param.getCurrentParam());
-		long now = Globals.getTimeService().now();
-		self.getController().getComponentRoleSkill().initPrepareSkill(DictHeroSkill.getDictHeroSkill(skillId).getKind(), now);
-		SkillService service = AMFrameWorkBoot.getBean(SkillService.class);
-		service.useSkill(self, skillId, param.getActionTargetObjects(self).get(0));
 		param.setDone(true);
 		return true;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+	public boolean checkAction(SceneObject self, AIActionParam param) {
 		if(param.isDone()){
 			return false;
 		}
 		if(param.getActionTargetObjects(self).size() == 0){
 			return false;
 		}
-		if (!self.getRoleStateManager().canEnter(ActionState.USING_SKILL)) {
-			return false;
-		}
 		int skillId = Integer.parseInt(param.getCurrentParam());
 		if(skillId == 0){
 			return false;
 		}		
-		ActiveSkill useSkillCache = self.getController().getComponentRoleSkill().getUseSkillCache();
-		if (useSkillCache != null && !useSkillCache.isOverdue() && useSkillCache.getTmplId() == skillId) {
-			return false;
-		}
-		ActiveSkill skill = self.getController().getComponentRoleSkill().getActiveSkillById(skillId);
-		if (skill == null) {
-			return false;
-		} 
-		if (!self.getRoleActionManager().skillSelfCheck(skill)) {
-			return false;
-		}
 		return true;
 	}
 
 	@Override
-	public void stop(DmcSceneObject self) {
-		self.getController().getComponentAI().getCurrentAction().setDone(true);
+	public void stop(SceneObject self) {
+		self.getComponentAI().getCurrentAction().setDone(true);
 	}
 
 	@Override
-	public void reset(AIActionParam param, DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(AIActionParam param, SceneObject self, AITendencyParam currentTendency) {
 		String[] params = param.getParam().split(";");
 		int[] ks = new int[params.length];
 		int[] vs = new int[params.length];
@@ -75,12 +59,12 @@ public class AISelectAndCastSkill implements IAIAction{
 			ks[i] = Integer.parseInt(kv[0]);
 			vs[i] = Integer.parseInt(kv[1]);
 		}
-		int index = MathUtils.randomSelectByFrequency(vs, null);
+		int index = MathUtil.randomSelectByFrequency(vs);
 		param.setCurrentParam(ks[index]+"");
 	}
 
 	@Override
-	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
 		AIEvent event = new AIEvent(AIEventEnum.finishSkill.getId(), param.getCurrentParam(), AITargetObjectCampEnum.self.getId(), null);
 		for (AIEvent aoiEvent : aiEvents) {
 			if(event.match(aoiEvent)){

@@ -2,7 +2,7 @@ package com.shadowFrame.ai.target;
 
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 
 /**
@@ -60,7 +60,7 @@ public enum AITargetObjectCampEnum {
 	 * @param self
 	 * @return
 	 */
-	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self){
+	public List<SceneObject> getTargetObjects(SceneObject self){
 		return getTarget.getTargetObjects(self);
 	}
 	

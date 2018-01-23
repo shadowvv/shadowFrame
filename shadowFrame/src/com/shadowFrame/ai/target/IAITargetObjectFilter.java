@@ -2,7 +2,7 @@ package com.shadowFrame.ai.target;
 
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 /**
  * ai获得目标接口
@@ -16,6 +16,6 @@ public interface IAITargetObjectFilter {
 	 * @param self
 	 * @return 目标集合
 	 */
-	List<DmcSceneObject> getTargetObjects(DmcSceneObject self);
+	List<SceneObject> getTargetObjects(SceneObject self);
 	
 }

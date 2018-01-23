@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
+import com.shadowFrame.util.MathUtil;
 
 
 /**
@@ -17,7 +18,7 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AIVigilanceStrategy implements IAIStrategy {
 	
 	@Override
-	public AITendencyParam getTendency(DmcSceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents) {
+	public AITendencyParam getTendency(SceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents) {
 		AITendencyParam nextTendency = null;
 		List<AITendencyParam> params = strategyParam.getTendencyList();
 		for (int i = 0; i < params.size(); i++) {
@@ -48,7 +49,7 @@ public class AIVigilanceStrategy implements IAIStrategy {
 		for (int i = 0; i < samePriority.size(); i++) {
 			weights[i] = samePriority.get(i).getWeight();
 		}
-		int index = MathUtils.randomSelectByFrequency(weights, null);
+		int index = MathUtil.randomSelectByFrequency(weights);
 		return samePriority.get(index);
 	}
 	

@@ -2,7 +2,7 @@ package com.shadowFrame.ai.condition.threshold;
 
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
 
 /**
@@ -56,12 +56,12 @@ public class AIThresholdParam {
 	 * @param self ai结附的场景物体
 	 * @return
 	 */
-	public boolean overThreshold(DmcSceneObject self) {
-		List<DmcSceneObject> targets = AITargetObjectCampEnum.getTargetComp(campType).getTargetObjects(self);
+	public boolean overThreshold(SceneObject self) {
+		List<SceneObject> targets = AITargetObjectCampEnum.getTargetComp(campType).getTargetObjects(self);
 		if(targets.size() == 0){
 			return false;
 		}
-		for (DmcSceneObject target : targets) {
+		for (SceneObject target : targets) {
 			if(!AIThresholdEnum.getThreshold(id).overThreshold(self,target, value,AIValueCompareEnum.getCompare(compareType))){
 				return false;
 			}

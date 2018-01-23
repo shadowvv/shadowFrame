@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.event.AOIEventService;
 import com.shadowFrame.ai.tendency.AITendencyParam;
@@ -15,18 +15,18 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AIMoveToObjectAction implements IAIAction {
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
-		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
+		SceneObject target = param.getActionTargetObjects(self).get(0);
 		self.getController().getRoleActionManager().move(target.getPos());
 		return false;
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
- 		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
+	public boolean checkAction(SceneObject self, AIActionParam param) {
+ 		SceneObject target = param.getActionTargetObjects(self).get(0);
 		if (target == null) {
 			return false;
 		}
@@ -53,12 +53,12 @@ public class AIMoveToObjectAction implements IAIAction {
 	}
 
 	@Override
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		self.getController().getRoleActionManager().stopMove(null, true, false,null);
 	}
 
 	@Override
-	public void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(AIActionParam param,SceneObject self, AITendencyParam currentTendency) {
 		String[] params = param.getParam().split(":");
 		String type = params[0];
 		float dis = 0;
@@ -74,11 +74,11 @@ public class AIMoveToObjectAction implements IAIAction {
 	}
 
 	@Override
-	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
 		if(param.getActionTargetObjects(self).size() == 0){
 			return true;
 		}
-		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
+		SceneObject target = param.getActionTargetObjects(self).get(0);
 		float dis = Float.parseFloat(param.getCurrentParam());
 		if (SceneUtils.isObjectInCircle(target.getPos(), target.getRadius(), self.getDir(), self.getPos(), dis, self.getViewAngle())) {
 			return true;

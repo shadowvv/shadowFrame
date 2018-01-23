@@ -3,7 +3,7 @@ package com.shadowFrame.ai.target;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 
 /**
  * 获得普通目标
@@ -13,8 +13,8 @@ import com.shadowFrame.ai.DmcSceneObject;
 public class AICommonTargetObjectFilter implements IAITargetObjectFilter{
 
 	@Override
-	public List<DmcSceneObject> getTargetObjects(DmcSceneObject self) {
-		List<DmcSceneObject> targets = new ArrayList<DmcSceneObject>();
+	public List<SceneObject> getTargetObjects(SceneObject self) {
+		List<SceneObject> targets = new ArrayList<SceneObject>();
 		if(self.getComponentAI().getCommonTarget() != null){
 			targets.add(self.getComponentAI().getCommonTarget());
 		}

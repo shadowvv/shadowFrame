@@ -3,7 +3,7 @@ package com.shadowFrame.ai.condition;
 import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.action.AIActionEnum;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.threshold.AIThresholdEnum;
@@ -70,11 +70,7 @@ public abstract class AbstractAICondition {
 		if (config.getActionId() == AIActionEnum.CastSkill.getId()) {
 			for (AIThresholdParam threshold : thresholds) {
 				if (threshold.getId() == AIThresholdEnum.Range.getId() && threshold.getThresholdValue() == -1) {
-					DictHeroSkill skill = DictHeroSkill.getDictHeroSkill(Integer.parseInt(config.getParam()));
-					if (skill == null) {
-						continue;
-					}
-					threshold.setValue(skill.getReleaseRange());
+					threshold.setValue(3);
 				}
 			}
 		}
@@ -87,6 +83,6 @@ public abstract class AbstractAICondition {
 	 * @param collection 
 	 * @return
 	 */
-	public abstract boolean match(DmcSceneObject self, Collection<AIEvent> collection);
+	public abstract boolean match(SceneObject self, Collection<AIEvent> collection);
 
 }

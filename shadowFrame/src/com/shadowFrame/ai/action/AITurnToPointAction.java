@@ -2,7 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.FPoint3;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
@@ -15,7 +15,7 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public class AITurnToPointAction implements IAIAction{
 
 	@Override
-	public boolean doAction(DmcSceneObject self, AIActionParam param) {
+	public boolean doAction(SceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
@@ -26,7 +26,7 @@ public class AITurnToPointAction implements IAIAction{
 	}
 
 	@Override
-	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
+	public boolean checkAction(SceneObject self, AIActionParam param) {
 		FPoint3 target = param.getActionTargetPoints().get(0);
 		if (target == null) {
 			return false;
@@ -43,12 +43,12 @@ public class AITurnToPointAction implements IAIAction{
 	}
 
 	@Override
-	public void stop(DmcSceneObject self) {
+	public void stop(SceneObject self) {
 		self.getRoleActionManager().stopMove();
 	}
 
 	@Override
-	public void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency) {
+	public void reset(AIActionParam param,SceneObject self, AITendencyParam currentTendency) {
 		String[] params = param.getParam().split(",");
 		FPoint3 target = new FPoint3(Float.parseFloat(params[0]), Float.parseFloat(params[1]), Float.parseFloat(params[2]));
 		param.getActionTargetPoints().clear();
@@ -56,7 +56,7 @@ public class AITurnToPointAction implements IAIAction{
 	}
 
 	@Override
-	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
 		FPoint3 target = param.getActionTargetPoints().get(0);
 		if(target == null){
 			return true;

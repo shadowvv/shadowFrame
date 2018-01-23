@@ -2,7 +2,7 @@ package com.shadowFrame.ai.condition;
 
 import java.util.Collection;
 
-import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.threshold.AIThresholdParam;
 
@@ -19,7 +19,7 @@ public class AIAndCondition extends AbstractAICondition{
 	}
 
 	@Override
-	public boolean match(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+	public boolean match(SceneObject self,Collection<AIEvent> aiEvents) {
 		if(thresholds == null && events == null && conditions == null){
 			return true;
 		}
