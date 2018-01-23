@@ -1,11 +1,12 @@
 package com.shadowFrame.ai.strategy;
 
+import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.SceneObject;
-import com.shadowFrame.ai.event.AIEvent;
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.condition.AbstractAICondition;
+import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
-import com.shadowFrame.ai.threshold.AIThresholdParam;
 
 /**
  * ai策略参数
@@ -19,48 +20,52 @@ public class AIStrategyParam {
 	 */
 	private int id;
 	/**
-	 * 进入策略的门槛
+	 * 策略类型
 	 */
-	private List<AIThresholdParam> enterThresholds;
+	private int type;
 	/**
-	 * 进入策略的事件
+	 * 策略参数
 	 */
-	private List<AIEvent> enterEvents;
+	private String param;
+	/**
+	 * 进入条件
+	 */
+	private AbstractAICondition enterCondition;
+	/**
+	 * 结束条件
+	 */
+	private AbstractAICondition overCondition;
 	/**
 	 * 策略行为列表
 	 */
 	private List<AITendencyParam> tendencys;
 	
 	/**
-	 * 进入策略的门槛
-	 */
-	private List<AIThresholdParam> overThresholds;
-	/**
-	 * 进入策略的事件
-	 */
-	private List<AIEvent> overEvents;
-	
-	/**
 	 * 开始时间
 	 */
 	private long beginTime;
+	/**
+	 * 当前参数
+	 */
+	private String currentParam;
 	
-	
+	public AIStrategyParam(int id,int type,String param,List<AITendencyParam> tendencys,AbstractAICondition enterCondition,AbstractAICondition overCondition) {
+		this.id = id;
+		this.type = type;
+		this.param = param;
+		this.enterCondition = enterCondition;
+		this.overCondition = overCondition;
+		this.tendencys = tendencys;
+		this.beginTime = System.currentTimeMillis();
+	}
 	
 	/**
 	 * 
-	 * @param id 策略Id
-	 * @param threshold 进入策略门槛
-	 * @param event 进入策略事件
+	 * 
+	 * @return 策略类型
 	 */
-	public AIStrategyParam(int id,List<AITendencyParam> tendencys,List<AIThresholdParam> enterThresholds,List<AIEvent> enterEvents,List<AIThresholdParam> overThresholds,List<AIEvent> overEvents) {
-		this.id = id;
-		this.enterThresholds = enterThresholds;
-		this.enterEvents = enterEvents;
-		this.overThresholds = overThresholds;
-		this.overEvents = overEvents;
-		this.tendencys = tendencys;
-		this.beginTime = System.currentTimeMillis();
+	public int getType() {
+		return type;
 	}
 	
 	/**
@@ -76,39 +81,7 @@ public class AIStrategyParam {
 	 * @return 策略名
 	 */
 	public String getName(){
-		return AIStrategyEnum.getStrategy(id).getName();
-	}
-
-	/**
-	 * 
-	 * @return 进入策略门槛
-	 */
-	public List<AIThresholdParam> getEnterStrategyThresholds() {
-		return enterThresholds;
-	}
-
-	/**
-	 * 
-	 * @return 进入策略事件
-	 */
-	public List<AIEvent> getEnterStrategyEvents() {
-		return enterEvents;
-	}
-	
-	/**
-	 * 
-	 * @return 结束事件
-	 */
-	public List<AIEvent> getOverEvents() {
-		return overEvents;
-	}
-	
-	/**
-	 * 
-	 * @return 结束门槛
-	 */
-	public List<AIThresholdParam> getOverThresholds() {
-		return overThresholds;
+		return AIStrategyEnum.getStrategy(type).getName();
 	}
 
 	/**
@@ -126,11 +99,30 @@ public class AIStrategyParam {
 	public long getBeginTime() {
 		return beginTime;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 策略参数
+	 */
+	public String getParam() {
+		return param;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 当前参数
+	 */
+	public String getCurrentParam() {
+		return currentParam;
+	}
 
 	/**
 	 * 重置
+	 * @param self 
 	 */
-	public void reset() {
+	public void reset(DmcSceneObject self) {
 		this.beginTime = System.currentTimeMillis();
 	}
 	
@@ -139,8 +131,11 @@ public class AIStrategyParam {
 	 * @param self ai物体
 	 * @return
 	 */
-	public boolean CanEnterStrategy(SceneObject self) {
-		return AIStrategyEnum.getStrategy(id).CanEnterStrategy(self, this);
+	public boolean CanEnterStrategy(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+		if(enterCondition == null){
+			return true;
+		}
+		return enterCondition.match(self,aiEvents);
 	}
 
 	/**
@@ -148,8 +143,8 @@ public class AIStrategyParam {
 	 * @param self ai物体
 	 * @return ai行为
 	 */
-	public AITendencyParam getTendency(SceneObject self) {
-		return AIStrategyEnum.getStrategy(id).getTendency(self, this);
+	public AITendencyParam getTendency(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+		return AIStrategyEnum.getStrategy(type).getTendency(self, this,aiEvents);
 	}
 
 	/**
@@ -158,8 +153,20 @@ public class AIStrategyParam {
 	 * @param aiEvents
 	 * @return
 	 */
-	public boolean isOver(SceneObject self, List<AIEvent> aiEvents) {
-		return AIStrategyEnum.getStrategy(id).isOver(self, this);
+	public boolean isOver(DmcSceneObject self,Collection<AIEvent> aiEvents) {
+		if(overCondition == null){
+			return false;
+		}
+		return overCondition.match(self,aiEvents);
+	}
+	
+	/**
+	 * 移除行为
+	 * 
+	 * @param currentTendency
+	 */
+	public void removeTendency(AITendencyParam currentTendency) {
+		tendencys.remove(currentTendency);
 	}
 
 }

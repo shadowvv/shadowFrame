@@ -1,11 +1,12 @@
 package com.shadowFrame.ai.action;
 
-import com.shadowFrame.ai.AITransfer;
-import com.shadowFrame.ai.SceneObject;
-import com.shadowFrame.ai.event.AIEvent;
-import com.shadowFrame.ai.event.AIEventEnum;
+import java.util.Collection;
+
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.condition.event.AIEvent;
+import com.shadowFrame.ai.condition.event.AIEventEnum;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
-import com.shadowFrame.ai.threshold.AIThresholdParam;
+import com.shadowFrame.ai.tendency.AITendencyParam;
 
 /**
  * 释放技能动作
@@ -15,47 +16,47 @@ import com.shadowFrame.ai.threshold.AIThresholdParam;
 public class AICastSkillAction implements IAIAction{
 
 	@Override
-	public boolean doAction(SceneObject self, AIActionParam param) {
+	public boolean doAction(DmcSceneObject self, AIActionParam param) {
 		if(!checkAction(self, param)){
 			return false;
 		}
 		@SuppressWarnings("unused")
-		int skillId = Integer.parseInt(param.getParam());
-		//TODO:释放技能
-		param.setDone(true);
+		int skillId = Integer.parseInt(param.getCurrentParam());
 		return true;
 	}
 
 	@Override
-	public boolean checkAction(SceneObject self, AIActionParam param) {
+	public boolean checkAction(DmcSceneObject self, AIActionParam param) {
 		if(param.isDone()){
 			return false;
 		}
 		if(param.getActionTargetObjects(self).size() == 0){
 			return false;
 		}
-		int skillId = Integer.parseInt(param.getParam());
+		int skillId = Integer.parseInt(param.getCurrentParam());
 		if(skillId == 0){
 			return false;
-		}
+		}		
 		return true;
 	}
 
 	@Override
-	public void stop(SceneObject self) {
-		self.getAiCompnent().getCurrentAction().setDone(true);
+	public void stop(DmcSceneObject self) {
+		self.getComponentAI().getCurrentAction().setDone(true);
 	}
 
 	@Override
-	public void reset(AIActionParam param) {
-		
+	public void reset(AIActionParam param,DmcSceneObject self, AITendencyParam currentTendency) {
+
 	}
 
 	@Override
-	public boolean isOver(SceneObject self, AIActionParam param) {
-		AIEvent event = new AIEvent(AIEventEnum.finishSkill.getId(), param.getParam(), AITargetObjectCampEnum.self.getId(), null);
-		if(AITransfer.transfer(AIThresholdParam.EMPTY_THRESHOLD, event, self)){
-			return true;
+	public boolean isOver(DmcSceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
+		AIEvent event = new AIEvent(AIEventEnum.finishSkill.getId(), param.getCurrentParam(), AITargetObjectCampEnum.self.getId(), null);
+		for (AIEvent aoiEvent : aiEvents) {
+			if(event.match(aoiEvent)){
+				return true;
+			}
 		}
 		return false;
 	}

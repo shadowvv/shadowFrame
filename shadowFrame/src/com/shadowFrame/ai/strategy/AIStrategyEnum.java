@@ -1,6 +1,9 @@
 package com.shadowFrame.ai.strategy;
 
-import com.shadowFrame.ai.SceneObject;
+import java.util.Collection;
+
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
 
@@ -12,13 +15,17 @@ import com.shadowFrame.ai.tendency.AITendencyParam;
 public enum AIStrategyEnum {
 
 	/**
-	 * 一般策略
+	 * 警戒策略
 	 */
-	CommonStrategy(1,"common",new AICommonStrategy()),
+	VigilanceStrategy(1,"vigilance",new AIVigilanceStrategy()),
+	/**
+	 * 战斗策略
+	 */
+	BattleStrategy(2,"battle",new AIBattleStrategy()),
 	/**
 	 * 状态切换策略
 	 */
-	StopTheWorldStrategy(2,"stopTheWorld",new AIStopTheWorldStrategy()),
+	StopTheWorldStrategy(3,"stopTheWorld",new AIStopTheWorldStrategy()),
 	;
 	
 	private static AIStrategyEnum[] enums = AIStrategyEnum.values();
@@ -59,33 +66,13 @@ public enum AIStrategyEnum {
 	}
 
 	/**
-	 * 获得ai行为
-	 * @param self 获得ai行为的物体
-	 * @param strategyParam 当前策略参数
-	 * @return ai行为
-	 */
-	public boolean CanEnterStrategy(SceneObject self, AIStrategyParam strategyParam) {
-		return strategy.CanEnterStrategy(self, strategyParam);
-	}
-
-	/**
 	 * 验证是否可进入当前策略
 	 * @param self 获得ai策略的物体
 	 * @param strategyParam 策略参数
 	 * @return
 	 */
-	public AITendencyParam getTendency(SceneObject self, AIStrategyParam strategyParam) {
-		return strategy.getTendency(self, strategyParam);
-	}
-
-	/**
-	 * 验证是否可结束策略
-	 * @param self
-	 * @param strategyParam
-	 * @return
-	 */
-	public boolean isOver(SceneObject self,AIStrategyParam strategyParam) {
-		return strategy.isOver(self, strategyParam);
+	public AITendencyParam getTendency(DmcSceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents) {
+		return strategy.getTendency(self, strategyParam,aiEvents);
 	}
 	
 }

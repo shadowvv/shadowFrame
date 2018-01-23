@@ -1,6 +1,9 @@
 package com.shadowFrame.ai.strategy;
 
-import com.shadowFrame.ai.SceneObject;
+import java.util.Collection;
+
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
 
 /**
@@ -17,23 +20,6 @@ public interface IAIStrategy {
 	 * @param strategyParam 当前策略参数
 	 * @return ai行为
 	 */
-	AITendencyParam getTendency(SceneObject self, AIStrategyParam strategyParam);
-
-	/**
-	 * 验证是否可进入当前策略
-	 * @param self 获得ai策略的物体
-	 * @param aoiEventList 事件列表
-	 * @param strategyParam 策略参数
-	 * @return
-	 */
-	boolean CanEnterStrategy(SceneObject self, AIStrategyParam strategyParam);
-
-	/**
-	 * 验证是否可结束策略
-	 * @param self
-	 * @param strategyParam
-	 * @return
-	 */
-	boolean isOver(SceneObject self, AIStrategyParam strategyParam);
+	AITendencyParam getTendency(DmcSceneObject self, AIStrategyParam strategyParam,Collection<AIEvent> aiEvents);
 	
 }

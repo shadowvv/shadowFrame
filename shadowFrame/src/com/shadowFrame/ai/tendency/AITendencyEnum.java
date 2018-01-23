@@ -1,6 +1,6 @@
 package com.shadowFrame.ai.tendency;
 
-import com.shadowFrame.ai.SceneObject;
+import com.shadowFrame.ai.DmcSceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
 
 
@@ -72,30 +72,11 @@ public enum AITendencyEnum {
 	 * @param self ai绑定的单位
 	 * @param param 行为参数
 	 * @param currentAction 当前动作
+	 * @param collection 
 	 * @return 下一个动作
 	 */
-	public AIActionParam getNextAction(SceneObject self, AITendencyParam param, AIActionParam currentAction) {
+	public AIActionParam getNextAction(DmcSceneObject self, AITendencyParam param, AIActionParam currentAction) {
 		return tendency.getNextAction(self, param, currentAction);
-	}
-
-	/**
-	 * 是否可进入行为
-	 * @param self ai绑定的单位
-	 * @param param 行为参数
-	 * @return
-	 */
-	public boolean CanEnterTendency(SceneObject self, AITendencyParam param) {
-		return tendency.CanEnterTendency(self, param);
-	}
-	
-	/**
-	 * 是否可停止行为
-	 * @param self
-	 * @param param
-	 * @return
-	 */
-	public boolean isOver(SceneObject self, AITendencyParam param) {
-		return tendency.isOver(self, param);
 	}
 	
 }

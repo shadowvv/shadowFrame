@@ -1,6 +1,10 @@
 package com.shadowFrame.ai.action;
 
-import com.shadowFrame.ai.SceneObject;
+import java.util.Collection;
+
+import com.shadowFrame.ai.DmcSceneObject;
+import com.shadowFrame.ai.condition.event.AIEvent;
+import com.shadowFrame.ai.tendency.AITendencyParam;
 
 
 /**
@@ -41,11 +45,31 @@ public enum AIActionEnum {
 	/**
 	 * 释放技能
 	 */
-	UseSkill(8,"UseSkill",new AICastSkillAction()),
+	CastSkill(8,"CastSkill",new AICastSkillAction()),
 	/**
 	 * 死亡
 	 */
 	Dead(9,"Dead",new AIDeadAction()),
+	/**
+	 * 释放单位随机一个技能
+	 */
+	CastHeroRandomSkillAction(10,"CastHeroRandomSkillAction",new AICastHeroRandomSkillAction()),
+	/**
+	 * 转变为另一个单位
+	 */
+	TransferToOtherObject(11,"TurnToOtherObject",new AITransferToOtherObject()),
+	/**
+	 * 选择并释放技能
+	 */
+	SelectAndCastSkill(12,"SelectAndCastSkill",new AISelectAndCastSkill()),
+	/**
+	 * 转向到物体位置快照
+	 */
+	TurnToObjectSnapshot(13,"TurnToObjectSnapshot",new AITurnToObjectSnapshotAction()),
+	/**
+	 * 移动到物体位置的快照
+	 */
+	MoveToObjectSnapshot(14,"MoveToObjectSnapshot",new AIMoveToObjectSnapshotAction()),
 	;
 	
 	private static AIActionEnum[] enums = AIActionEnum.values();
@@ -95,32 +119,36 @@ public enum AIActionEnum {
 	 * @param self 执行动作的单位
 	 * @param param 动作参数
 	 */
-	public void doAction(SceneObject self, AIActionParam param) {
+	public void doAction(DmcSceneObject self, AIActionParam param) {
 		action.doAction(self, param);
 	}
 
 	/**
 	 * 停止动作
+	 * @param self 执行动作的单位
 	 */
-	public void stop(SceneObject self) {
-		action.stop(self);
+	public void stop(DmcSceneObject self) {
+		
 	}
 
 	/**
 	 * 重置动作参数
-	 * @param aiActionParam
+	 * @param param
+	 * @param self 
+	 * @param currentTendency
 	 */
-	public void reset(AIActionParam param) {
-		action.reset(param);
+	public void reset(AIActionParam param,DmcSceneObject self,AITendencyParam currentTendency) {
+		action.reset(param,self,currentTendency);
 	}
 
 	/**
 	 * 是否结束动作
 	 * @param self
 	 * @param param
+	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(SceneObject self, AIActionParam param) {
-		return action.isOver(self,param);
+	public boolean isOver(DmcSceneObject self, AIActionParam param, Collection<AIEvent> collection) {
+		return action.isOver(self,param,collection);
 	}
 }

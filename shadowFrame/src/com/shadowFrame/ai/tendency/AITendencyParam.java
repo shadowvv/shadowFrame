@@ -1,11 +1,12 @@
 package com.shadowFrame.ai.tendency;
 
-import java.util.List;
+import java.util.Collection;
 
-import com.shadowFrame.ai.SceneObject;
+import com.shadowFrame.ai.DmcSceneObject;
 import com.shadowFrame.ai.action.AIActionParam;
-import com.shadowFrame.ai.event.AIEvent;
-import com.shadowFrame.ai.threshold.AIThresholdParam;
+import com.shadowFrame.ai.condition.AbstractAICondition;
+import com.shadowFrame.ai.condition.event.AIEvent;
+import com.shadowFrame.ai.strategy.AIStrategyParam;
 
 /**
  * ai行为参数
@@ -15,34 +16,39 @@ import com.shadowFrame.ai.threshold.AIThresholdParam;
 public class AITendencyParam {
 	
 	private int id;
+	private int type;
+	private String param;
 	private int priority;
 	private int weight;
-	private List<AIThresholdParam> enterThresholds;
-	private List<AIEvent> enterEvents;
-	private List<AIThresholdParam> overThresholds;
-	private List<AIEvent> overEvents;
+	private AbstractAICondition enterCondition;
+	private AbstractAICondition overCondition;
 	private AIActionParam firstAction;
+	private AITendencyParam nextTendency;
+	private int doTimes;
+	
 	private long beginTime;
 
-	/**
-	 * 
-	 * @param id 行为id
-	 * @param priority 优先级
-	 * @param weight 权重
-	 * @param threshold 进入行为门槛
-	 * @param event 进入行为事件
-	 * @param firstAction 行为第一个动作
-	 */
-	public AITendencyParam(int id,int priority,int weight,AIActionParam firstAction,List<AIThresholdParam> overThresholds,List<AIEvent> overEvents) {
+	public AITendencyParam(int id,int type,String param,int priority,int weight,AIActionParam firstAction,AbstractAICondition enterCondition,AbstractAICondition overCondition,AITendencyParam nextTendency,int doTimes) {
 		this.id = id;
+		this.type = type;
+		this.param = param;
 		this.priority = priority;
 		this.weight = weight;
-		this.enterThresholds = firstAction.getEnterThresholds();
-		this.enterEvents = firstAction.getEnterEvents();
-		this.overThresholds = overThresholds;
-		this.overEvents = overEvents;
 		this.firstAction = firstAction;
+		this.enterCondition = enterCondition;
+		this.overCondition = overCondition;
+		this.nextTendency = nextTendency;
+		this.doTimes = doTimes;
 		this.beginTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 行为类型
+	 */
+	public int getType() {
+		return type;
 	}
 	
 	/**
@@ -71,34 +77,29 @@ public class AITendencyParam {
 
 	/**
 	 * 
-	 * @return 进入行为门槛
-	 */
-	public List<AIThresholdParam> getEnterTendencyThresholds() {
-		return enterThresholds;
-	}
-
-	/**
 	 * 
-	 * @return 进入行为事件
+	 * @return 策略参数
 	 */
-	public List<AIEvent> getEnterTendencyEvents() {
-		return enterEvents;
+	public String getParam() {
+		return param;
 	}
 	
 	/**
 	 * 
-	 * @return 结束行为事件
+	 * 
+	 * @return 执行次数
 	 */
-	public List<AIEvent> getOverEvents() {
-		return overEvents;
+	public int getDoTimes() {
+		return doTimes;
 	}
 	
 	/**
 	 * 
-	 * @return 结束行为门槛
+	 * 
+	 * @return 下一个行为
 	 */
-	public List<AIThresholdParam> getOverThresholds() {
-		return overThresholds;
+	public AITendencyParam getNextTendency() {
+		return nextTendency;
 	}
 	
 	/**
@@ -120,22 +121,24 @@ public class AITendencyParam {
 	/**
 	 * 获得行为的下一个动作
 	 * @param self ai绑定的单位
-	 * @param aoiEventList 事件集合
 	 * @param currentAction 当前动作
+	 * @param collection 
 	 * @return 下一个动作
 	 */
-	public AIActionParam getNextAction(SceneObject self,AIActionParam currentAction) {
-		return AITendencyEnum.getTendency(id).getNextAction(self, this, currentAction);
+	public AIActionParam getNextAction(DmcSceneObject self,AIActionParam currentAction) {
+		return AITendencyEnum.getTendency(type).getNextAction(self, this, currentAction);
 	}
 
 	/**
 	 * 是否可进入行为
 	 * @param self ai绑定的单位
-	 * @param aoiEventList 事件集合
 	 * @return
 	 */
-	public boolean CanEnterTendency(SceneObject self) {
-		return AITendencyEnum.getTendency(id).CanEnterTendency(self, this);
+	public boolean CanEnterTendency(DmcSceneObject self, Collection<AIEvent> collection) {
+		if(enterCondition == null){
+			return true;
+		}
+		return enterCondition.match(self,collection);
 	}
 
 	/**
@@ -143,24 +146,45 @@ public class AITendencyParam {
 	 * @return 行为名
 	 */
 	public String getName() {
-		return AITendencyEnum.getTendency(id).getName();
+		return AITendencyEnum.getTendency(type).getName();
 	}
 
 	/**
 	 * 是否可停止行为
 	 * @param self
-	 * @param aiEvents
+	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(SceneObject self, List<AIEvent> aiEvents) {
-		return AITendencyEnum.getTendency(id).isOver(self, this);
+	public boolean isOver(DmcSceneObject self, Collection<AIEvent> collection) {
+		if(overCondition == null){
+			return false;
+		}
+		return overCondition.match(self,collection);
 	}
 
 	/**
 	 * 重置行为
+	 * @param currentStrategy 
+	 * @param self 
 	 */
-	public void reset() {
+	public void reset(DmcSceneObject self, AIStrategyParam currentStrategy) {
 		this.beginTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * 减少执行次数和下次是否可执行
+	 * 
+	 * @return
+	 */
+	public boolean decDoTimeAndNextCanDo() {
+		if(doTimes < 0){
+			return true;
+		}
+		if(doTimes == 0){
+			return false;
+		}
+		doTimes--;
+		return doTimes > 0;
 	}
 
 }

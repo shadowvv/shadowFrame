@@ -6,16 +6,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.shadowFrame.ai.action.AIActionEnum;
 import com.shadowFrame.ai.action.AIActionParam;
-import com.shadowFrame.ai.event.AIEvent;
+import com.shadowFrame.ai.condition.AIAndCondition;
+import com.shadowFrame.ai.condition.AIOrCondition;
+import com.shadowFrame.ai.condition.AbstractAICondition;
+import com.shadowFrame.ai.condition.event.AIEvent;
+import com.shadowFrame.ai.condition.threshold.AIThresholdParam;
 import com.shadowFrame.ai.strategy.AIStrategyParam;
 import com.shadowFrame.ai.tendency.AITendencyParam;
-import com.shadowFrame.ai.threshold.AIThresholdEnum;
-import com.shadowFrame.ai.threshold.AIThresholdParam;
 
 /**
- * TODO ADD FUNCTION_DESC.
+ * ai数据解析
  *
  * @author Administrator
  * @version v0.1 2017年9月13日 下午7:17:27  Administrator
@@ -33,19 +34,17 @@ public class AIDictUtils {
 		if(Strings.isNullOrEmpty(strategys) || strategys.equals("0")){
 			return strartegys;
 		}
-		String[] ids = strategys.split(",");
+		String[] ids = strategys.split("&&");
 		for (String sid : ids) {
 			int id = Integer.parseInt(sid);
 			DictAiStrategy config = DictAiStrategy.cache.get(id);
 			if(config == null){
 				continue;
 			}
-			List<AIThresholdParam> enterTs = getThresholds(config.getEnterThresholds());
-			List<AIThresholdParam> overTs = getThresholds(config.getOverThresholds());
-			List<AIEvent> enterEs = getEvents(config.getEnterEvents());
-			List<AIEvent> overEs = getEvents(config.getOverEvents());
+			AbstractAICondition enter = getAICondition(config.getEnterCondition());
+			AbstractAICondition over = getAICondition(config.getOverCondition());
 			List<AITendencyParam> tendencys = getTendencys(config.getTendencys());
-			AIStrategyParam strartegy = new AIStrategyParam(config.getStrartegyId(),tendencys,enterTs, enterEs, overTs, overEs);
+			AIStrategyParam strartegy = new AIStrategyParam(config.getId(),config.getStrartegyId(),config.getParam(),tendencys,enter,over);
 			strartegys.add(strartegy);			
 		}
 		return strartegys;
@@ -60,28 +59,28 @@ public class AIDictUtils {
 		for (String sid : ids) {
 			int id = Integer.parseInt(sid);
 			DictAiTendency config = DictAiTendency.cache.get(id);
-			List<AIThresholdParam> overTs = getThresholds(config.getOverThresholds());
-			List<AIEvent> overEs = getEvents(config.getOverEvents());
-			AIActionParam firstAction = null;
-			AIActionParam perAction = getAction(config.getPerAction());
-			AIActionParam mainAction = getAction(config.getMainAction());
-			AIActionParam clearAction = getAction(config.getClearAction());
-			if(perAction != null){
-				firstAction = perAction;
-				perAction.setNextAction(mainAction);
-			}
-			if(mainAction != null){
-				if(firstAction == null){
-					firstAction = mainAction;
+			AbstractAICondition enter = getAICondition(config.getEnterCondition());
+			AbstractAICondition over = getAICondition(config.getOverCondition());
+			List<AIActionParam> actions = new ArrayList<AIActionParam>();
+			addAiAction(actions,getAction(config.getPerAction()));
+			addAiAction(actions,getAction(config.getMainAction1()));
+			addAiAction(actions,getAction(config.getMainAction2()));
+			addAiAction(actions,getAction(config.getMainAction3()));
+			addAiAction(actions,getAction(config.getClearAction()));
+			for (int i = 0; i < actions.size(); i++) {
+				int j = i+1;
+				if(actions.size() == j){
+					break;
 				}
-				mainAction.setNextAction(clearAction);
+				actions.get(i).setNextAction(actions.get(j));
 			}
-			if(clearAction != null){
-				if(firstAction == null){
-					firstAction = clearAction;
-				}
+			AIActionParam firstAction = actions.get(0);
+			List<AITendencyParam> nextList = getTendencys(config.getNextTendency()+"");
+			AITendencyParam next = null;
+			if(nextList.size()>0){
+				next = nextList.get(0);
 			}
-			AITendencyParam tendency = new AITendencyParam(config.getTendencyId(), config.getPriority(), config.getWeight(), firstAction, overTs, overEs);
+			AITendencyParam tendency = new AITendencyParam(config.getId(),config.getTendencyId(),config.getParam(),config.getPriority(),config.getWeight(),firstAction,enter,over,next,config.getDoTimes());
 			list.add(tendency);
 		}
 		Collections.sort(list, new Comparator<AITendencyParam>() {
@@ -93,62 +92,138 @@ public class AIDictUtils {
 		return list;
 	}
 
+	private static void addAiAction(List<AIActionParam> actions, AIActionParam action) {
+		if(action != null){
+			actions.add(action);
+		}
+	}
+
 	private static AIActionParam getAction(int actionId) {
 		DictAiAction config = DictAiAction.cache.get(actionId);
 		if(config == null){
 			return null;
 		}
-		List<AIThresholdParam> enterTs = getThresholds(config.getEnterThresholds());
-		List<AIThresholdParam> interruptTs = getThresholds(config.getInterruptThresholds());
-		if(config.getActionId() == AIActionEnum.UseSkill.getId()){
-			for (AIThresholdParam aiThresholdParam : enterTs) {
-				if(aiThresholdParam.getId() == AIThresholdEnum.Range.getId() && aiThresholdParam.getThresholdValue() == -1){
-					//TODO:技能释放距离
-					aiThresholdParam.setValue(0);
-				}
-			}
-			for (AIThresholdParam aiThresholdParam : interruptTs) {
-				if(aiThresholdParam.getId() == AIThresholdEnum.Range.getId() && aiThresholdParam.getThresholdValue() == -1){
-					//TODO:技能释放距离
-					aiThresholdParam.setValue(0);
-				}
-			}
+		AbstractAICondition interrupt = getAICondition(config.getInterruptCondition());
+		if(interrupt != null){
+			interrupt.fixThreshold(config);			
 		}
-		List<AIEvent> enterEs = getEvents(config.getEnterEvents());
-		List<AIEvent> interruptEs = getEvents(config.getInterruptEvents());
-		AIActionParam middleAction = getAction(config.getMiddleActionId());
-		AIActionParam action = new AIActionParam(config.getActionId(), config.getTargetCampType(), config.getParam(), middleAction,enterTs, enterEs, interruptTs, interruptEs);
+		AbstractAICondition over = getAICondition(config.getOverCondition());
+		if(over != null){
+			over.fixThreshold(config);			
+		}
+		AIActionParam action = new AIActionParam(config.getId(),config.getActionId(), config.getTargetCampType(), config.getParam(),interrupt,over);
 		return action;
 	}
-
-	private static List<AIEvent> getEvents(String enterEvents) {
-		List<AIEvent> list = new ArrayList<AIEvent>();
-		if(Strings.isNullOrEmpty(enterEvents) || enterEvents.equals("0")){
-			return list;
+	
+	/**
+	 * ai判定条件
+	 * 
+	 * @param conditions
+	 * @return
+	 */
+	public static AbstractAICondition getAICondition(String conditions){
+		AbstractAICondition condition = null;
+		if(Strings.isNullOrEmpty(conditions) || conditions.equals("0")){
+			return condition;
 		}
-		String[] ids = enterEvents.split(",");
-		for (String sid : ids) {
-			int id = Integer.parseInt(sid);
-			DictAiEvent config = DictAiEvent.cache.get(id);
-			AIEvent event = new AIEvent(config.getEventId(), config.getParam(), config.getTargetCampType(), null);
-			list.add(event);
+		if(conditions.contains("]||[")){
+			String[] conditionStr = conditions.split("\\]\\|\\|\\[");
+			List<AbstractAICondition> conditionList = getConditions(conditionStr);
+			condition = new AIOrCondition();
+			condition.setConditions(conditionList);
+		}else if(conditions.contains("]&&[")){
+			String[] conditionStr = conditions.split("\\]\\&\\&\\[");
+			List<AbstractAICondition> conditionList = getConditions(conditionStr);
+			condition = new AIAndCondition();
+			condition.setConditions(conditionList);
+		}else{
+			condition = getCondition(conditions);
 		}
-		return list;
+		return condition;
 	}
-
-	private static List<AIThresholdParam> getThresholds(String enterThresholds) {
-		List<AIThresholdParam> list = new ArrayList<AIThresholdParam>();
-		if(Strings.isNullOrEmpty(enterThresholds) || enterThresholds.equals("0")){
-			return list;
+	
+	private static List<AbstractAICondition> getConditions(String[] conditionStr){
+		List<AbstractAICondition> conditionList = new ArrayList<AbstractAICondition>();
+		for (int i = 0; i < conditionStr.length; i++) {
+			String temp = conditionStr[i];
+			if(temp.contains("[")){
+				temp = temp.substring(1);
+			}else if(temp.contains("]")){
+				temp = temp.substring(0, temp.length()-1);
+			}
+			conditionList.add(getCondition(temp));
 		}
-		String[] ids = enterThresholds.split(",");
-		for (String sid : ids) {
-			int id = Integer.parseInt(sid);
-			DictAiThreshold config = DictAiThreshold.cache.get(id);
-			AIThresholdParam threshold = new AIThresholdParam(config.getThresholdId(), config.getValue(), config.getTargetCampType(), config.getCampareType());
-			list.add(threshold);
+		return conditionList;
+	}
+	
+	private static AbstractAICondition getCondition(String conditions){
+		if(conditions.contains("&&")){
+			return getAndCondition(conditions);
+		}else if(conditions.contains("||")){
+			return getOrCondition(conditions);
+		}else{
+			return getAndCondition(conditions);
 		}
-		return list;
+	}
+	
+	private static AbstractAICondition getAndCondition(String conditions){
+		String[] conditonStr = conditions.split("\\&\\&");
+		List<AIThresholdParam> thresholds = new ArrayList<AIThresholdParam>();
+		List<AIEvent> events = new ArrayList<AIEvent>();
+		for (String temp : conditonStr) {
+			String[] k_v = temp.split(":");
+			int k = Integer.parseInt(k_v[0]);
+			int v = Integer.parseInt(k_v[1]);
+			if(k == 1){
+				DictAiThreshold config = DictAiThreshold.cache.get(v);
+				if(config == null){
+					continue;
+				}
+				AIThresholdParam threshold = new AIThresholdParam(config.getThresholdId(), config.getValue(), config.getTargetCampType(), config.getCampareType());
+				thresholds.add(threshold);
+			}else if(k == 2){
+				DictAiEvent config = DictAiEvent.cache.get(v);
+				if(config == null){
+					continue;
+				}
+				AIEvent event = new AIEvent(config.getEventId(), config.getParam(), config.getTargetCampType(), null);
+				events.add(event);
+			}
+		}
+		AbstractAICondition condition = new AIAndCondition();
+		condition.setEvents(events);
+		condition.setThresholds(thresholds);
+		return condition;
+	}
+	
+	private static AbstractAICondition getOrCondition(String conditions){
+		String[] conditonStr = conditions.split("\\|\\|");
+		List<AIThresholdParam> thresholds = new ArrayList<AIThresholdParam>();
+		List<AIEvent> events = new ArrayList<AIEvent>();
+		for (String temp : conditonStr) {
+			String[] k_v = temp.split(":");
+			int k = Integer.parseInt(k_v[0]);
+			int v = Integer.parseInt(k_v[1]);
+			if(k == 1){
+				DictAiThreshold config = DictAiThreshold.cache.get(v);
+				if(config == null){
+					continue;
+				}
+				AIThresholdParam threshold = new AIThresholdParam(config.getThresholdId(), config.getValue(), config.getTargetCampType(), config.getCampareType());
+				thresholds.add(threshold);
+			}else if(k == 2){
+				DictAiEvent config = DictAiEvent.cache.get(v);
+				if(config == null){
+					continue;
+				}
+				AIEvent event = new AIEvent(config.getEventId(), config.getParam(), config.getTargetCampType(), null);
+				events.add(event);
+			}
+		}
+		AbstractAICondition condition = new AIOrCondition();
+		condition.setEvents(events);
+		condition.setThresholds(thresholds);
+		return condition;
 	}
 	
 	/**
@@ -191,6 +266,59 @@ public class AIDictUtils {
 		return true;
 	}
 	
+	/**
+	 * 检测条件是否存在
+	 * 
+	 * @param conditions
+	 * @return
+	 */
+	public static boolean allConditionExist(String conditions){
+		if(Strings.isNullOrEmpty(conditions) || conditions.equals("0")){
+			return true;
+		}
+		if(conditions.contains("]||[")){
+			String[] conditionStr = conditions.split("\\]\\|\\|\\[");
+			return checkCondition(conditionStr);
+		}else if(conditions.contains("]&&[")){
+			String[] conditionStr = conditions.split("\\]\\&\\&\\[");
+			return checkCondition(conditionStr);
+		}else{
+			if(conditions.contains("&&")){
+				String[] conditionStr = conditions.split("\\&\\&");
+				return checkCondition(conditionStr);
+			}else if(conditions.contains("||")){
+				String[] conditionStr = conditions.split("\\|\\|");
+				return checkCondition(conditionStr);
+			}
+			return checkCondition(conditions);
+		}
+	}
+	
+	private static boolean checkCondition(String... conditionStr) {
+		for (String temp : conditionStr) {
+			if(temp.contains("[")){
+				temp = temp.substring(1);
+			}else if(temp.contains("]")){
+				temp = temp.substring(0, temp.length()-1);
+			}
+			String[] k_v = temp.split(":");
+			int k = Integer.parseInt(k_v[0]);
+			int v = Integer.parseInt(k_v[1]);
+			if(k == 1){
+				DictAiThreshold config = DictAiThreshold.cache.get(v);
+				if(config == null){
+					return false;
+				}
+			}else if(k == 2){
+				DictAiEvent config = DictAiEvent.cache.get(v);
+				if(config == null){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * 是否所有的ai行为都存在
 	 * 

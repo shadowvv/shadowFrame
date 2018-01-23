@@ -1,14 +1,15 @@
 package com.shadowFrame.ai.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import com.shadowFrame.ai.AITransfer;
+import com.shadowFrame.ai.DmcSceneObject;
 import com.shadowFrame.ai.FPoint3;
-import com.shadowFrame.ai.SceneObject;
-import com.shadowFrame.ai.event.AIEvent;
+import com.shadowFrame.ai.condition.AbstractAICondition;
+import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
-import com.shadowFrame.ai.threshold.AIThresholdParam;
+import com.shadowFrame.ai.tendency.AITendencyParam;
 
 /**
  * ai动作参数
@@ -19,31 +20,38 @@ import com.shadowFrame.ai.threshold.AIThresholdParam;
 public class AIActionParam {
 	
 	private int id;
+	private int type;
 	private int targetCampType;
 	private String param;
-	private List<AIThresholdParam> enterThresholds;
-	private List<AIEvent> enterEvents;
-	private List<AIThresholdParam> interruptThresholds;
-	private List<AIEvent> interruptEvents;
+	private AbstractAICondition interruptCondition;
+	private AbstractAICondition overCondition;
 	private AIActionParam nextAction;
-	private AIActionParam middleAction;
 	private long beginTime;
 	
 	private boolean done;
 	private List<FPoint3> targetPoints;
+	private String currentParam;
 	
-	public AIActionParam(int id,int targetCampType,String param,AIActionParam middleAction,List<AIThresholdParam> enterThresholds,List<AIEvent> enterAiEvents,List<AIThresholdParam> interruptThresholds,List<AIEvent> interruptAIEvents) {
+	public AIActionParam(int id,int type,int targetCampType,String param,AbstractAICondition interruptCondition,AbstractAICondition overCondition) {
 		this.id = id;
+		this.type = type;
 		this.targetCampType = targetCampType;
 		this.param = param;
-		this.middleAction = middleAction;
-		this.enterEvents = enterAiEvents;
-		this.enterThresholds = enterThresholds;
-		this.interruptEvents = interruptAIEvents;
-		this.interruptThresholds = interruptThresholds;
+		this.interruptCondition = interruptCondition;
+		this.overCondition = overCondition;
 		
 		this.beginTime = System.currentTimeMillis();
 		targetPoints = new ArrayList<FPoint3>();
+		currentParam = param;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 行为类型
+	 */
+	public int getType() {
+		return type;
 	}
 	
 	/**
@@ -61,26 +69,10 @@ public class AIActionParam {
 	public int getId() {
 		return id;
 	}
-
-	/**
-	 * 
-	 * @return 进入动作门槛
-	 */
-	public List<AIThresholdParam> getEnterThresholds() {
-		return enterThresholds;
-	}
-
-	/**
-	 * 
-	 * @return 进入动作事件
-	 */
-	public List<AIEvent> getEnterEvents() {
-		return enterEvents;
-	}
 	
 	/**
 	 * 
-	 * @return 动作参数
+	 * @return 动作全部参数
 	 */
 	public String getParam() {
 		return param;
@@ -107,14 +99,14 @@ public class AIActionParam {
 	 * @return 动作名字
 	 */
 	public String getName() {
-		return AIActionEnum.getAction(id).getName();
+		return AIActionEnum.getAction(type).getName();
 	}
 
 	/**
 	 * 
 	 * @return 动作目标单位
 	 */
-	public List<SceneObject> getActionTargetObjects(SceneObject self) {
+	public List<DmcSceneObject> getActionTargetObjects(DmcSceneObject self) {
 		return AITargetObjectCampEnum.getTargetComp(targetCampType).getTargetObjects(self);
 	}
 
@@ -152,65 +144,75 @@ public class AIActionParam {
 
 	/**
 	 * 重置动作参数
+	 * @param self 
+	 * @param currentTendency 
 	 */
-	public void reset() {
+	public void reset(DmcSceneObject self, AITendencyParam currentTendency) {
 		done = false;
 		beginTime = System.currentTimeMillis();
-		AIActionEnum.getAction(id).reset(this);
+		AIActionEnum.getAction(type).reset(this,self,currentTendency);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 动作当前参数
+	 */
+	public String getCurrentParam() {
+		return currentParam;
+	}
+	
+	/**
+	 * 设置动作当前参数
+	 * 
+	 * @param currentParam
+	 */
+	public void setCurrentParam(String currentParam) {
+		this.currentParam = currentParam;
 	}
 
 	/**
 	 * 停止动作
 	 */
-	public void stop(SceneObject self) {
-		AIActionEnum.getAction(id).stop(self);
+	public void stop(DmcSceneObject self) {
+		AIActionEnum.getAction(type).stop(self);
 	}
 
 	/**
 	 * 执行动作
 	 * @param self
 	 */
-	public void doAction(SceneObject self) {
-		AIActionEnum.getAction(id).doAction(self,this);
-	}
-	
-	/**
-	 * 获得中间动作
-	 * @param self
-	 * @return
-	 */
-	public AIActionParam getMiddleAction(SceneObject self) {
-		if(middleAction == null){
-			return null;
-		}
-		if (AITransfer.transfer(middleAction.getEnterThresholds(), middleAction.getEnterEvents(), self)) {
-			return middleAction;
-		}
-		return null;
+	public void doAction(DmcSceneObject self) {
+		AIActionEnum.getAction(type).doAction(self,this);
 	}
 
 	/**
 	 * 是否被打断
 	 * @param self
+	 * @param collection 
 	 * @return
 	 */
-	public boolean isInterrupt(SceneObject self) {
-		if((interruptThresholds == null || interruptThresholds.size() == 0) && (interruptEvents == null || interruptEvents.size() == 0)){
+	public boolean isInterrupt(DmcSceneObject self, Collection<AIEvent> aiEvents) {
+		if(interruptCondition == null){
 			return false;
 		}
-		if (AITransfer.transfer(interruptThresholds,interruptEvents, self)) {
-			return true;
-		}
-		return false;
+		return interruptCondition.match(self,aiEvents);
 	}
 
 	/**
 	 * 是否正常结束
 	 * @param self
+	 * @param collection 
 	 * @return
 	 */
-	public boolean isOver(SceneObject self) {
-		return AIActionEnum.getAction(id).isOver(self,this);
+	public boolean isOver(DmcSceneObject self, Collection<AIEvent> collection) {
+		if(AIActionEnum.getAction(type).isOver(self, this,collection)){
+			return true;
+		}
+		if(overCondition == null){
+			return false;
+		}
+		return overCondition.match(self,collection);
 	}
 
 }
