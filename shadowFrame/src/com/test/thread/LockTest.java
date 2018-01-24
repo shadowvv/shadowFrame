@@ -16,6 +16,7 @@ public class LockTest {
 	public static void main(String[] args) {
 		
 		
+		@SuppressWarnings("unused")
 		Runnable task = new Runnable() {
 			
 			@Override

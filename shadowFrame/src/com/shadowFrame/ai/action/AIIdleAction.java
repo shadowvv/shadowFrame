@@ -19,18 +19,11 @@ public class AIIdleAction implements IAIAction {
 		if(!checkAction(self, param)){
 			return false;
 		}
-		self.getRoleActionManager().stopMove();
 		return true;
 	}
 
 	@Override
 	public boolean checkAction(SceneObject self, AIActionParam param) {
-		if(self.getRoleStateManager().getCurActionState().equals(ActionState.STANDING)){
-			return false;
-		}
-		if (!self.getRoleStateManager().canEnter(ActionState.STANDING)) {
-			return false;
-		}
 		return true;
 	}
 
