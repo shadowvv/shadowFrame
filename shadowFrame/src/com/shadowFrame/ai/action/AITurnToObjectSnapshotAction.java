@@ -2,6 +2,7 @@ package com.shadowFrame.ai.action;
 
 import java.util.Collection;
 
+import com.shadowFrame.ai.FPoint3;
 import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.tendency.AITendencyParam;
@@ -19,9 +20,8 @@ public class AITurnToObjectSnapshotAction implements IAIAction{
 		if(!checkAction(self, param)){
 			return false;
 		}
+		@SuppressWarnings("unused")
 		FPoint3 target = param.getActionTargetPoints().get(0);
-		FPoint3 targetDir = SceneUtils.normalize(SceneUtils.calcDir(target, self.getPos()));
-		self.getController().getRoleActionManager().turn(targetDir, Globals.getTimeService().now());
 		return true;
 	}
 
@@ -30,21 +30,13 @@ public class AITurnToObjectSnapshotAction implements IAIAction{
 		FPoint3 target = param.getActionTargetPoints().get(0);
 		if (target == null) {
 			return false;
-		}
-
-		if (!self.getRoleStateManager().canEnter(ActionState.MOVING)) {
-			return false;
-		}
-
-		if (SceneUtils.isObjectInCircle(target, 0.1, self.getDir(), self.getPos(), self.getViewLength(),self.getViewAngle())) {
-			return false;
-		}		
+		}	
 		return true;
 	}
 
 	@Override
 	public void stop(SceneObject self) {
-		self.getRoleActionManager().stopMove();
+
 	}
 
 	@Override
@@ -63,9 +55,6 @@ public class AITurnToObjectSnapshotAction implements IAIAction{
 		if(target == null){
 			return true;
 		}
-		if (SceneUtils.isObjectInCircle(target, 0.1, self.getDir(), self.getPos(), self.getViewLength(),self.getViewAngle())) {
-			return true;
-		}		
 		return false;
 	}
 

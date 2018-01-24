@@ -18,9 +18,8 @@ public class AITurnToObjectAction implements IAIAction {
 		if(!checkAction(self, param)){
 			return false;
 		}
+		@SuppressWarnings("unused")
 		SceneObject target = param.getActionTargetObjects(self).get(0);
-		FPoint3 targetDir = SceneUtils.normalize(SceneUtils.calcDir(target.getPos(), self.getPos()));
-		self.getController().getRoleActionManager().turn(targetDir, Globals.getTimeService().now());
 		return true;
 	}
 
@@ -29,21 +28,13 @@ public class AITurnToObjectAction implements IAIAction {
 		SceneObject target = param.getActionTargetObjects(self).get(0);
 		if (target == null) {
 			return false;
-		}
-
-		if (!self.getRoleStateManager().canEnter(ActionState.MOVING)) {
-			return false;
-		}
-
-		if (SceneUtils.isObjectInCircle(target.getPos(), target.getRadius(), self.getDir(), self.getPos(), self.getViewLength(),self.getViewAngle())) {
-			return false;
-		}		
+		}	
 		return true;
 	}
 
 	@Override
 	public void stop(SceneObject self) {
-		self.getRoleActionManager().stopMove();
+		
 	}
 
 	@Override
@@ -53,10 +44,8 @@ public class AITurnToObjectAction implements IAIAction {
 
 	@Override
 	public boolean isOver(SceneObject self, AIActionParam param,Collection<AIEvent> aiEvents) {
-		SceneObject target = param.getActionTargetObjects(self).get(0);
-		if (SceneUtils.isObjectInCircle(target.getPos(), target.getRadius(), self.getDir(), self.getPos(), self.getViewLength(),self.getViewAngle())) {
-			return true;
-		}		
+		@SuppressWarnings("unused")
+		SceneObject target = param.getActionTargetObjects(self).get(0);		
 		return false;
 	}
 

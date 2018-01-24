@@ -57,4 +57,8 @@ public class SceneObject {
 		return new ArrayList<SceneObject>();
 	}
 
+	public void changeHp(float f) {
+		
+	}
+
 }

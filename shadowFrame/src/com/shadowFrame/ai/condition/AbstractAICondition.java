@@ -8,6 +8,7 @@ import com.shadowFrame.ai.action.AIActionEnum;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.threshold.AIThresholdEnum;
 import com.shadowFrame.ai.condition.threshold.AIThresholdParam;
+import com.shadowFrame.ai.dict.DictAiAction;
 
 /**
  * ai条件

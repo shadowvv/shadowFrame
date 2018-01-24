@@ -7,6 +7,7 @@ public class WaitTest {
 		final Object lock = new Object();
 
 		Thread t = new Thread(new Runnable() {
+			@SuppressWarnings("static-access")
 			@Override
 			public void run() {
 				try {

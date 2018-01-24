@@ -18,7 +18,7 @@ public class MoveDispatchAIEvent implements IDispatchAIEvent{
 	public void dispatchAIEvent(AOIEvent aoiEvent) {
 		SceneObject source = aoiEvent.getSource();
 		for (SceneObject observer : aoiEvent.getObservers()) {
-			int dis = (int) SceneUtils.calcDis(observer.getPos(), source.getPos());
+			int dis = 0;
 			if(dis < observer.getVigilanceRange()){
 				AIEvent aiEvent = null;
 				AIEvent backSelfEvent = null;

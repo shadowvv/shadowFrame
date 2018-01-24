@@ -15,7 +15,6 @@ public class AITeamTargetObjectFilter implements IAITargetObjectFilter{
 	@Override
 	public List<SceneObject> getTargetObjects(SceneObject self) {
 		List<SceneObject> list = new ArrayList<SceneObject>();
-		//TODO:getTeamMember
 		return list;
 	}
 

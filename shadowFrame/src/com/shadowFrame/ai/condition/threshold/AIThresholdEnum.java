@@ -1,6 +1,5 @@
 package com.shadowFrame.ai.condition.threshold;
 
-import com.shadowFrame.ai.FPoint3;
 import com.shadowFrame.ai.SceneObject;
 
 
@@ -45,7 +44,7 @@ public enum AIThresholdEnum {
 	Range(3,"Range",new IAIThreshold(){
 		@Override
 		public double getThresholdValue(SceneObject self, SceneObject target) {
-			return SceneUtils.calcDis(self.getPos(), target.getPos());
+			return 0;
 		}
 	}),
 	/**
@@ -81,12 +80,7 @@ public enum AIThresholdEnum {
 	FrontRange(7,"FrontRange",new IAIThreshold(){
 		@Override
 		public double getThresholdValue(SceneObject self, SceneObject target) {
-			FPoint3 dir = SceneUtils.calcDir(target.getPos(),self.getPos());
-			double angle = SceneUtils.angle(self.getDir(),dir);
-			if(angle > self.getViewAngle()/2){
-				return -1;
-			}
-			return SceneUtils.calcDis(self.getPos(), target.getPos());
+			return 0;
 		}
 	}),
 	/**
@@ -95,13 +89,7 @@ public enum AIThresholdEnum {
 	BackRange(8,"BackRange",new IAIThreshold(){
 		@Override
 		public double getThresholdValue(SceneObject self, SceneObject target) {
-			FPoint3 dir = SceneUtils.calcDir(target.getPos(),self.getPos());
-			FPoint3 re = SceneUtils.rotation(self.getDir(),180);
-			double angle = SceneUtils.angle(re,dir);
-			if(angle > self.getViewAngle()/2){
-				return -1;
-			}
-			return SceneUtils.calcDis(self.getPos(), target.getPos());
+			return 0;
 		}
 	}),
 	;

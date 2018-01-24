@@ -19,29 +19,13 @@ public class AITransferToOtherObject implements IAIAction{
 		if(!checkAction(self, param)){
 			return false;
 		}
-		int hp = (int) self.getHp();
+		@SuppressWarnings("unused")
 		int dictId = Integer.parseInt(param.getCurrentParam());
-		DictCopyEnemy dict = DictCopyEnemy.getDictCopyEnemy(dictId);
-		if(dict == null){
-			return false;
-		}
-		SceneMonsterObject monster = SceneObjectCreater.createMonster(dict, 0);
-		monster.setHp(hp);
-		
-		self.getScene().getSceneController().addSceneObject(monster);
-		if(self.getType() != SceneObjectType.HUMAN){
-			self.getScene().getSceneController().removeSceneObjectAndPutDiedPool(self,true);
-		}
-		self.getController().getComponentAI().setValid(false);
 		return true;
 	}
 
 	@Override
 	public boolean checkAction(SceneObject self, AIActionParam param) {
-//		DmcSceneObject target = param.getActionTargetObjects(self).get(0);
-//		if (target == null) {
-//			return false;
-//		}
 		return true;
 	}
 
