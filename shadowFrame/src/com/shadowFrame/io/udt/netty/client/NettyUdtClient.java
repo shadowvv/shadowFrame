@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadFactory;
 
 public class NettyUdtClient {
 
-    public static final String ip = System.getProperty("host", "192.168.31.153");  
+    public static final String ip = System.getProperty("host", "127.0.0.1");  
     static final int port = Integer.parseInt(System.getProperty("port", "10020"));  
     public static final int SIZE = Integer.parseInt(System.getProperty("size", "256"));  
   

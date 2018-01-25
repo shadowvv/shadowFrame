@@ -7,9 +7,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.udt.nio.NioUdtProvider;
 
 import java.io.UnsupportedEncodingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
   
 /** 
  * Handler implementation for the echo client. It initiates the ping-pong 
@@ -20,12 +17,11 @@ import org.slf4j.LoggerFactory;
  * 下午4:53:59 
  */  
 public class ByteEchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {  
-    private static final Logger log = LoggerFactory.getLogger(ByteEchoClientHandler.class);  
     private final ByteBuf message;  
     public ByteEchoClientHandler() {  
         super(false);  
         String hello = "Hello peer...";  
-        message = Unpooled.buffer(ByteEchoClient.SIZE);//堆buffer  
+        message = Unpooled.buffer(100);//堆buffer  
         try {  
             message.writeBytes(hello.getBytes("UTF-8"));  
             message.retainedDuplicate();  
@@ -37,7 +33,7 @@ public class ByteEchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> 
     @SuppressWarnings("deprecation")  
     @Override  
     public void channelActive(final ChannelHandlerContext ctx) {  
-        log.info("ECHO active " +  
+        System.out.println("ECHO active " +  
          NioUdtProvider.socketUDT(ctx.channel()).toStringOptions());  
         ctx.writeAndFlush(message);  
     }  
@@ -55,7 +51,7 @@ public class ByteEchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> 
         } catch (UnsupportedEncodingException e) {  
             e.printStackTrace();  
         }  
-        log.info("=== reciever ack message from peer:" +message);  
+        System.out.println("=== reciever ack message from peer:" +message);  
     }  
   
     @Override  
