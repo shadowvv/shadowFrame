@@ -5,10 +5,10 @@ import java.net.InetSocketAddress;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
@@ -17,13 +17,13 @@ public class NettyEchoClient {
     static final int port = Integer.parseInt(System.getProperty("port", "10020"));  
 	
 	public static void main(String[] args) {
-		NioEventLoopGroup loopGroup = new NioEventLoopGroup();
+		EventLoopGroup loopGroup = new NioEventLoopGroup();
 		Bootstrap bootstrap = new Bootstrap();
-		bootstrap.group(loopGroup).option(ChannelOption.SO_KEEPALIVE, true).channel(NioServerSocketChannel.class)
+		bootstrap.group(loopGroup).channel(NioSocketChannel.class)
 				.handler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
-						ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new ThirdChannelHander());
+						ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO), new ClientChannelHandler());
 					}
 				});
 		try {

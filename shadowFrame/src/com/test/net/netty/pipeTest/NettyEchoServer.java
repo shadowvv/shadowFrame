@@ -21,10 +21,14 @@ public class NettyEchoServer {
 		NioEventLoopGroup loopGroup = new NioEventLoopGroup(1);
 		ServerBootstrap bootstrap = new ServerBootstrap();
 		bootstrap.group(bossGroup, loopGroup).channel(NioServerSocketChannel.class)
-				.handler(new LoggingHandler(LogLevel.INFO)).childHandler(new ChannelInitializer<SocketChannel>() {
+				.handler(new LoggingHandler(LogLevel.INFO))
+//				.childHandler(new FirstChannelHandler()).childHandler(new SecondChannelHandler());
+				.childHandler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel ch) throws Exception {
-						ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO),new FirstChannelHandler());
+						ch.pipeline().addLast(new FirstChannelHandler());
+						ch.pipeline().addLast(new SecondChannelHandler());
+						ch.pipeline().addLast(new ThirdChannelHander());
 					}
 				});
 		try {

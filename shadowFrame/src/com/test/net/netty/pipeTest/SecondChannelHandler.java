@@ -12,12 +12,12 @@ public class SecondChannelHandler implements ChannelHandler {
 
 	@Override
 	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-		System.out.println("second handlerAdded");
+		System.out.println("second handlerRemoved");
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		System.out.println("second handlerAdded");
+		System.out.println("second exceptionCaught");
 	}
 
 }
