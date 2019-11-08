@@ -1,4 +1,4 @@
-package com.test;
+package com.test.thread;
 
 /**
  * object的notify和wait测试

@@ -1,4 +1,4 @@
-package com.test.net.original;
+package com.test.net.nio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,6 +9,11 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+/**
+ * NIO 简单echo服务器
+ * @author shadow
+ *
+ */
 public class NIOServer {
 
 	private Selector selector;
@@ -35,8 +40,7 @@ public class NIOServer {
 				ite.remove();
 				// 客户端请求连接事件
 				if (key.isAcceptable()) {
-					ServerSocketChannel server = (ServerSocketChannel) key
-							.channel();
+					ServerSocketChannel server = (ServerSocketChannel) key.channel();
 					// 获得和客户端连接的通道
 					SocketChannel channel = server.accept();
 					

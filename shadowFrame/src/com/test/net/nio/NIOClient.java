@@ -1,4 +1,4 @@
-package com.test.net.original;
+package com.test.net.nio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,15 +9,14 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 /**
- * NIO客户端
- * @author 小路
+ * NIO 客户端
+ * @author shadow
  */
 public class NIOClient {
 	//通道管理器
 	private Selector selector;
 
 	public void initClient(String ip,int port) throws IOException {
-
 		SocketChannel channel = SocketChannel.open();
 		channel.configureBlocking(false);
 		this.selector = Selector.open();

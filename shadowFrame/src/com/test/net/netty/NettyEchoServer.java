@@ -1,6 +1,10 @@
-package com.test.net.netty.pipeTest;
+package com.test.net.netty;
 
 import java.net.InetSocketAddress;
+
+import com.test.net.netty.pipeTest.FirstChannelHandler;
+import com.test.net.netty.pipeTest.SecondChannelHandler;
+import com.test.net.netty.pipeTest.ThirdChannelHander;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
