@@ -1,25 +1,31 @@
-package com.test.robot.action;
+package com.shadowFrame.robot.action;
 
-import com.test.robot.IClientRobotAction;
-import com.test.robot.IClinetRobot;
+import com.shadowFrame.robot.IClinetRobot;
 
 public class RobotCommonAction implements IClientRobotAction {
+	
+	private IClinetRobot robot;
+	
+	public RobotCommonAction() {
+
+	}
+	
+	public void setRobot(IClinetRobot robot) {
+		this.robot = robot;
+	}
 
 	@Override
 	public boolean prepareAction() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public void afterAction() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public IClientRobotAction getNextAction() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -27,7 +33,7 @@ public class RobotCommonAction implements IClientRobotAction {
 	public RobotActionResult call() throws Exception {
 		RobotActionResult result = RobotActionResult.SUCCESS;
 		if(prepareAction()) {
-			
+			getOwner().send("hello world:"+robot.getId());
 			afterAction();
 		}
 		return result;
@@ -35,8 +41,7 @@ public class RobotCommonAction implements IClientRobotAction {
 
 	@Override
 	public IClinetRobot getOwner() {
-		// TODO Auto-generated method stub
-		return null;
+		return robot;
 	}
 	
 }

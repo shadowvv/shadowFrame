@@ -1,13 +1,19 @@
-package com.test.robot;
+package com.shadowFrame.robot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.test.robot.action.RobotActionResult;
+import com.shadowFrame.io.net.ClientOriginalSocketNet;
+import com.shadowFrame.io.net.IClientNet;
+import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.coder.StringMessageCoder;
+import com.shadowFrame.robot.action.IClientRobotAction;
+import com.shadowFrame.robot.action.RobotCommonAction;
+import com.shadowFrame.robot.handler.ClientRobotCommonHandler;
 
 /**
  * 机器人工厂
- * @author shadowvx
+ * @author shadow
  *
  */
 public class RobotFactory {
@@ -21,34 +27,11 @@ public class RobotFactory {
 		List<IClinetRobot> robots = new ArrayList<IClinetRobot>();
 		int num = robotConfig.getRobotNum();
 		for (int i = 0; i < num; i++) {
-			IClinetRobot robot = new ClientRobot(i, null, new IClientRobotAction() {
-				
-				@Override
-				public RobotActionResult call() throws Exception {
-					System.out.println("do action!");
-					return RobotActionResult.SUCCESS;
-				}
-				
-				@Override
-				public boolean prepareAction() {
-					return false;
-				}
-				
-				@Override
-				public IClinetRobot getOwner() {
-					return null;
-				}
-				
-				@Override
-				public IClientRobotAction getNextAction() {
-					return null;
-				}
-				
-				@Override
-				public void afterAction() {
-					
-				}
-			});
+			IClientNet net = new ClientOriginalSocketNet();
+			IClientRobotAction action = new RobotCommonAction();
+			IMessageHandler<String> handler = new ClientRobotCommonHandler(net,new StringMessageCoder());
+			IClinetRobot robot = new ClientRobot(i, action,handler);
+			robot.getAction().setRobot(robot);
 			robots.add(robot);
 		}
 		return robots;

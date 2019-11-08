@@ -1,4 +1,4 @@
-package com.test.robot;
+package com.shadowFrame.robot;
 
 import com.shadowFrame.data.annotation.ResourceFmtAnnotation;
 import com.shadowFrame.data.template.base.BaseTemplate;
@@ -6,15 +6,16 @@ import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * 机器人配置
- * 
  * @author shadow
  *
  */
 @ResourceFmtAnnotation(fileName = "resource/robot/robotConfig.cfg", format = ResourceFmt.PROPERTIES_RES)
 public class RobotConfig extends BaseTemplate {
 	
-	/** 机器人平台线程数量*/
-	private int platformThreadNum;
+	/** 机器人平台机器人行为线程数量*/
+	private int platformActionThreadNum;
+	/** 机器人平台机器人接受协议线程数量*/
+	private int platformReceiveThreadNum;
 	/** 机器人平台遍历机器人间隔（毫秒)*/
 	private long platformInterval;
 	/** 机器人数量*/
@@ -30,12 +31,20 @@ public class RobotConfig extends BaseTemplate {
 
 	}
 	
-	public void setPlatformThreadNum(int platformThreadNum) {
-		this.platformThreadNum = platformThreadNum;
+	public void setPlatformActionThreadNum(int platformActionThreadNum) {
+		this.platformActionThreadNum = platformActionThreadNum;
 	}
 	
-	public int getPlatformThreadNum() {
-		return platformThreadNum;
+	public int getPlatformActionThreadNum() {
+		return platformActionThreadNum;
+	}
+	
+	public void setPlatformReceiveThreadNum(int platformReceiveThreadNum) {
+		this.platformReceiveThreadNum = platformReceiveThreadNum;
+	}
+	
+	public int getPlatformReceiveThreadNum() {
+		return platformReceiveThreadNum;
 	}
 	
 	public void setPlatformInterval(long platformInterval) {

@@ -1,5 +1,7 @@
 package com.shadowFrame.util;
 
+import org.springframework.util.StringUtils;
+
 import com.google.common.base.Strings;
 
 /**
@@ -31,6 +33,10 @@ public class StringUtil {
 		} else {
 			return str;
 		}
+	}
+
+	public static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str));
 	}
 
 }

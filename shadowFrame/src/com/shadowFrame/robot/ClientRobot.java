@@ -1,54 +1,44 @@
-package com.test.robot;
+package com.shadowFrame.robot;
 
-import com.shadowFrame.io.net.IClientNet;
+import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.robot.action.IClientRobotAction;
 
 /**
  *  测试机器人
- * @author shadowvv
+ * @author shadow
  *
  */
+@SuppressWarnings("rawtypes")
 public class ClientRobot implements IClinetRobot {
 	
 	//机器人id
 	private int id;
-	//机器人网络接口
-	private IClientNet net;
-	//协议发送时间戳
-	private long sendTimeStamp;
-	//收到协议时间戳
-	private long receiveTimeStamp;
 	//机器人行为接口
 	private IClientRobotAction action;
+	//机器人协议接收器
+	private IMessageHandler handler;
+
+	//协议发送时间戳
+	private long sendTimeStamp;
 	//上一次机器人行为时间戳
 	private long lastActionTimeStamp;
 	//机器人行为时间间隔
 	private long actionInterval;
 	
-	/**
-	 * 
-	 * @param id 机器人id
-	 * @param net 机器人网络接口
-	 * @param action 机器人行为接口
-	 */
-	public ClientRobot(int id,final IClientNet net,final IClientRobotAction action) {
+	public ClientRobot(final int id,final IClientRobotAction action,final IMessageHandler handler) {
 		this.id = id;
-		this.net = net;
 		this.action = action;
+		this.handler = handler;
 	}
 	
 	public void connect(String ip,int port) {
-		//net.connect(ip,port);
-		System.out.println("id:"+id+" connect!");
+		handler.connect(ip,port);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void send(Object message) {
 		sendTimeStamp = System.currentTimeMillis();
-		//net.send(message);
-	}
-	
-	public void receive(Object message) {
-		net.receive(message);
-		receiveTimeStamp = System.currentTimeMillis();
+		handler.send(message);
 	}
 	
 	@Override
@@ -58,10 +48,15 @@ public class ClientRobot implements IClinetRobot {
 	}
 	
 	@Override
+	public IMessageHandler<?> getReceiveHandler() {
+		return handler;
+	}
+	
+	@Override
 	public boolean isReady() {
-//		if(!net.isActive()) {
-//			return false;
-//		}
+		if(!handler.isActive()) {
+			return false;
+		}
 		long currentTime = System.currentTimeMillis();
 		if(currentTime - lastActionTimeStamp < actionInterval) {
 			return false;
@@ -73,6 +68,7 @@ public class ClientRobot implements IClinetRobot {
 	 * 
 	 * @return 机器人id
 	 */
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -90,7 +86,7 @@ public class ClientRobot implements IClinetRobot {
 	 * @return 收到协议时间戳
 	 */
 	public long getReceiveTimeStamp() {
-		return receiveTimeStamp;
+		return handler.getReceiveTimeStamp();
 	}
 	
 	/**
@@ -116,4 +112,5 @@ public class ClientRobot implements IClinetRobot {
 	public long getLastActionTimeStamp() {
 		return lastActionTimeStamp;
 	}
+	
 }

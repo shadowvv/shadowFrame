@@ -1,8 +1,8 @@
-package com.test.robot;
+package com.shadowFrame.robot.action;
 
 import java.util.concurrent.Callable;
 
-import com.test.robot.action.RobotActionResult;
+import com.shadowFrame.robot.IClinetRobot;
 
 /**
  * 机器人行为接口
@@ -33,5 +33,11 @@ public interface IClientRobotAction extends Callable<RobotActionResult> {
 	 * @return 行为拥有者
 	 */
 	public IClinetRobot getOwner();
+
+	/**
+	 * 设置行为机器人
+	 * @param robot
+	 */
+	public void setRobot(IClinetRobot robot);
 
 }

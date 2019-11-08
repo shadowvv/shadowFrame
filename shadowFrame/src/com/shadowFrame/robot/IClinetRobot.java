@@ -1,8 +1,11 @@
-package com.test.robot;
+package com.shadowFrame.robot;
+
+import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.robot.action.IClientRobotAction;
 
 /**
  * 机器人接口
- * @author shadowvx
+ * @author shadow
  *
  */
 public interface IClinetRobot {
@@ -21,10 +24,10 @@ public interface IClinetRobot {
 	public void send(Object message);
 	
 	/**
-	 * 接收协议
-	 * @param message
+	 * 
+	 * @return 机器人接收协议
 	 */
-	public void receive(Object message);
+	public IMessageHandler<?> getReceiveHandler();
 	
 	/**
 	 * 
@@ -37,4 +40,10 @@ public interface IClinetRobot {
 	 * @return 获得机器人行为
 	 */
 	public IClientRobotAction getAction();
+
+	/**
+	 * 
+	 * @return 获得机器人Id
+	 */
+	public int getId();
 }

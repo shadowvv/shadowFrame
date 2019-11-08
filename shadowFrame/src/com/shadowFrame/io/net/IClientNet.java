@@ -1,13 +1,35 @@
 package com.shadowFrame.io.net;
 
+/**
+ * 客户端网络实现接口
+ * @author shadow
+ *
+ */
 public interface IClientNet {
 
-	void connect(String ip, int port);
+	/**
+	 * 连接服务器
+	 * @param ip
+	 * @param port
+	 */
+	void connect(final String ip, final int port);
 
-	void send(Object message);
+	/**
+	 * 发送数据
+	 * @param message
+	 */
+	void send(final byte[] message);
+	
+	/**
+	 * 接收消息
+	 * @param length 消息长度
+	 * @return
+	 */
+	byte[] receive(final int length);
 
-	void receive(Object message);
-
+	/**
+	 * 是否在连线状态
+	 * @return
+	 */
 	boolean isActive();
-
 }
