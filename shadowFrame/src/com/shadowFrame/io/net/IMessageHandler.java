@@ -3,7 +3,7 @@ package com.shadowFrame.io.net;
 import java.util.concurrent.Callable;
 
 import com.shadowFrame.io.net.coder.IMessageCoder;
-import com.shadowFrame.robot.handler.ReceiveMessageHandlerResult;
+import com.shadowFrame.robot.handler.MessageHandlerResult;
 
 /**
  * 协议处理器
@@ -11,7 +11,7 @@ import com.shadowFrame.robot.handler.ReceiveMessageHandlerResult;
  *
  * @param <协议类型>
  */
-public interface IMessageHandler<T> extends Callable<ReceiveMessageHandlerResult> {
+public interface IMessageHandler<T> extends Callable<MessageHandlerResult> {
 
 	/**
 	 * 连接服务器
@@ -35,7 +35,7 @@ public interface IMessageHandler<T> extends Callable<ReceiveMessageHandlerResult
 	/**
 	 * 接收协议
 	 */
-	ReceiveMessageHandlerResult call();
+	MessageHandlerResult call();
 	
 	/**
 	 * 设置网络
