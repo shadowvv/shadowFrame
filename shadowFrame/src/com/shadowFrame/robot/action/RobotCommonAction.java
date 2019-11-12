@@ -2,6 +2,11 @@ package com.shadowFrame.robot.action;
 
 import com.shadowFrame.robot.IClinetRobot;
 
+/**
+ * 机器人一般行为
+ * @author shadow
+ *
+ */
 public class RobotCommonAction implements IClientRobotAction {
 	
 	private IClinetRobot robot;

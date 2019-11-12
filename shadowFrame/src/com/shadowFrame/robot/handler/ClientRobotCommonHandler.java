@@ -1,7 +1,6 @@
 package com.shadowFrame.robot.handler;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import com.shadowFrame.io.net.IClientNet;
 import com.shadowFrame.io.net.IMessageHandler;
@@ -21,13 +20,10 @@ public class ClientRobotCommonHandler implements IMessageHandler<String> {
 	private IMessageCoder<String> coder;
 	//上次接收到协议时间戳
 	private long receiveTimeStamp;
-	// 机器人消息列表
-	private LinkedBlockingQueue<String> messageList;
 
 	public ClientRobotCommonHandler(final IClientNet net,final IMessageCoder<String> coder) {
 		this.net = net;
 		this.coder = coder;
-		messageList = new LinkedBlockingQueue<String>();
 	}
 	
 	@Override
@@ -49,12 +45,11 @@ public class ClientRobotCommonHandler implements IMessageHandler<String> {
 	}
 
 	@Override
-	public ReceiveMessageHandlerResult call() {
+	public MessageHandlerResult call() {
 		while (true) {
 			byte[] lengthByte = net.receive(4);
 			int length = ByteBuffer.wrap(lengthByte).getInt();
 			String message = coder.decode(net.receive(length));
-			messageList.add(message);
 			System.out.println(message);
 		}
 	}

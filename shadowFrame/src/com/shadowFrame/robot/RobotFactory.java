@@ -3,13 +3,13 @@ package com.shadowFrame.robot;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shadowFrame.io.net.ClientOriginalSocketNet;
+import com.shadowFrame.io.net.ClientNIOSocketNet;
 import com.shadowFrame.io.net.IClientNet;
 import com.shadowFrame.io.net.IMessageHandler;
 import com.shadowFrame.io.net.coder.StringMessageCoder;
 import com.shadowFrame.robot.action.IClientRobotAction;
 import com.shadowFrame.robot.action.RobotCommonAction;
-import com.shadowFrame.robot.handler.ClientRobotCommonHandler;
+import com.shadowFrame.robot.handler.ClientNIOHandler;
 
 /**
  * 机器人工厂
@@ -27,9 +27,9 @@ public class RobotFactory {
 		List<IClinetRobot> robots = new ArrayList<IClinetRobot>();
 		int num = robotConfig.getRobotNum();
 		for (int i = 0; i < num; i++) {
-			IClientNet net = new ClientOriginalSocketNet();
+			IClientNet net = new ClientNIOSocketNet();
 			IClientRobotAction action = new RobotCommonAction();
-			IMessageHandler<String> handler = new ClientRobotCommonHandler(net,new StringMessageCoder());
+			IMessageHandler<String> handler = new ClientNIOHandler((ClientNIOSocketNet) net, new StringMessageCoder());
 			IClinetRobot robot = new ClientRobot(i, action,handler);
 			robot.getAction().setRobot(robot);
 			robots.add(robot);

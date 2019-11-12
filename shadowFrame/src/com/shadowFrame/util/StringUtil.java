@@ -1,7 +1,5 @@
 package com.shadowFrame.util;
 
-import org.springframework.util.StringUtils;
-
 import com.google.common.base.Strings;
 
 /**
@@ -35,6 +33,11 @@ public class StringUtil {
 		}
 	}
 
+	/**
+	 * String是不是为null或者""
+	 * @param str
+	 * @return
+	 */
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str));
 	}

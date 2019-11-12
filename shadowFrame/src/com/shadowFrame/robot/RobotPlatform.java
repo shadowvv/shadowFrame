@@ -41,6 +41,7 @@ public class RobotPlatform {
 		
 		for (IClinetRobot iClinetRobot : robotList) {
 			receiveExecutor.submit(iClinetRobot.getReceiveHandler());
+			break;
 		}
 		
 		while (true) {

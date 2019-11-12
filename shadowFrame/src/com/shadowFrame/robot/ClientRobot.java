@@ -25,6 +25,12 @@ public class ClientRobot implements IClinetRobot {
 	//机器人行为时间间隔
 	private long actionInterval;
 	
+	/**
+	 * 
+	 * @param id 机器人Id
+	 * @param action 机器人行为
+	 * @param handler 消息处理器
+	 */
 	public ClientRobot(final int id,final IClientRobotAction action,final IMessageHandler handler) {
 		this.id = id;
 		this.action = action;
