@@ -71,8 +71,8 @@ public class ClientNIOHandler implements IMessageHandler<String>{
 	
 	private long receiveTimeStamp;
 	
-	public ClientNIOHandler(final ClientNIOSocketNet net,final IMessageCoder<String> coder) {
-		this.net = net;
+	public ClientNIOHandler(final IMessageCoder<String> coder) {
+		this.net = new ClientNIOSocketNet();
 		ClientNIOHandler.coder = coder;
 	}
 	

@@ -5,7 +5,7 @@ import com.shadowFrame.log.ShadowLogger;
 /**
  * 方法参数检测工具类
  * 
- * @author Shadow
+ * @author shadow
  * @version 1.0.0
  */
 public class PreconditionUtil {

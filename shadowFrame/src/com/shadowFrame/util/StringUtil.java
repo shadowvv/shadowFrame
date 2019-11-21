@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 /**
  * 字符串操作工具类
  * 
- * @author Shadow
+ * @author shadow
  * @version 1.0.0
  */
 public class StringUtil {

@@ -7,7 +7,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
 /**
  * 服务器基础配置
  * 
- * @author Shadow
+ * @author shadow
  * @version 1.0.0
  */
 @ResourceFmtAnnotation(fileName = "cfg/shadow.cfg", format = ResourceFmt.PROPERTIES_RES)

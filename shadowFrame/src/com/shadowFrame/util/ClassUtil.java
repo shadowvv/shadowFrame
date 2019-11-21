@@ -16,7 +16,7 @@ import java.util.jar.JarFile;
 /**
  * 类操作工具类
  * 
- * @author Shadow
+ * @author shadow
  * @version 1.0.0
  */
 public class ClassUtil {

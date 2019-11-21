@@ -1,5 +1,10 @@
 package com.test.common;
 
+/**
+ * 对象参数也是值传递，引用传递是个伪命题
+ * @author shadow
+ *
+ */
 public class ValueTransfer {
 	
 	class Person {

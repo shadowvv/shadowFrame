@@ -2,7 +2,12 @@ package com.test.common;
 
 import java.util.Scanner;
 
-public class HelloWorld {
+/**
+ * scanner简单应用
+ * @author shadow
+ *
+ */
+public class ScannerTest {
 
 	public static void main(String[] args) {
 		

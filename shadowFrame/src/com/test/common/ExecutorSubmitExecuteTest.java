@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 
 /**
  * ExectorService中execute和submit的区别
- * @author shadowvv
+ * @author shadow
  *
  */
 public class ExecutorSubmitExecuteTest {
