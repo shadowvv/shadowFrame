@@ -1,5 +1,6 @@
 package com.test.net.netty;
 
+import com.shadowFrame.io.net.coder.IMessageCoder;
 import com.shadowFrame.io.net.coder.StringMessageCoder;
 
 import io.netty.buffer.ByteBuf;
@@ -12,6 +13,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  *
  */
 public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
+	
+	private static IMessageCoder<String> coder = new StringMessageCoder();
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -22,7 +25,7 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
         	if(buf.isReadable(length)) {
         		byte[] req = new byte[length];
         		buf.readBytes(req);
-        		System.out.println(new StringMessageCoder().decode(req));
+        		System.out.println("服务器收到信息："+coder.decode(req));
         		buf.resetReaderIndex();
         		ctx.write(buf);
         	}

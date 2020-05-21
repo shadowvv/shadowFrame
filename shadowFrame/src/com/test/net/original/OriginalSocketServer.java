@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 简单的原生socket服务器
+ * 简单的原生socket服务器,每个客户端对应一根线程
  * 
  * @author shadow
  *
@@ -53,7 +53,7 @@ public class OriginalSocketServer {
 					byte[] messageByte = new byte[length];
 					if (in.read(messageByte) == length) {
 						String message = new String(messageByte);
-						System.out.println(message);
+						System.out.println("服务器收到信息："+message);
 						ByteArrayOutputStream writer = new ByteArrayOutputStream(messageByte.length);
 						writer.write(lengthByte);
 						writer.write(messageByte);

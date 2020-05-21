@@ -13,11 +13,11 @@ import java.nio.channels.SocketChannel;
  * @author shadow
  *
  */
-public class ClientNIOSocketNet implements IClientNet{
+public class ClientNIONet implements IClientNet{
 
 	private SocketChannel channel;
 	
-	public ClientNIOSocketNet() {
+	public ClientNIONet() {
 
 	}
 	
@@ -32,6 +32,11 @@ public class ClientNIOSocketNet implements IClientNet{
 		}	
 	}
 	
+	/**
+	 * 注册到selector
+	 * @param selector
+	 * @param opConnect
+	 */
 	public void register(Selector selector, int opConnect) {
 		try {
 			channel.register(selector, SelectionKey.OP_CONNECT);

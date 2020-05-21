@@ -11,7 +11,7 @@ import com.shadowFrame.robot.handler.MessageHandlerResult;
  *
  * @param <协议类型>
  */
-public interface IMessageHandler<T> extends Callable<MessageHandlerResult> {
+public interface INetHandler<T> extends Callable<MessageHandlerResult> {
 
 	/**
 	 * 连接服务器

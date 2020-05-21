@@ -2,7 +2,7 @@ package com.shadowFrame.robot.handler;
 
 import com.shadowFrame.io.net.ClientNettyNet;
 import com.shadowFrame.io.net.IClientNet;
-import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.INetHandler;
 import com.shadowFrame.io.net.coder.IMessageCoder;
 import com.shadowFrame.io.net.coder.StringMessageCoder;
 
@@ -25,7 +25,7 @@ import io.netty.handler.logging.LoggingHandler;
  * @author shadow
  *
  */
-public class ClientNettyHandler implements IMessageHandler<String>{
+public class ClientNettyHandler implements INetHandler<String>{
 	
 	static class ChannelHandler extends ChannelInboundHandlerAdapter  {
 

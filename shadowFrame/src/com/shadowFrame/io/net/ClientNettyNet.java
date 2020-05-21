@@ -4,6 +4,11 @@ import java.net.InetSocketAddress;
 
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+/**
+ * netty客户端连接
+ * @author shadow
+ *
+ */
 public class ClientNettyNet extends NioSocketChannel implements IClientNet {
 	
 	public ClientNettyNet() {

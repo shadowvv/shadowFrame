@@ -28,7 +28,6 @@ public class FileUtil {
 
 		File file = new File(fileName);
 		PreconditionUtil.checkState(file.isFile() && file.exists(), "file:" + fileName + " is not exist");
-
 		return file;
 	}
 

@@ -9,7 +9,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author shadow
  *
  */
-@ResourceFmtAnnotation(fileName = "resource/robot/robotConfig.cfg", format = ResourceFmt.PROPERTIES_RES)
+@ResourceFmtAnnotation(fileName = "cfg/robotConfig.cfg", format = ResourceFmt.PROPERTIES_RES)
 public class RobotConfig extends BaseTemplate {
 	
 	/** 机器人平台机器人行为线程数量*/

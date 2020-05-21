@@ -1,6 +1,6 @@
 package com.shadowFrame.robot;
 
-import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.INetHandler;
 import com.shadowFrame.robot.action.IClientRobotAction;
 
 /**
@@ -16,7 +16,7 @@ public class ClientRobot implements IClinetRobot {
 	//机器人行为接口
 	private IClientRobotAction action;
 	//机器人协议接收器
-	private IMessageHandler handler;
+	private INetHandler handler;
 
 	//协议发送时间戳
 	private long sendTimeStamp;
@@ -31,7 +31,7 @@ public class ClientRobot implements IClinetRobot {
 	 * @param action 机器人行为
 	 * @param handler 消息处理器
 	 */
-	public ClientRobot(final int id,final IClientRobotAction action,final IMessageHandler handler) {
+	public ClientRobot(final int id,final IClientRobotAction action,final INetHandler handler) {
 		this.id = id;
 		this.action = action;
 		this.handler = handler;
@@ -54,7 +54,7 @@ public class ClientRobot implements IClinetRobot {
 	}
 	
 	@Override
-	public IMessageHandler<?> getReceiveHandler() {
+	public INetHandler<?> getReceiveHandler() {
 		return handler;
 	}
 	

@@ -2,9 +2,9 @@ package com.shadowFrame.robot.handler;
 
 import java.nio.ByteBuffer;
 
-import com.shadowFrame.io.net.ClientOriginalSocketNet;
+import com.shadowFrame.io.net.ClientSocketNet;
 import com.shadowFrame.io.net.IClientNet;
-import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.INetHandler;
 import com.shadowFrame.io.net.coder.IMessageCoder;
 
 /**
@@ -13,7 +13,7 @@ import com.shadowFrame.io.net.coder.IMessageCoder;
  * @author shadow
  *
  */
-public class ClientRobotCommonHandler implements IMessageHandler<String> {
+public class ClientSocketHandler implements INetHandler<String> {
 
 	//网络
 	private IClientNet net;
@@ -22,8 +22,8 @@ public class ClientRobotCommonHandler implements IMessageHandler<String> {
 	//上次接收到协议时间戳
 	private long receiveTimeStamp;
 
-	public ClientRobotCommonHandler(final IMessageCoder<String> coder) {
-		this.net = new ClientOriginalSocketNet();
+	public ClientSocketHandler(final IMessageCoder<String> coder) {
+		this.net = new ClientSocketNet();
 		this.coder = coder;
 	}
 	

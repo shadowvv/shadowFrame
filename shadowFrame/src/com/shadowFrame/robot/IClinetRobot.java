@@ -1,6 +1,6 @@
 package com.shadowFrame.robot;
 
-import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.INetHandler;
 import com.shadowFrame.robot.action.IClientRobotAction;
 
 /**
@@ -27,7 +27,7 @@ public interface IClinetRobot {
 	 * 
 	 * @return 机器人接收协议
 	 */
-	public IMessageHandler<?> getReceiveHandler();
+	public INetHandler<?> getReceiveHandler();
 	
 	/**
 	 * 

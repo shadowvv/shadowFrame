@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.shadowFrame.io.net.ClientNIOSocketNet;
+import com.shadowFrame.io.net.ClientNIONet;
 import com.shadowFrame.io.net.IClientNet;
-import com.shadowFrame.io.net.IMessageHandler;
+import com.shadowFrame.io.net.INetHandler;
 import com.shadowFrame.io.net.coder.IMessageCoder;
 
 /**
@@ -20,16 +20,16 @@ import com.shadowFrame.io.net.coder.IMessageCoder;
  * @author shadow
  *
  */
-public class ClientNIOHandler implements IMessageHandler<String>{
+public class ClientNIOHandler implements INetHandler<String>{
 	
 	private static Selector selector;
 	private static IMessageCoder<String> coder;
 	private static Callable<MessageHandlerResult> listenCall;
-	private static Map<SocketChannel, ClientNIOSocketNet> ChannelNetMap;
+	private static Map<SocketChannel, ClientNIONet> ChannelNetMap;
 	static {
 		try {
 			selector = Selector.open();
-			ChannelNetMap = new ConcurrentHashMap<SocketChannel, ClientNIOSocketNet>();
+			ChannelNetMap = new ConcurrentHashMap<SocketChannel, ClientNIONet>();
 			listenCall = new Callable<MessageHandlerResult>() {
 				@Override
 				public MessageHandlerResult call() throws Exception {
@@ -47,7 +47,7 @@ public class ClientNIOHandler implements IMessageHandler<String>{
 									}
 									channel.register(selector, SelectionKey.OP_READ);
 								}else if (selectionKey.isReadable()){
-									ClientNIOSocketNet currentNet = ChannelNetMap.get(channel);
+									ClientNIONet currentNet = ChannelNetMap.get(channel);
 									if(currentNet != null) {
 										byte[] lengthByte = currentNet.receive(4);
 										int length = ByteBuffer.wrap(lengthByte).getInt();
@@ -67,12 +67,12 @@ public class ClientNIOHandler implements IMessageHandler<String>{
 		}
 	}
 	
-	private ClientNIOSocketNet net;
+	private ClientNIONet net;
 	
 	private long receiveTimeStamp;
 	
 	public ClientNIOHandler(final IMessageCoder<String> coder) {
-		this.net = new ClientNIOSocketNet();
+		this.net = new ClientNIONet();
 		ClientNIOHandler.coder = coder;
 	}
 	
@@ -108,8 +108,8 @@ public class ClientNIOHandler implements IMessageHandler<String>{
 
 	@Override
 	public void setNet(IClientNet net) {
-		if(net instanceof ClientNIOSocketNet) {
-			this.net = (ClientNIOSocketNet) net;
+		if(net instanceof ClientNIONet) {
+			this.net = (ClientNIONet) net;
 		}
 	}
 

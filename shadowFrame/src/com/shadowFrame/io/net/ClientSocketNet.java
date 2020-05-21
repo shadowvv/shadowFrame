@@ -11,11 +11,11 @@ import java.net.UnknownHostException;
  * @author shadow
  *
  */
-public class ClientOriginalSocketNet implements IClientNet {
+public class ClientSocketNet implements IClientNet {
 
 	private Socket net;
 	
-	public ClientOriginalSocketNet() {
+	public ClientSocketNet() {
 	}
 	
 	@Override
