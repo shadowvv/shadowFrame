@@ -17,6 +17,7 @@ public class ClientNettyNet extends NioSocketChannel implements IClientNet {
 	
 	@Override
 	public void connect(String ip, int port) {
+		//test
 		connect(new InetSocketAddress(ip, port));
 	}
 
