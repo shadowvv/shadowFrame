@@ -69,7 +69,7 @@ public class ScheduledThreadPoolInfiniteLoopTest {
     }
 
     public static void main(String[] arg) {
-        //测试结果：当jdk的周期线程池发生死循环时，整个线程池某一个线程会变为Running状态,其他线程wait状态。逻辑停止。
+        //测试结果：当jdk的周期线程池使用scheduleAtFixedRate和scheduleWithFixedDelay发生死循环时,整个线程池某一个线程会变为Running状态,其他线程wait状态,逻辑停止。因为这两个方法使用ScheduledFutureTask.runAndReset()实现。
         //使用自定义线程驱动线程池发生死循环时，整个线程池摸一个线程变为Running状态，其他线程可正常运行，直到所有线程发生死循环，逻辑停止。但自定义线程会继续投递消息
         new ScheduledThreadPoolInfiniteLoopTest().start();
     }

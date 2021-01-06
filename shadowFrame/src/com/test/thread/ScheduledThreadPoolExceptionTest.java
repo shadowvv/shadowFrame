@@ -28,6 +28,26 @@ public class ScheduledThreadPoolExceptionTest {
 
     private void start(){
         //测试jdk的ScheduledThreadPool,当发生有没有捕获的异常时候的表现。
+        ((ScheduledThreadPoolExecutor)scheduledThreadPool).schedule(new Runnable() {
+            @Override
+            public void run() {
+                Long a = null;
+                a.hashCode();
+            }
+        },1000,TimeUnit.MILLISECONDS);
+        ((ScheduledThreadPoolExecutor)scheduledThreadPool).schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("after Exception");
+            }
+        },1000,TimeUnit.MILLISECONDS);
+        ((ScheduledThreadPoolExecutor)scheduledThreadPool).schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("after Exception");
+            }
+        },1000,TimeUnit.MILLISECONDS);
+
         ((ScheduledThreadPoolExecutor)scheduledThreadPool).scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -62,7 +82,8 @@ public class ScheduledThreadPoolExceptionTest {
     }
 
     public static void main(String[] arg){
-        //测试结果：当jdk的周期线程池发生没有被捕获的异常时，整个线程池会变为wait状态。逻辑停止。
+        //测试结果：当jdk的周期线程池发生没有被捕获的异常时，如果使用schedule方法时则不用影响整体的线程池的逻辑。
+        //当使用scheduleAtFixedRate和scheduleWithFixedDelay时，整个线程池会变为wait状态。逻辑停止。因为这两个方法使用ScheduledFutureTask.runAndReset()实现。
         //使用自定义线程驱动线程池发生没有被捕获的异常时，整个线程池正常，逻辑正常
         new ScheduledThreadPoolExceptionTest().start();
     }
