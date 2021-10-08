@@ -1,7 +1,7 @@
 package com.shadowFrame.ai.condition.event;
 
 import com.shadowFrame.ai.SceneObject;
-import com.shadowFrame.ai.FPoint3;
+import com.shadowFrame.physics.shape.point.FPoint3;
 import com.shadowFrame.ai.condition.event.aoiEvent.AOIEvent;
 import com.shadowFrame.ai.condition.event.aoiEvent.AOIEventEnum;
 

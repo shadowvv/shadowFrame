@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.shadowFrame.ai.SceneObject;
-import com.shadowFrame.ai.FPoint3;
+import com.shadowFrame.physics.shape.point.FPoint3;
 import com.shadowFrame.ai.condition.AbstractAICondition;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.target.AITargetObjectCampEnum;
@@ -189,7 +189,7 @@ public class AIActionParam {
 	/**
 	 * 是否被打断
 	 * @param self
-	 * @param collection 
+	 * @param aiEvents
 	 * @return
 	 */
 	public boolean isInterrupt(SceneObject self, Collection<AIEvent> aiEvents) {

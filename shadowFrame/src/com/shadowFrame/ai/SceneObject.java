@@ -1,5 +1,7 @@
 package com.shadowFrame.ai;
 
+import com.shadowFrame.physics.shape.point.FPoint3;
+
 import java.util.ArrayList;
 import java.util.List;
 
