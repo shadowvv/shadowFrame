@@ -11,7 +11,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "./resource/csvSample.csv", format = ResourceFmt.CSV_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/resource/csvSample.csv", format = ResourceFmt.CSV_RES)
 public class CsvSample extends BaseTemplate {
 
 	@ResourceId

@@ -11,7 +11,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "resource/xmlSample.xml", format = ResourceFmt.XML_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/resource/xmlSample.xml", format = ResourceFmt.XML_RES)
 public class XmlSample extends BaseTemplate {
 
 	@ResourceId

@@ -30,4 +30,8 @@ public class ResourceClassAndFmtGen {
 		}
 	}
 
+	public static void main(String[] args) {
+		ResourceClassAndFmtGen.generate();
+	}
+
 }

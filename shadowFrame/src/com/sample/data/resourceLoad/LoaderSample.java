@@ -20,12 +20,11 @@ public class LoaderSample {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("csv:" + new CsvResourceLoader().loadResource("./resource/csvSample.csv"));
-		System.out.println("xml:" + new XmlResourceLoader().loadResource("./resource/xmlSample.xml"));
-		System.out.println("json:" + new JsonResourceLoader().loadResource("./resource/jsonSample.json"));
-		System.out.println("Excel:" + new ExcelResourceLoader().loadResource("./resource/excelSample.xls"));
-		System.out.println(
-				"properties:" + new PropertiesResourceLoader().loadResource("./resource/propertiesSample.cfg"));
+		System.out.println("csv:" + new CsvResourceLoader().loadResource("./shadowFrame/resource/csvSample.csv"));
+		System.out.println("xml:" + new XmlResourceLoader().loadResource("./shadowFrame/resource/xmlSample.xml"));
+		System.out.println("json:" + new JsonResourceLoader().loadResource("./shadowFrame/resource/jsonSample.json"));
+		System.out.println("Excel:" + new ExcelResourceLoader().loadResource("./shadowFrame/resource/excelSample.xlsx"));
+		System.out.println("properties:" + new PropertiesResourceLoader().loadResource("./shadowFrame/resource/propertiesSample.cfg"));
 		System.out.println("========================================");
 		System.out.println("csv:" + ResourceLoader.loadTemplate(CsvSample.class));
 		System.out.println("xml:" + ResourceLoader.loadTemplate(XmlSample.class));

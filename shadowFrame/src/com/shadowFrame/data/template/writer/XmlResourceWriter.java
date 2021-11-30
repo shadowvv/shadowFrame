@@ -53,7 +53,7 @@ public class XmlResourceWriter implements IResourceWriter {
 
 	private Document getFileContent(List<Map<String, String>> datas) {
 		Document doc = DocumentHelper.createDocument();
-		doc.setXMLEncoding("UTF-8");
+//		doc.setXMLEncoding("UTF-8");
 		Element root = DocumentHelper.createElement("root");
 		doc.setRootElement(root);
 		for (Map<String, String> data : datas) {

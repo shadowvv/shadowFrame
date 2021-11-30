@@ -134,7 +134,7 @@ public class ExcelToClassGenerator {
 	private static String getFieldType(Cell cell) {
 		String value = cell.toString();
 		String type = "String";
-		if (cell.getCellType() == CellType.NUMERIC.getCode()) {
+		if (cell.getCellType().equals(CellType.NUMERIC)) {
 			if (value.endsWith(".0")) {
 				value = value.substring(0, value.lastIndexOf(".0"));
 				long longValue = Long.parseLong(value);

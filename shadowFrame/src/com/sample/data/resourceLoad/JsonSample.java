@@ -11,7 +11,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "resource/jsonSample.json", format = ResourceFmt.JSON_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/resource/jsonSample.json", format = ResourceFmt.JSON_RES)
 public class JsonSample extends BaseTemplate {
 
 	@ResourceId

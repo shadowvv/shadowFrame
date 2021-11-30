@@ -11,7 +11,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "resource/excelSample.xlsx", format = ResourceFmt.EXCEL_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/resource/excelSample.xlsx", format = ResourceFmt.EXCEL_RES)
 public class ExcelSample extends BaseTemplate {
 
 	@ResourceId

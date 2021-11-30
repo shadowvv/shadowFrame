@@ -66,6 +66,7 @@ public class ResClassFileWriter {
 
 		String filename = "\"" + resClassFileArchitecture.getResDir() + resClassFileArchitecture.getClassName() + "."
 				+ resClassFileArchitecture.getResourceFMT() + "\"";
+		filename = filename.replace('\\','/');
 
 		fileContent.append("@" + ResourceFmtAnnotation.class.getSimpleName() + "(fileName = " + filename + " ,");
 		fileContent.append("format = " + ResourceFmt.class.getSimpleName() + ".");

@@ -10,7 +10,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "cfg/generator.cfg", format = ResourceFmt.PROPERTIES_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/cfg/generator.cfg", format = ResourceFmt.PROPERTIES_RES)
 public class GeneratorCfg extends BaseTemplate {
 
 	private boolean generatorClass;

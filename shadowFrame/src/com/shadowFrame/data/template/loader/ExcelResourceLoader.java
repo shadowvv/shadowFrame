@@ -279,7 +279,7 @@ public class ExcelResourceLoader extends BaseResourceLoader {
 	@SuppressWarnings("deprecation")
 	private String getRealValue(Cell cell) {
 		String real = cell.toString();
-		if (cell.getCellType() == CellType.NUMERIC.getCode()) {
+		if (cell.getCellType().equals(CellType.NUMERIC)) {
 			if (real.endsWith(".0")) {
 				real = real.substring(0, real.lastIndexOf(".0"));
 			}

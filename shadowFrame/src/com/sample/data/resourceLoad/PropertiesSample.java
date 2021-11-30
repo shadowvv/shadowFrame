@@ -10,7 +10,7 @@ import com.shadowFrame.data.template.base.ResourceFmt;
  * @author Shadow
  * @version 1.0.0
  */
-@ResourceFmtAnnotation(fileName = "resource/propertiesSample.cfg", format = ResourceFmt.PROPERTIES_RES)
+@ResourceFmtAnnotation(fileName = "./shadowFrame/resource/propertiesSample.cfg", format = ResourceFmt.PROPERTIES_RES)
 public class PropertiesSample extends BaseTemplate {
 
 	private int min;

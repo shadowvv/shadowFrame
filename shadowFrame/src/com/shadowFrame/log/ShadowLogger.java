@@ -30,12 +30,12 @@ public class ShadowLogger {
 	/**
 	 * 是否日志
 	 */
-	private static boolean USE_LOG = false;
+	private static boolean USE_LOG = true;
 	
 	private static ShadowLogger instance;
 
 	private ShadowLogger() {
-		PropertyConfigurator.configure("cfg/log4j.properties");
+		PropertyConfigurator.configure("./shadowFrame/cfg/log4j.properties");
 	}
 
 	public static ShadowLogger getInstance() {
