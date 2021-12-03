@@ -38,9 +38,9 @@ public class ScheduledThreadPoolInfiniteLoopTest {
             @Override
             public void run() {
                 int i = new Random().nextInt(20);
-                System.out.println(Thread.currentThread()+" JDK");
+                System.out.println(Thread.currentThread() + " JDK");
                 if (i == 1) {
-                    System.out.println(Thread.currentThread()+" infinite loop JDK");
+                    System.out.println(Thread.currentThread() + " infinite loop JDK");
                     while (true) {
                     }
                 }
@@ -55,15 +55,15 @@ public class ScheduledThreadPoolInfiniteLoopTest {
                     @Override
                     public void run() {
                         int i = new Random().nextInt(20);
-                        System.out.println(Thread.currentThread()+" user");
+                        System.out.println(Thread.currentThread() + " user");
                         if (i == 1) {
-                            System.out.println(Thread.currentThread()+" infinite loop user");
+                            System.out.println(Thread.currentThread() + " infinite loop user");
                             while (true) {
                             }
                         }
                     }
                 });
-                System.out.println(Thread.currentThread()+"dispatch Runnable user");
+                System.out.println(Thread.currentThread() + "dispatch Runnable user");
             }
         }, 1000, 300, TimeUnit.MILLISECONDS);
     }

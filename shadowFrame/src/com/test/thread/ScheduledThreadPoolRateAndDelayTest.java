@@ -1,9 +1,12 @@
 package com.test.thread;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 测试周期线程池scheduleAtFixedRate和scheduleWithFixedDelay的区别
+ *
  * @author shadow
  * @version 1.0
  */
@@ -15,7 +18,7 @@ public class ScheduledThreadPoolRateAndDelayTest {
         RateService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Rate:"+System.currentTimeMillis()+":"+Thread.currentThread()+":1");
+                System.out.println("Rate:" + System.currentTimeMillis() + ":" + Thread.currentThread() + ":1");
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException exception) {
@@ -26,7 +29,7 @@ public class ScheduledThreadPoolRateAndDelayTest {
         RateService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Rate:"+System.currentTimeMillis()+":"+Thread.currentThread()+":2");
+                System.out.println("Rate:" + System.currentTimeMillis() + ":" + Thread.currentThread() + ":2");
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException exception) {

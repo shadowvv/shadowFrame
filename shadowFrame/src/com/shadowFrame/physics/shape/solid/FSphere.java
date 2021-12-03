@@ -14,12 +14,12 @@ public class FSphere {
     private FPoint3 center;
     private float radius;
 
-    public FSphere(){
+    public FSphere() {
         center = new FPoint3();
         radius = 0.0f;
     }
 
-    public FSphere(FPoint3 center,int radius){
+    public FSphere(FPoint3 center, int radius) {
         this.center = center;
         this.radius = radius;
     }

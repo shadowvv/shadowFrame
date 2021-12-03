@@ -4,36 +4,36 @@ import com.shadowFrame.robot.IClinetRobot;
 
 /**
  * 机器人一般行为基类
- * @author shadow
  *
+ * @author shadow
  */
-public abstract class AbstractRobotCommonAction implements IClientRobotAction{
-	
-	//行为所属机器人
-	private IClinetRobot robot;
-	
-	@Override
-	public RobotActionResult call() throws Exception {
-		RobotActionResult result = RobotActionResult.SUCCESS;
-		if(prepareAction()) {
-			result = doAction();
-			afterAction();
-		}
-		return result;
-	}
+public abstract class AbstractRobotCommonAction implements IClientRobotAction {
 
-	@Override
-	public IClinetRobot getOwner() {
-		return robot;
-	}
+    //行为所属机器人
+    private IClinetRobot robot;
 
-	@Override
-	public void setRobot(IClinetRobot robot) {
-		this.robot = robot;
-	}
+    @Override
+    public RobotActionResult call() throws Exception {
+        RobotActionResult result = RobotActionResult.SUCCESS;
+        if (prepareAction()) {
+            result = doAction();
+            afterAction();
+        }
+        return result;
+    }
 
-	/**
-	 * 机器人行为
-	 */
-	protected abstract RobotActionResult doAction();
+    @Override
+    public IClinetRobot getOwner() {
+        return robot;
+    }
+
+    @Override
+    public void setRobot(IClinetRobot robot) {
+        this.robot = robot;
+    }
+
+    /**
+     * 机器人行为
+     */
+    protected abstract RobotActionResult doAction();
 }

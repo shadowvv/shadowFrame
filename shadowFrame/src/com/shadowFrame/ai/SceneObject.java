@@ -8,59 +8,59 @@ import java.util.List;
 
 /**
  * 场景单位
- * @author shadow
  *
+ * @author shadow
  */
 public class SceneObject {
 
-	private ComponentAI ai = new ComponentAI(this, true);
-	
-	public ComponentAI getComponentAI() {
-		return ai;
-	}
+    private ComponentAI ai = new ComponentAI(this, true);
 
-	public long getId() {
-		return 0;
-	}
+    public ComponentAI getComponentAI() {
+        return ai;
+    }
 
-	public Object getCamp() {
-		return null;
-	}
+    public long getId() {
+        return 0;
+    }
 
-	public int getVigilanceRange() {
-		return 0;
-	}
+    public Object getCamp() {
+        return null;
+    }
 
-	public FPoint3 getPos() {
-		return null;
-	}
+    public int getVigilanceRange() {
+        return 0;
+    }
 
-	public FPoint3 getDir() {
-		return null;
-	}
+    public FPoint3 getPos() {
+        return null;
+    }
 
-	public boolean isHaveShield() {
-		return false;
-	}
+    public FPoint3 getDir() {
+        return null;
+    }
 
-	public double getMaxHP() {
-		return 0;
-	}
+    public boolean isHaveShield() {
+        return false;
+    }
 
-	public float getHp() {
-		return 0;
-	}
+    public double getMaxHP() {
+        return 0;
+    }
 
-	public int getDictId() {
-		return 0;
-	}
+    public float getHp() {
+        return 0;
+    }
 
-	public List<SceneObject> getViewSceneObjects() {
-		return new ArrayList<SceneObject>();
-	}
+    public int getDictId() {
+        return 0;
+    }
 
-	public void changeHp(float f) {
-		
-	}
+    public List<SceneObject> getViewSceneObjects() {
+        return new ArrayList<SceneObject>();
+    }
+
+    public void changeHp(float f) {
+
+    }
 
 }

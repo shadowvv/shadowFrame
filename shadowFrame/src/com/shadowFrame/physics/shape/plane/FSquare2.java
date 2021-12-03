@@ -14,12 +14,12 @@ public class FSquare2 {
     private FPoint2 leftTop;
     private FPoint2 rightBottom;
 
-    public FSquare2(){
+    public FSquare2() {
         leftTop = new FPoint2();
         rightBottom = new FPoint2();
     }
 
-    public FSquare2(FPoint2 leftTop,FPoint2 rightBottom){
+    public FSquare2(FPoint2 leftTop, FPoint2 rightBottom) {
         this.leftTop = leftTop;
         this.rightBottom = rightBottom;
     }

@@ -2,8 +2,6 @@ package com.shadowFrame.physics.shape.plane;
 
 import com.shadowFrame.physics.shape.point.Point2;
 
-import java.awt.*;
-
 /**
  * 2D int长方形存储
  *
@@ -16,12 +14,12 @@ public class Square2 {
     private Point2 leftTop;
     private Point2 rightBottom;
 
-    public Square2(){
+    public Square2() {
         leftTop = new Point2();
         rightBottom = new Point2();
     }
 
-    public Square2(Point2 leftTop,Point2 rightBottom){
+    public Square2(Point2 leftTop, Point2 rightBottom) {
         this.leftTop = leftTop;
         this.rightBottom = rightBottom;
     }

@@ -1,7 +1,5 @@
 package com.shadowFrame.physics.shape.solid;
 
-import com.shadowFrame.physics.shape.line.FLineSegment3;
-
 /**
  * 以X轴对齐的10DOP包围盒，float数据存储
  *
@@ -18,7 +16,7 @@ public class FX10DOPBox {
     private FLineSegment3 yz13Segment;
     private FLineSegment3 yz24Segment;
 
-    public FX10DOPBox(){
+    public FX10DOPBox() {
         xSegment = new FLineSegment3();
         ySegment = new FLineSegment3();
         zSegment = new FLineSegment3();
@@ -27,7 +25,7 @@ public class FX10DOPBox {
         yz24Segment = new FLineSegment3();
     }
 
-    public FX10DOPBox(FLineSegment3 xSegment,FLineSegment3 ySegment,FLineSegment3 zSegment,FLineSegment3 yz13Segment,FLineSegment3 yz24Segment){
+    public FX10DOPBox(FLineSegment3 xSegment, FLineSegment3 ySegment, FLineSegment3 zSegment, FLineSegment3 yz13Segment, FLineSegment3 yz24Segment) {
         this.xSegment = xSegment;
         this.ySegment = ySegment;
         this.zSegment = zSegment;

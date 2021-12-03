@@ -16,14 +16,14 @@ public class FAABBBox {
     private FPoint3 y_point;
     private FPoint3 z_point;
 
-    public FAABBBox(){
+    public FAABBBox() {
         base = new FPoint3();
         x_point = new FPoint3();
         y_point = new FPoint3();
         z_point = new FPoint3();
     }
 
-    public FAABBBox(FPoint3 base,FPoint3 x_point,FPoint3 y_point,FPoint3 z_point){
+    public FAABBBox(FPoint3 base, FPoint3 x_point, FPoint3 y_point, FPoint3 z_point) {
         this.base = base;
         this.x_point = x_point;
         this.y_point = y_point;

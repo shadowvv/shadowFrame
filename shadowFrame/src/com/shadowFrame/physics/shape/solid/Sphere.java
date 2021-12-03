@@ -14,12 +14,12 @@ public class Sphere {
     private Point3 center;
     private int radius;
 
-    public Sphere(){
+    public Sphere() {
         center = new Point3();
         radius = 0;
     }
 
-    public Sphere(Point3 center,int radius){
+    public Sphere(Point3 center, int radius) {
         this.center = center;
         this.radius = radius;
     }

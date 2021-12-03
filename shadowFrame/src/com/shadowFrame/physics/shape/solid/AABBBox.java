@@ -1,5 +1,6 @@
 package com.shadowFrame.physics.shape.solid;
 
+import com.shadowFrame.physics.shape.point.FPoint3;
 import com.shadowFrame.physics.shape.point.Point3;
 
 /**
@@ -16,14 +17,14 @@ public class AABBBox {
     private Point3 y_point;
     private Point3 z_point;
 
-    public AABBBox(){
+    public AABBBox() {
         base = new Point3();
         x_point = new Point3();
         y_point = new Point3();
         z_point = new Point3();
     }
 
-    public AABBBox(Point3 base,Point3 x_point,Point3 y_point,Point3 z_point){
+    public AABBBox(Point3 base, Point3 x_point, Point3 y_point, Point3 z_point) {
         this.base = base;
         this.x_point = x_point;
         this.y_point = y_point;
@@ -60,5 +61,13 @@ public class AABBBox {
 
     public Point3 getZ_point() {
         return z_point;
+    }
+
+    public FPoint3 getFSphereBoxCenter() {
+        float x = (base.getX() + x_point.getX()) / 2.0f;
+        float y = (base.getY() + y_point.getY()) / 2.0f;
+        float z = (base.getZ() + z_point.getZ()) / 2.0f;
+        FPoint3 center = new FPoint3(x, y, z);
+        return center;
     }
 }

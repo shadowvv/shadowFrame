@@ -8,22 +8,22 @@ import com.shadowFrame.ai.target.AITargetObjectCampEnum;
 
 /**
  * 死亡
- * @author shadow
  *
+ * @author shadow
  */
-public class DeadDispatchAIEvent implements IDispatchAIEvent{
+public class DeadDispatchAIEvent implements IDispatchAIEvent {
 
-	@Override
-	public void dispatchAIEvent(AOIEvent aoiEvent) {
-		SceneObject source = aoiEvent.getSource();
-		for (SceneObject observer : aoiEvent.getObservers()) {
-			int targetCamp = AITargetObjectCampEnum.team.getId();
-			if(observer.getCamp() != source.getCamp()){
-				targetCamp = AITargetObjectCampEnum.enemy.getId();
-			}		
-			AIEvent aiEvent = new AIEvent(AIEventEnum.Dead.getId(), aoiEvent.getParam(), targetCamp, source);			
-			observer.getComponentAI().onAoiActionEvent(aiEvent);
-		}
-	}
+    @Override
+    public void dispatchAIEvent(AOIEvent aoiEvent) {
+        SceneObject source = aoiEvent.getSource();
+        for (SceneObject observer : aoiEvent.getObservers()) {
+            int targetCamp = AITargetObjectCampEnum.team.getId();
+            if (observer.getCamp() != source.getCamp()) {
+                targetCamp = AITargetObjectCampEnum.enemy.getId();
+            }
+            AIEvent aiEvent = new AIEvent(AIEventEnum.Dead.getId(), aoiEvent.getParam(), targetCamp, source);
+            observer.getComponentAI().onAoiActionEvent(aiEvent);
+        }
+    }
 
 }

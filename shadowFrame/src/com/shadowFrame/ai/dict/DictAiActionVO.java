@@ -3,70 +3,75 @@ package com.shadowFrame.ai.dict;
 
 public class DictAiActionVO {
 
-	protected int id;
+    protected int id;
 
-	protected int actionId;
+    protected int actionId;
 
-	protected String param;
+    protected String param;
 
-	protected int targetCampType;
+    protected int targetCampType;
 
-	protected String overCondition;
+    protected String overCondition;
 
-	protected String interruptCondition;
+    protected String interruptCondition;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getActionId() {
-		return this.actionId;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setActionId(int actionId) {
-		this.actionId = actionId;
-	}
-	public String getParam() {
-		return this.param;
-	}
+    public int getActionId() {
+        return this.actionId;
+    }
 
-	public void setParam(String param) {
-		this.param = param;
-	}
-	public int getTargetCampType() {
-		return this.targetCampType;
-	}
+    public void setActionId(int actionId) {
+        this.actionId = actionId;
+    }
 
-	public void setTargetCampType(int targetCampType) {
-		this.targetCampType = targetCampType;
-	}
-	public String getOverCondition() {
-		return this.overCondition;
-	}
+    public String getParam() {
+        return this.param;
+    }
 
-	public void setOverCondition(String overCondition) {
-		this.overCondition = overCondition;
-	}
-	public String getInterruptCondition() {
-		return this.interruptCondition;
-	}
+    public void setParam(String param) {
+        this.param = param;
+    }
 
-	public void setInterruptCondition(String interruptCondition) {
-		this.interruptCondition = interruptCondition;
-	}
+    public int getTargetCampType() {
+        return this.targetCampType;
+    }
 
-	@Override
-	public String toString() {
-		return "DictAiActionVO[id=" + id + ",actionId=" + actionId + ",param=" + param + ",targetCampType=" + targetCampType + ",overCondition=" + overCondition + ",interruptCondition=" + interruptCondition + ",]";
-	}
-	
-	public boolean checkData() {
-		return false;
-	}
+    public void setTargetCampType(int targetCampType) {
+        this.targetCampType = targetCampType;
+    }
 
-	public void afterInit() {
-	}
+    public String getOverCondition() {
+        return this.overCondition;
+    }
+
+    public void setOverCondition(String overCondition) {
+        this.overCondition = overCondition;
+    }
+
+    public String getInterruptCondition() {
+        return this.interruptCondition;
+    }
+
+    public void setInterruptCondition(String interruptCondition) {
+        this.interruptCondition = interruptCondition;
+    }
+
+    @Override
+    public String toString() {
+        return "DictAiActionVO[id=" + id + ",actionId=" + actionId + ",param=" + param + ",targetCampType=" + targetCampType + ",overCondition=" + overCondition + ",interruptCondition=" + interruptCondition + ",]";
+    }
+
+    public boolean checkData() {
+        return false;
+    }
+
+    public void afterInit() {
+    }
 }

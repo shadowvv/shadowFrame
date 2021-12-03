@@ -18,7 +18,7 @@ public class Z10DOPBox {
     private LineSegment3 xy13Segment;
     private LineSegment3 xy24Segment;
 
-    public Z10DOPBox(){
+    public Z10DOPBox() {
         xSegment = new LineSegment3();
         ySegment = new LineSegment3();
         zSegment = new LineSegment3();
@@ -27,7 +27,7 @@ public class Z10DOPBox {
         xy24Segment = new LineSegment3();
     }
 
-    public Z10DOPBox(LineSegment3 xSegment, LineSegment3 ySegment, LineSegment3 zSegment, LineSegment3 xy13Segment, LineSegment3 xy24Segment){
+    public Z10DOPBox(LineSegment3 xSegment, LineSegment3 ySegment, LineSegment3 zSegment, LineSegment3 xy13Segment, LineSegment3 xy24Segment) {
         this.xSegment = xSegment;
         this.ySegment = ySegment;
         this.zSegment = zSegment;

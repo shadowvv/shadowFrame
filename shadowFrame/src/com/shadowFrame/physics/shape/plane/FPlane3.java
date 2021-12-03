@@ -14,14 +14,14 @@ public class FPlane3 {
     private float c;
     private float d;
 
-    public FPlane3(){
+    public FPlane3() {
         a = 0.0f;
         b = 0.0f;
         c = 0.0f;
         d = 0.0f;
     }
 
-    public FPlane3(float a, float b, float c, float d){
+    public FPlane3(float a, float b, float c, float d) {
         this.a = a;
         this.b = b;
         this.c = c;

@@ -7,46 +7,46 @@ import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * csv资源映射类例子
- * 
+ *
  * @author Shadow
  * @version 1.0.0
  */
 @ResourceFmtAnnotation(fileName = "./shadowFrame/resource/csvSample.csv", format = ResourceFmt.CSV_RES)
 public class CsvSample extends BaseTemplate {
 
-	@ResourceId
-	private String id;
-	private int min;
-	private int max;
+    @ResourceId
+    private String id;
+    private int min;
+    private int max;
 
-	public CsvSample() {
+    public CsvSample() {
 
-	}
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getMax() {
-		return max;
-	}
+    public int getMax() {
+        return max;
+    }
 
-	public int getMin() {
-		return min;
-	}
+    public int getMin() {
+        return min;
+    }
 
-	@Override
-	public String toString() {
-		return "id=" + id + " min=" + min + " max=" + max;
-	}
+    @Override
+    public String toString() {
+        return "id=" + id + " min=" + min + " max=" + max;
+    }
 
-	@Override
-	public boolean invalid() {
-		return false;
-	}
+    @Override
+    public boolean invalid() {
+        return false;
+    }
 
-	@Override
-	public void assembly() {
+    @Override
+    public void assembly() {
 
-	}
+    }
 }

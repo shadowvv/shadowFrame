@@ -15,12 +15,12 @@ public class Square3 {
     private Point3 leftTop;
     private Point3 rightBottom;
 
-    public Square3(){
+    public Square3() {
         leftTop = new Point3();
         rightBottom = new Point3();
     }
 
-    public Square3(Point3 leftTop,Point3 rightBottom){
+    public Square3(Point3 leftTop, Point3 rightBottom) {
         this.leftTop = leftTop;
         this.rightBottom = rightBottom;
     }

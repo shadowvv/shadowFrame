@@ -2,63 +2,67 @@ package com.shadowFrame.ai.dict;
 
 public class DictAiThresholdVO {
 
-	protected int id;
+    protected int id;
 
-	protected int thresholdId;
+    protected int thresholdId;
 
-	protected float value;
+    protected float value;
 
-	protected int targetCampType;
+    protected int targetCampType;
 
-	protected int campareType;
+    protected int campareType;
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getThresholdId() {
-		return this.thresholdId;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setThresholdId(int thresholdId) {
-		this.thresholdId = thresholdId;
-	}
-	public float getValue() {
-		return this.value;
-	}
+    public int getThresholdId() {
+        return this.thresholdId;
+    }
 
-	public void setValue(float value) {
-		this.value = value;
-	}
-	public int getTargetCampType() {
-		return this.targetCampType;
-	}
+    public void setThresholdId(int thresholdId) {
+        this.thresholdId = thresholdId;
+    }
 
-	public void setTargetCampType(int targetCampType) {
-		this.targetCampType = targetCampType;
-	}
-	public int getCampareType() {
-		return this.campareType;
-	}
+    public float getValue() {
+        return this.value;
+    }
 
-	public void setCampareType(int campareType) {
-		this.campareType = campareType;
-	}
+    public void setValue(float value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return "DictAiThresholdVO[id=" + id + ",thresholdId=" + thresholdId + ",value=" + value + ",targetCampType=" + targetCampType + ",campareType=" + campareType + ",]";
-	}
-	
+    public int getTargetCampType() {
+        return this.targetCampType;
+    }
 
-	public boolean checkData() {
-		return false;
-	}
+    public void setTargetCampType(int targetCampType) {
+        this.targetCampType = targetCampType;
+    }
+
+    public int getCampareType() {
+        return this.campareType;
+    }
+
+    public void setCampareType(int campareType) {
+        this.campareType = campareType;
+    }
+
+    @Override
+    public String toString() {
+        return "DictAiThresholdVO[id=" + id + ",thresholdId=" + thresholdId + ",value=" + value + ",targetCampType=" + targetCampType + ",campareType=" + campareType + ",]";
+    }
 
 
-	public void afterInit() {
-	}
+    public boolean checkData() {
+        return false;
+    }
+
+
+    public void afterInit() {
+    }
 }

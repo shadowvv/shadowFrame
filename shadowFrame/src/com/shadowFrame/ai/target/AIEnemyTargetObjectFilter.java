@@ -1,19 +1,19 @@
 package com.shadowFrame.ai.target;
 
-import java.util.List;
-
 import com.shadowFrame.ai.SceneObject;
+
+import java.util.List;
 
 /**
  * 获得所有敌人为目标
- * @author shadow
  *
+ * @author shadow
  */
-public class AIEnemyTargetObjectFilter implements IAITargetObjectFilter{
+public class AIEnemyTargetObjectFilter implements IAITargetObjectFilter {
 
-	@Override
-	public List<SceneObject> getTargetObjects(SceneObject self) {
-		return self.getComponentAI().getAllHatredObjects();
-	}
+    @Override
+    public List<SceneObject> getTargetObjects(SceneObject self) {
+        return self.getComponentAI().getAllHatredObjects();
+    }
 
 }

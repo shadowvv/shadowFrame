@@ -11,21 +11,21 @@ import com.shadowFrame.ai.SceneObject;
  */
 public abstract class AbstractAIAction implements IAIAction {
 
-	@Override
-	public final boolean doAction(SceneObject self, AIActionParam param) {
-		if(!checkAction(self, param)){
-			return false;
-		}
-		return action(self, param);
-	}
-	
-	/**
-	 * 执行动作
-	 * 
-	 * @param self
-	 * @param param
-	 * @return
-	 */
-	protected abstract boolean action(SceneObject self, AIActionParam param);
+    @Override
+    public final boolean doAction(SceneObject self, AIActionParam param) {
+        if (!checkAction(self, param)) {
+            return false;
+        }
+        return action(self, param);
+    }
+
+    /**
+     * 执行动作
+     *
+     * @param self
+     * @param param
+     * @return
+     */
+    protected abstract boolean action(SceneObject self, AIActionParam param);
 
 }

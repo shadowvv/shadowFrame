@@ -13,13 +13,13 @@ public class Point3 {
     private int y;
     private int z;
 
-    public Point3(){
+    public Point3() {
         this.x = 0;
         this.y = 0;
         this.z = 0;
     }
 
-    public Point3(int x,int y,int z){
+    public Point3(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;

@@ -14,14 +14,14 @@ public class Plane3 {
     private int c;
     private int d;
 
-    public Plane3(){
+    public Plane3() {
         a = 0;
         b = 0;
         c = 0;
         d = 0;
     }
 
-    public Plane3(int a, int b, int c, int d){
+    public Plane3(int a, int b, int c, int d) {
         this.a = a;
         this.b = b;
         this.c = c;

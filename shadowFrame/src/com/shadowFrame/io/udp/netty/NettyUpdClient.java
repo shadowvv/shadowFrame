@@ -2,11 +2,7 @@ package com.shadowFrame.io.udp.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -29,7 +25,7 @@ public class NettyUpdClient {
         protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
             String response = msg.content().toString(CharsetUtil.UTF_8);
 
-            if(response.startsWith("结果：")){
+            if (response.startsWith("结果：")) {
                 System.out.println(response);
                 ctx.close();
             }
@@ -59,17 +55,17 @@ public class NettyUpdClient {
             if (!ch.closeFuture().await(15000)) {
                 System.out.println("Search request timed out.");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Search, An Error Occur ==>" + e);
-        }finally {
+        } finally {
             group.shutdownGracefully();
         }
     }
-    
+
     public static void main(String[] args) {
-    	NettyUpdClient client = new NettyUpdClient(8800);
+        NettyUpdClient client = new NettyUpdClient(8800);
         client.sendPackage();
-	}
+    }
 
 }

@@ -7,46 +7,46 @@ import com.shadowFrame.data.template.base.ResourceFmt;
 
 /**
  * json资源映射类例子
- * 
+ *
  * @author Shadow
  * @version 1.0.0
  */
 @ResourceFmtAnnotation(fileName = "./shadowFrame/resource/jsonSample.json", format = ResourceFmt.JSON_RES)
 public class JsonSample extends BaseTemplate {
 
-	@ResourceId
-	private String id;
-	private int min;
-	private int max;
+    @ResourceId
+    private String id;
+    private int min;
+    private int max;
 
-	public JsonSample() {
+    public JsonSample() {
 
-	}
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getMax() {
-		return max;
-	}
+    public int getMax() {
+        return max;
+    }
 
-	public int getMin() {
-		return min;
-	}
+    public int getMin() {
+        return min;
+    }
 
-	@Override
-	public String toString() {
-		return "id=" + id + " min=" + min + " max=" + max;
-	}
+    @Override
+    public String toString() {
+        return "id=" + id + " min=" + min + " max=" + max;
+    }
 
-	@Override
-	public boolean invalid() {
-		return false;
-	}
+    @Override
+    public boolean invalid() {
+        return false;
+    }
 
-	@Override
-	public void assembly() {
+    @Override
+    public void assembly() {
 
-	}
+    }
 }

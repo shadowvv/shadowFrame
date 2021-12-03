@@ -15,13 +15,13 @@ public class FTriangle2 {
     private FPoint2 b;
     private FPoint2 c;
 
-    public FTriangle2(){
+    public FTriangle2() {
         a = new FPoint2();
         b = new FPoint2();
         c = new FPoint2();
     }
 
-    public FTriangle2(FPoint2 a,FPoint2 b,FPoint2 c){
+    public FTriangle2(FPoint2 a, FPoint2 b, FPoint2 c) {
         this.a = a;
         this.b = b;
         this.c = c;

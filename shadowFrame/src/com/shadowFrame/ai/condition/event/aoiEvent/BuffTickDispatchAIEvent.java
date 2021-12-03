@@ -8,24 +8,24 @@ import com.shadowFrame.ai.target.AITargetObjectCampEnum;
 
 /**
  * 结算buff
- * @author shadow
  *
+ * @author shadow
  */
-public class BuffTickDispatchAIEvent implements IDispatchAIEvent{
+public class BuffTickDispatchAIEvent implements IDispatchAIEvent {
 
-	@Override
-	public void dispatchAIEvent(AOIEvent aoiEvent) {
-		SceneObject source = aoiEvent.getSource();
-		for (SceneObject observer : aoiEvent.getObservers()) {
-			int targetCamp = AITargetObjectCampEnum.team.getId();
-			if(observer.getCamp() != source.getCamp()){
-				targetCamp = AITargetObjectCampEnum.enemy.getId();
-			}		
-			AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick.getId(), aoiEvent.getParam(), targetCamp, source);			
-			observer.getComponentAI().onAoiActionEvent(aiEvent);
-		}
-		AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.self.getId(), source);			
-		source.getComponentAI().onAoiActionEvent(aiEvent);
-	}
+    @Override
+    public void dispatchAIEvent(AOIEvent aoiEvent) {
+        SceneObject source = aoiEvent.getSource();
+        for (SceneObject observer : aoiEvent.getObservers()) {
+            int targetCamp = AITargetObjectCampEnum.team.getId();
+            if (observer.getCamp() != source.getCamp()) {
+                targetCamp = AITargetObjectCampEnum.enemy.getId();
+            }
+            AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick.getId(), aoiEvent.getParam(), targetCamp, source);
+            observer.getComponentAI().onAoiActionEvent(aiEvent);
+        }
+        AIEvent aiEvent = new AIEvent(AIEventEnum.BuffTick.getId(), aoiEvent.getParam(), AITargetObjectCampEnum.self.getId(), source);
+        source.getComponentAI().onAoiActionEvent(aiEvent);
+    }
 
 }

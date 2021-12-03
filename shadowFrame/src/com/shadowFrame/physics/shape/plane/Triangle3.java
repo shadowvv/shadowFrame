@@ -15,13 +15,13 @@ public class Triangle3 {
     private Point3 b;
     private Point3 c;
 
-    public Triangle3(){
+    public Triangle3() {
         a = new Point3();
         b = new Point3();
         c = new Point3();
     }
 
-    public Triangle3(Point3 a,Point3 b,Point3 c){
+    public Triangle3(Point3 a, Point3 b, Point3 c) {
         this.a = a;
         this.b = b;
         this.c = c;

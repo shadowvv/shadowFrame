@@ -4,15 +4,16 @@ import com.shadowFrame.ai.condition.event.aoiEvent.AOIEvent;
 
 /**
  * 讲aoi事件转换为ai事件
- * @author shadow
  *
+ * @author shadow
  */
 public interface IDispatchAIEvent {
 
-	/**
-	 * 派发ai事件
-	 * @param aoiEvent
-	 */
-	void dispatchAIEvent(AOIEvent aoiEvent);
-	
+    /**
+     * 派发ai事件
+     *
+     * @param aoiEvent
+     */
+    void dispatchAIEvent(AOIEvent aoiEvent);
+
 }

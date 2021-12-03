@@ -1,10 +1,10 @@
 package com.shadowFrame.ai.condition;
 
-import java.util.Collection;
-
 import com.shadowFrame.ai.SceneObject;
 import com.shadowFrame.ai.condition.event.AIEvent;
 import com.shadowFrame.ai.condition.threshold.AIThresholdParam;
+
+import java.util.Collection;
 
 /**
  * ||添加判断
@@ -14,43 +14,43 @@ import com.shadowFrame.ai.condition.threshold.AIThresholdParam;
  */
 public class AIOrCondition extends AbstractAICondition {
 
-	public AIOrCondition() {
-	}
+    public AIOrCondition() {
+    }
 
-	@Override
-	public boolean match(SceneObject self,Collection<AIEvent> aiEvents) {
-		if(thresholds == null && events == null && conditions == null){
-			return true;
-		}
-		if(conditions != null){
-			for (AbstractAICondition abstractAICondition : conditions) {
-				if(abstractAICondition.match(self,aiEvents)){
-					return true;
-				}
-			}
-		}
-		if(thresholds != null){
-			for (AIThresholdParam threshold : thresholds) {
-				if(threshold.overThreshold(self)){
-					return true;
-				}
-			}			
-		}
-		if(events != null){
-			for (AIEvent param : events) {
-				boolean match = false;
-				for (AIEvent aoiEvent : aiEvents) {
-					if(param.match(aoiEvent)){
-						match = true;
-						break;
-					}
-				}
-				if(match){
-					return true;
-				}
-			}			
-		}
-		return false;
-	}
+    @Override
+    public boolean match(SceneObject self, Collection<AIEvent> aiEvents) {
+        if (thresholds == null && events == null && conditions == null) {
+            return true;
+        }
+        if (conditions != null) {
+            for (AbstractAICondition abstractAICondition : conditions) {
+                if (abstractAICondition.match(self, aiEvents)) {
+                    return true;
+                }
+            }
+        }
+        if (thresholds != null) {
+            for (AIThresholdParam threshold : thresholds) {
+                if (threshold.overThreshold(self)) {
+                    return true;
+                }
+            }
+        }
+        if (events != null) {
+            for (AIEvent param : events) {
+                boolean match = false;
+                for (AIEvent aoiEvent : aiEvents) {
+                    if (param.match(aoiEvent)) {
+                        match = true;
+                        break;
+                    }
+                }
+                if (match) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

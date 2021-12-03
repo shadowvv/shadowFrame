@@ -26,7 +26,7 @@ public class SyncTools {
     /**
      * 配置表地址
      */
-    private static String configPath = System.getProperty("user.dir") + "\\thrud-game-server\\src\\test\\java\\com\\biligame\\access\\dbSync\\dbSyncConfig.properties";
+    private static String configPath = System.getProperty("user.dir") + "\\shadowFrame\\src\\com\\shadowFrame\\tool\\dbSyncTool\\dbSyncConfig.properties";
     /**
      * 创建表sql
      */
@@ -54,7 +54,7 @@ public class SyncTools {
         //获得源数据库表
         Connection sourceConnection = getConnection(config.getSourceConnect(), config.getSourceUserName(), config.getSourcePassword());
         List<String> sourceTableNames = getAllTableName(sourceConnection);
-        if(sourceTableNames.size() == 0){
+        if (sourceTableNames.size() == 0) {
             System.err.println("源数据为空！");
             return;
         }
@@ -76,7 +76,7 @@ public class SyncTools {
                 syncDropSql.put(table, dropSql);
             }
         }
-        if(syncCreateSql.size() == 0 && syncAlterSql.size() == 0 && syncDropSql.size() == 0){
+        if (syncCreateSql.size() == 0 && syncAlterSql.size() == 0 && syncDropSql.size() == 0) {
             System.out.println("源库与比较库一致！");
             return;
         }
@@ -95,7 +95,7 @@ public class SyncTools {
         //从比较库中查询导出的数据库名
         Connection configConnection = getConnection(config.getConfigConnect(), config.getConfigUserName(), config.getConfigPassword());
         selectExportDbName(configConnection, config.getGameDbConfigTableName());
-        if(syncTargetDbName.size() == 0){
+        if (syncTargetDbName.size() == 0) {
             System.err.println("目标数据库为空！");
             return;
         }
@@ -231,6 +231,7 @@ public class SyncTools {
 
     /**
      * 获得数据库名
+     *
      * @param connection 数据库链接
      * @return 数据库名
      */
