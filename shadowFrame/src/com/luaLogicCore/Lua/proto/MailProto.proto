@@ -1,0 +1,61 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+//读取邮件
+message ReadSysMail
+{
+	required string mailId=1;//邮件ID 0=全部读取
+}
+
+//返回读取邮件
+message ReadSysMail_S2C
+{
+	repeated string mailId=1;//邮件ID
+}
+
+//读取邮件，领取邮件附件
+message GetMailRes
+{
+	required string mailId=1;
+}
+
+//读取邮件，领取邮件附件
+message GetMailRes_S2C
+{
+	required string mailId=1;//邮件ID
+}
+
+//删除邮件
+message DelMail
+{
+	repeated string mailId=1;//邮件ID 0=全部领取（全部=没有附件已阅读和有附件已领取）
+}
+
+//删除邮件
+message DelMail_S2C
+{
+	repeated string mailId=1;//邮件ID
+}
+
+//读取全部邮件，领取全部邮件附件
+message AllMailRes
+{
+	repeated string mailIds=1;
+}
+
+//读取邮件，领取邮件附件
+message AllMailRes_S2C
+{
+	repeated string mailIds=1;//邮件ID
+}
+
+//获取邮件用于服务器全服邮件存库 以及 推送新的邮件
+message GetMail{
+
+}
+//邮件
+message GetMail_S2C{
+
+}
+

@@ -6,7 +6,7 @@ import com.shadowFrame.physics.shape.point.FPoint3;
 import com.shadowFrame.physics.shape.point.Point3;
 
 /**
- * 3D int线段存储
+ * 3D线段表示
  *
  * @author shadow
  * @version 1.0.0
@@ -69,17 +69,7 @@ public class LineSegment3 implements ILine3Operation {
     }
 
     @Override
-    public boolean isParallelLine(ILine3Operation line) {
-        return false;
-    }
-
-    @Override
     public Vector3 getDirectionVector() {
-        return null;
-    }
-
-    @Override
-    public Vector3 getNormalVector() {
         return null;
     }
 }

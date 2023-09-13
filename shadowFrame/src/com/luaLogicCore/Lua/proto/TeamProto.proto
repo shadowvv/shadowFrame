@@ -1,0 +1,439 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+
+
+
+//=====================队伍===========================
+
+//创建队伍
+message CreateTeam
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+//创建队伍-返回
+message CreateTeam_S2C
+{
+	required TeamInfo teamInfo=1;//队伍信息
+}
+
+//取得队伍信息
+message GetTeamInfo
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+//取得队伍信息-返回
+message GetTeamInfo_S2C
+{
+		required TeamInfo teamInfo=1;//队伍信息
+}
+
+//队伍信息-推送
+message TeamInfo_push
+{
+	required TeamInfo teamInfo=1;//队伍信息
+}
+
+//邀请入队
+message InviteTeam
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beInvitedUid=2;//被邀请者的uid
+}
+
+//邀请入队-返回
+message InviteTeam_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beInvitedUid=2;//被邀请者的uid
+}
+
+//邀请入队提示-推送
+message InviteTeamShowTips_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 inviterUid=2;//邀请者的uid
+	required string inviterUname=3;//邀请者的昵称
+	required int32 inviterLevel=4;//邀请者的等级
+	required int32 inviterHeadId=5;//邀请者的头像ID
+	required int32 teamId=6;//队伍id
+	required int32 inviterHeadFrameId=7;//邀请者的头像框ID
+	optional int32 inviterBgImgId=8;//邀请者的导师详情的背景板
+	optional int32 inviterSex=9;//邀请者的性别
+}
+
+//邀请入队结果
+message InviteTeamResult
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 inviterUid=2;//邀请者的uid
+	required int32 teamId=3;//队伍id
+	required int32 choiceResult=4;//玩家选择结果：0=手动拒绝、1=自动拒绝、2=同意
+}
+
+//邀请入队结果-返回
+message InviteTeamResult_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 inviterUid=2;//邀请者的uid
+	required int32 teamId=3;//队伍id
+	required int32 choiceResult=4;//玩家选择结果：0=手动拒绝、1=自动拒绝、2=同意
+}
+
+//邀请入队结果-推送
+message InviteTeamResult_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beInvitedUid=2;//被邀请者的uid
+	required string beInvitedUname=3;//被邀请者的名字
+	required int32 choiceResult=4;//玩家选择结果：0=手动拒绝、1=自动拒绝、2=同意
+}
+
+//申请入队
+message ApplyTeam
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+}
+
+//申请入队-返回
+message ApplyTeam_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+	required string TeamCaptainUname=3;//队长名字
+}
+
+//申请入队提示-推送
+message ApplyTeamShowTips_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+	required int32 applyUid=3;//申请者的uid
+	optional string applyUName=4;//申请者的昵称
+	optional int32 applyLevel=5;//申请者的等级
+	optional int32 applyHeadId=6;//申请者的头像ID
+	optional int32 applyBgImgId=7;//申请者的导师详情的背景板
+	optional int32 applyHeadFrameId=8;//申请者的头像框ID
+	optional int32 applySex=9;//申请者的性别
+}
+
+//申请入队结果
+message ApplyTeamResult
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+	required int32 applyUid=3;//申请者的uid
+	required int32 choiceResult=4;//玩家选择结果：0=拒绝、1=同意
+}
+
+//申请入队结果-返回
+message ApplyTeamResult_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+	required int32 applyUid=3;//申请者的uid
+	required int32 choiceResult=4;//玩家选择结果：0=拒绝、1=同意
+}
+
+//申请入队结果-推送
+message ApplyTeamResult_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamLeaderId=2;//队长id
+	required string teamLeaderName=3;//队长昵称
+	required int32 choiceResult=4;//玩家选择结果：0=拒绝、1=同意
+	optional int32 applyUid=5;//申请者的uid
+	optional int32 teamId=6;//申请的队伍id目前仅乌拉拉
+}
+
+//点击战斗准备
+message ClickBattleReady
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 readyState=2;//准备状态：0=取消、1=准备
+	required CostStrengthType costStrengthType=3;//消耗体力类型：1=默认、2=倍率、3=助战
+	required int32 multipleValue=4;//倍率
+}
+
+//点击战斗准备-返回
+message ClickBattleReady_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 readyState=2;//准备状态：0=取消、1=准备
+	required CostStrengthType costStrengthType=3;//消耗体力类型：1=默认、2=倍率、3=助战
+	required int32 multipleValue=4;//倍率
+}
+
+//点击战斗准备-推送
+message ClickBattleReady_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 clickerUid=2;//点击的玩家的uid
+	required int32 readyState=3;//准备状态：0=取消、1=准备
+	required CostStrengthType costStrengthType=4;//消耗体力类型：1=默认、2=倍率、3=助战
+	required int32 multipleValue=5;//倍率
+}
+
+// 注：因为斯露德翻译成leader了，所以队长翻译成TeamCaptain了
+//队长踢人
+message TeamCaptainKick
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beKickedUid=2;//被踢玩家的uid
+}
+
+//队长踢人-返回
+message TeamCaptainKick_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beKickedUid=2;//被踢玩家的uid
+}
+
+//队长踢人-推送
+message TeamCaptainKick_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beKickedUid=2;//被踢玩家的uid
+}
+
+//更换斯露德
+message ReplaceLeader
+{
+	required TeamType teamType=1;//队伍类型
+	repeated int32 leaderId=2;//斯露德ID集合
+}
+
+//更换斯露德-返回
+message ReplaceLeader_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	repeated int32 leaderId=2;//斯露德ID集合
+}
+
+//更换斯露德-推送
+message ReplaceLeader_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 replacerUid=2;//更换斯露德的玩家的uid
+	repeated LeaderTeamInfo leaderInfos=3;//斯露德集合
+}
+
+// 退队
+message QuitTeam
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+// 退队-返回
+message QuitTeam_S2C
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+// 退队-推送
+message QuitTeam_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+	optional int32 quitUid=3;//退队的玩家的uid
+}
+
+//解散队伍
+message DissolveTeam
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+//解散队伍-返回
+message DissolveTeam_S2C
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+//解散队伍-推送
+message DissolveTeam_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 dissolverUid=2;//解散队伍的玩家的uid
+}
+
+//更换队伍目标
+message ReplaceTeamTarget
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 battleType=2;//战斗类型:1=主线关卡、2=训练关卡、5=爬塔关卡、6=悬赏任务关卡
+	required int32 targetId=3;//队伍目标id
+}
+
+//更换队伍目标-返回
+message ReplaceTeamTarget_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 battleType=2;//战斗类型:1=主线关卡、2=训练关卡、5=爬塔关卡、6=悬赏任务关卡
+	required int32 targetId=3;//队伍目标id
+}
+
+//更换队伍目标-推送
+message ReplaceTeamTarget_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 battleType=2;//战斗类型:1=主线关卡、2=训练关卡、5=爬塔关卡、6=悬赏任务关卡
+	required int32 targetId=3;//队伍目标id
+}
+
+//战斗开始
+message BattleStart
+{
+	required TeamType teamType=1;//队伍类型
+	required CostStrengthType costStrengthType=2;//消耗体力类型：1=默认、2=倍率、3=助战
+	required int32 multipleValue=3;//倍率
+}
+
+//战斗开始-返回
+message BattleStart_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required CostStrengthType costStrengthType=2;//消耗体力类型：1=默认、2=倍率、3=助战
+	required int32 multipleValue=3;//倍率
+}
+
+//进出队伍面板
+message AccessTeamPanel
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 accessType=2;//进出类型：0=出、1=进
+}
+
+//进出队伍面板-返回
+message AccessTeamPanel_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 accessType=2;//进出类型：0=出、1=进
+}
+
+//进出队伍面板-推送
+message AccessTeamPanel_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 accesserUid=2;//进出人员的uid
+	required int32 accessType=3;//进出类型：0=出、1=进
+}
+
+//召回
+message TeamCallBack
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beCallBackedUid=2;//被召回者的uid
+}
+
+//召回-返回
+message TeamCallBack_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beCallBackedUid=2;//被召回者的uid
+}
+
+//召回提示-推送
+message TeamCallBackShowTips_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 teamId=2;//队伍id
+}
+
+//召回结果
+message TeamCallBackResult
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 choiceResult=2;//玩家选择结果：0=拒绝、1=同意
+}
+
+//召回结果-返回
+message TeamCallBackResult_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 choiceResult=2;//玩家选择结果：0=拒绝、1=同意
+}
+
+//召回结果-推送
+message TeamCallBackResult_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 beCallBackedUid=2;//被召回者的uid
+	required int32 choiceResult=3;//玩家选择结果：0=拒绝、1=同意
+}
+
+// 转移队长
+message ReplaceTeamCaptain
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 newTeamCaptainUid=2;//新队长的uid
+}
+
+// 转移队长-返回
+message ReplaceTeamCaptain_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 newTeamCaptainUid=2;//新队长的uid
+}
+
+//更换斯露德[状态]
+message ReplaceLeaderState
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 replaceLeaderState=2;//更换斯露德状态：0=否、1=是
+}
+
+//更换斯露德[状态]-返回
+message ReplaceLeaderState_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 replaceLeaderState=2;//更换斯露德状态：0=否、1=是
+}
+
+//更换斯露德[状态]-推送
+message ReplaceLeaderState_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 replacerUid=2;//更换斯露德的玩家的uid
+	required int32 replaceLeaderState=3;//更换斯露德状态：0=否、1=是
+}
+
+//最近组队人员
+message RecentInOneTeamPlayer
+{
+	required TeamType teamType=1;//队伍类型
+}
+
+//最近组队人员-返回
+message RecentInOneTeamPlayer_S2C
+{
+	required TeamType teamType=1;//队伍类型
+	repeated TeamMemberInfo teamMemberInfos=2;//最近组队人员集合
+}
+
+//队员状态变化-推送
+message MemberStateChange_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 memberUid=2;//变化的队员的uid
+	required PlayerStateType playerStateType=3;//玩家状态类型
+	required int32 stateValue=4;//玩家状态值
+}
+
+//队员单个属性变化-推送
+message MemberPropChange_push
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 memberUid=2;//变化的队员的uid
+	required int32 leaderId=3;//变化的队员的角色id，角色无变化传-1
+	required TeamMemberPropChangeType propChangeType=4;//变化的队员的属性变化 类型
+	required int32 propChangeValue=5;//变化的队员的属性变化 值
+	optional string memberName=6;//队员的名字
+	optional int32 memberHeadId=7;//队员的头像
+	optional int32 memberHeadFrame=8;//队员的头像框
+}
+

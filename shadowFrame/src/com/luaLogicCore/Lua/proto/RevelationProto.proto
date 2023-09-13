@@ -1,0 +1,115 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+
+//镜像
+//镜像升级
+message UpgrageRevelation
+{
+	repeated ProtoHashInt2Int itemInfo = 1;//消耗的物品集合key=id,value=数量
+	repeated string consumeIds=2;//消耗的镜像唯一id集合
+	required string upgradeId=3;//升级的镜像唯一ID
+}
+
+//镜像升级
+message UpgrageRevelation_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional RevelationInfo revelationInfo=2;//操作的镜像信息
+	optional Rewards rewards=3;//消耗集合
+	optional LeaderInfo leaderInfo=4;//角色信息
+	repeated string consumeRevelationIds = 5;//消耗的镜像唯一id集合(同步到镜像列表)
+}
+
+
+//提升镜像突破等级
+message UpgrageRevelationBreach
+{
+	required string revelationId=1;//镜像ID
+}
+
+//提升镜像突破等级
+message UpgrageRevelationBreach_S2C
+{
+	optional RevelationInfo revelationInfo=1;//镜像信息
+	optional Rewards rewards=2;//消耗集合
+	optional LeaderInfo leaderInfo=3;//角色信息
+}
+
+
+//切换镜像，包括从别的武将身上获取镜像
+message SwitchRevelation
+{
+	required int32 leaderId=1;//武将ID
+	required string revelationId=2;//镜像唯一ID，                      // 当镜像唯一ID 为 0时， 且type 为拆卸镜像（2）, 表示 全部拆卸
+	required int32 type=3;// 类型，  1： 装备镜像， 2：拆掉镜像
+}
+
+//切换镜像
+message SwitchRevelation_S2C
+{
+	optional AllRevelationInfo revelationInfos=1;//镜像信息, 如果是全部拆卸，可能有多个
+	optional LeaderInfo leaderInfo=2;//武将信息
+	optional LeaderInfo beforeLeader=3;//镜像改动前所属武将的信息
+	optional RevelationInfo oldRevelationInfo=4;//之前穿戴的镜像信息
+	optional int32 type=5;// 类型，  1： 装备镜像， 2：拆掉镜像
+}
+
+
+//镜像锁
+message RevelationLock
+{
+	required string revelationId=1;//镜像唯一ID
+	required int32 state=2;// 当前锁状态 0：开锁， 1：上锁
+
+}
+
+//镜像锁
+message RevelationLock_S2C
+{
+	optional RevelationInfo revelationInfo=1;//镜像信息
+}
+
+//分解镜像
+message DecomposeRevelation
+{
+	repeated string revelationId=1;//镜像唯一ID
+	repeated ProtoHashInt2Int itemInfo = 2;//分解后得到的物品集合key=id,value=数量（用于前后端比较）
+}
+
+//分解镜像 返回
+message DecomposeRevelation_S2C
+{
+	repeated string revelationId=1;//镜像id集合
+	optional Rewards rewards=2;//返还物品集合
+}
+
+// 精炼镜像
+message RefineRevelation
+{
+    required string revelationId=1;//镜像唯一ID
+    required string condumeId=2;//消耗的镜像唯一ID
+}
+
+// 精炼镜像
+message RefineRevelation_S2C
+{
+    required string revelationId=1;//镜像唯一ID
+    repeated ProtoHashInt2Float refineProp = 2;// key=属性id,value=值
+    required string condumeId=3;//消耗的镜像唯一ID
+}
+
+// 保存精炼的属性
+message SaveRefineRevelation
+{
+    required string revelationId=1;//镜像唯一ID
+    required int32 type = 2;// 保存哪个词条 1：留旧的  2：要新的
+}
+
+// 保存精炼的属性
+message SaveRefineRevelation_S2C
+{
+    required string revelationId=1;//镜像唯一ID
+    required int32 type = 2;// 保存哪个词条 1：留旧的  2：要新的
+}

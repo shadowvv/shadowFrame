@@ -1,0 +1,2 @@
+Gadget_GoldCoin={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=109,checkType=1,interruptTag=false,children={[1]={nodeType=324,variables={stateId={variableType=1,variableValue=1}},children={}}}},[2]={nodeType=325,operType=2,value=500,children={}},[3]={nodeType=3,variables={time={variableType=1,variableValue=2}},children={}},[4]={nodeType=7,children={}}}}}}}
+return Gadget_GoldCoin

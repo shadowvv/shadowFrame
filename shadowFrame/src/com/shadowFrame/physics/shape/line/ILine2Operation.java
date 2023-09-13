@@ -3,6 +3,7 @@ package com.shadowFrame.physics.shape.line;
 import com.shadowFrame.geometry.analytic.Vector2;
 import com.shadowFrame.physics.shape.IllegalGeometryOperationException;
 import com.shadowFrame.physics.shape.point.FPoint2;
+import com.shadowFrame.util.Geometry2DUtil;
 
 /**
  * 2D类线操作接口
@@ -53,7 +54,19 @@ public interface ILine2Operation {
      * @param line 目标线
      * @return 是否平行
      */
-    boolean isParallelLine(ILine2Operation line);
+    default boolean isParallelLine(ILine2Operation line){
+        return Geometry2DUtil.isParallelLine(this, line);
+    }
+
+    /**
+     * 目标线是否与当前线垂直
+     *
+     * @param line 目标线
+     * @return 是否垂直
+     */
+    default boolean isVerticalLine(ILine2Operation line){
+        return Geometry2DUtil.isVerticalLine(this, line);
+    }
 
     /**
      * @return 线的方向向量

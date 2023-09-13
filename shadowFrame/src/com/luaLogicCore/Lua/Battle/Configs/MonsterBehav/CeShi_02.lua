@@ -1,0 +1,2 @@
+CeShi_02={rootTask={nodeType=1,children={[1]={nodeType=104,times=0,children={[1]={nodeType=101,interrupttag=true,children={[1]={nodeType=100,interrupttag=true,children={[1]={nodeType=311,propKey=105,compareType=6,compareValue=0,valueDescType=1,children={}},[2]={nodeType=301,deadType=1,children={}}}},[2]={nodeType=3,variables={time={variableType=1,variableValue=999}},children={}}}}}}}}}
+return CeShi_02

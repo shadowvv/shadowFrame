@@ -1,0 +1,176 @@
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+enum ClientCmdEnum
+{
+	UdpBattleLoadingEnd = 100000;
+	UdpBattleLoadingEndBroadCast = 100001;
+	UdpBattleEnd = 100002;
+	UdpBattleEndBroadCast = 100003;
+	UdpBattleCommand = 100004;
+	UdpBattleCommandBroadCast = 100005;
+	
+	DebugCommandC2S = 100006;
+	DebugCommandS2C = 100007;
+	DebugSaveC2S = 100008;
+	DebugSaveS2C = 100009;
+	
+	//=========================上面都是老旧命令
+
+}
+
+//==================================连接层协议==========================
+message UDPPacket
+{
+    optional int32 uid = 1;
+	optional int32 type = 2; // 1 为消息包 2 为ack包
+	optional bytes data = 3;
+}
+
+message UDPDataPacket
+{
+	optional int32 index = 1; // 序号
+	optional bytes data = 2; // 实际消息 包含消息号和消息体
+}
+
+message UDPAckPacket
+{
+	optional int32 index = 1; // 序号
+}
+//=====================================连接层协议结束============================
+
+//====================upd战斗用协议==============================
+message Command_UdpBattleLoadingEnd
+{
+    optional int32 test = 1; 
+}
+
+message Command_UdpBattleLoadingEndBroadCast
+{
+    optional int32 test = 1; 
+}
+
+message Command_UdpBattleEnd
+{
+    optional int32 winPlayer = 1; 
+}
+
+message Command_UdpBattleEndBroadCast
+{
+    optional int32 winPlayer = 1; 
+}
+
+message PvpServerCollectionCommand
+{
+	repeated CommandBase commandList = 1; // 命令列表
+	//required int32 seq = 2;
+}
+//====================upd战斗用协议 end==============================
+
+// ==================战斗用命令协议 ==========================
+message CommandBase
+{
+	optional int32 type = 1;// 逻辑命令类型 1 开始摇杆 2 持续摇杆 3 结束摇杆
+	//optional int32 seq = 2;// 时间序号
+	//optional int32 idx = 3;// 包序号
+	optional bytes data = 4;// 数据
+}
+
+//message MoveCommand
+//{
+//	optional int32 srcTeamId = 1;
+//	optional Vector3 pos = 2;
+//}
+
+//message AttackCommand
+//{
+//	optional int32 srcTeamId = 1;
+//	optional int32 desTeamId = 2;
+//}
+
+//message SkillCommand
+//{
+//	optional int32 srcTeamId = 1;
+//	optional Vector3 skillDirEuler = 2;
+//	repeated int32 targetList = 3;
+//}
+
+message BeginJoyStick
+{
+    optional int32 srcUnit = 1;
+}
+
+message DragJoyStick
+{
+    optional int32 srcUnit = 1;
+	optional NetVector2 pos = 2;
+}
+
+message EndJoyStick
+{
+    optional int32 srcUnit = 1;
+}
+
+message CastMissle
+{
+    optional int32 srcUnit = 1;
+    optional int32 targetUnit = 2;
+}
+
+message NetVector3
+{
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message NetVector2
+{
+	optional float x = 1;
+	optional float y = 2;
+}
+
+message NetQuaternion
+{
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+	optional float w = 4;
+}
+// ==================战斗用命令协议 end==========================
+
+//==================debugTcpCommand================================
+
+message DebugC2SCommand
+{
+    //optional string command = 1;
+    optional string command = 2;
+    optional bytes data = 3;
+}
+
+message DebugS2CCommand
+{
+    //optional string command = 1;
+    optional string info = 2;
+    optional bytes data = 3;
+}
+
+message DebugC2SSaveCommand
+{
+    optional string path = 1;
+    optional bytes data = 2;
+}
+
+message DebugS2CSaveCommand
+{
+    optional string path = 1;
+    optional bytes data = 2;
+}
+//==================debugTcpCommand 结束================================
+
+//==================新战斗命令 开始============================
+
+
+
+
+//==================新战斗命令 结束============================

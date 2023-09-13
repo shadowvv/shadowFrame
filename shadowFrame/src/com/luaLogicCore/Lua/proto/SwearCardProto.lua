@@ -1,0 +1,56 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+\
+\
+//抽卡\
+message SwearHero{\
+	required int32 cardBoxId=1; // 卡池ID\
+	required int32 number=2;// 抽卡次数 \
+}\
+\
+\
+//抽卡\
+message SwearHero_S2C{\
+	optional int32 number=1;// 抽卡次数 \
+	optional Rewards rewards=2;// 抽卡奖励 以及消耗的道具 集合\
+	optional SwearNumberInfo swearNumberInfo=3;//各个保底组 的抽卡总次数 key=bottomgroup  value= 对应的组内抽卡总次数\
+	optional SwearPoolInfo poolInfo=4;  // 抽卡\
+	repeated SwearRecordInfo recordInfo=5; // 新抽的记录\
+	repeated int32 luckGoodIds=6; // 本次触发的幸运礼包ID 对应 cardbox_addgoods.xlsx   Id\
+	optional DropPropTimeInfo dropPropTimeInfo=7;//还没随到 指定group 的次数, key = DropWeightUp表中dropSetId-dropGroupId， value = 次数\
+	optional ProtoHashInt2Int leaderDebrisInfo = 8;// 抽卡产生的角色碎片 key: 碎片Id  value :数量\
+}\
+\
+//抽卡选默认 up\
+message SelectSwearChange\
+{\
+	 required int32 cardBoxId=1; // 卡池ID\
+	 required int32 showItemId=2; // swear_type.showitem, 点选的道具Id\
+}\
+\
+// 抽卡选默认up返回\
+message SelectSwearChange_S2C \
+{\
+	optional int32 swearTypeId=1; // swear_type.Id , 抽卡up 的抽卡类型id\
+}\
+\
+// 获取抽卡记录\
+message GetSwearRecord\
+{\
+    required int32 cardBoxId = 1;// 卡池ID\
+    required int32 offsetIndex = 2;// 偏移索引，初始发1，  如果已经查了 100 个了， 就发101\
+}\
+\
+// 获取抽卡记录 ， 返100 条\
+message GetSwearRecord_S2C\
+{\
+    required int32 cardBoxId = 1;// 卡池ID\
+    required int32 offsetIndex = 2;// 偏移索引，初始发1，  如果已经查了 100 个了， 就发101\
+    repeated SwearRecordInfo recordInfo = 3;// 100条历史记录\
+    required int32 totalRecordNumber = 4;//  历史记录总条数\
+}\
+"
+return protoStr

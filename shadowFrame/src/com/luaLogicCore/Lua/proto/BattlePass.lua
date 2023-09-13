@@ -1,0 +1,80 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// 购买通行证等级\
+message BuyBattlePassLevel\
+{\
+    required int32 battlePassId = 1;\
+    required int32 buyLevel = 2;// 通行证等级\
+}\
+\
+// 购买通行证等级\
+message BuyBattlePassLevel_S2C\
+{\
+    required int32 battlePassId = 1;\
+    required int32 curLevel = 2;// 通行证等级\
+}\
+// 领取通行证等级奖励\
+message GetBattlePassLevelReward\
+{\
+    required int32 battlePassId = 1;\
+    required int32 handleId = 2;// 玩家点的等级\
+}\
+\
+// 领取通行证等级奖励\
+message GetBattlePassLevelReward_S2C\
+{\
+    required int32 battlePassId = 1;\
+    required int32 handleLowId = 2;// 当前玩家已领取的低级等级\
+    required int32 handleHighId = 3;// 当前玩家已领取的高级等级\
+}\
+\
+// 获取通行证任务奖励\
+message GetBattlePassTaskReward\
+{\
+    required int32 battlePassId = 1;\
+    repeated int32 battlePassTaskId = 2;// 通行证任务ID\
+}\
+\
+// 获取通行证任务奖励\
+message GetBattlePassTaskReward_S2C\
+{\
+    required int32 battlePassId = 1;\
+    repeated int32 battlePassTaskId = 2;// 通行证任务ID\
+}\
+\
+// 登录分批请求\
+message GetBattlePassInfoListPage\
+{\
+\
+}\
+\
+message GetBattlePassInfoListPage_S2C\
+{\
+    repeated BattlePassInfo battlePassInfos = 1;// 玩家数据\
+    repeated BattlePassGMInfo battlePassGMInfos = 2;// GM 控制部分数据\
+}\
+\
+// 数据推送\
+message BattlePassInfo_Push\
+{\
+    required BattlePassInfo battlePassInfo = 1;\
+}\
+\
+message GetBattlePassBox\
+{\
+    required int32 battlePassId = 1;//通行证ID\
+    required AlreadyOverBox box = 2;// 要领取的宝箱\
+    required int32 itemId = 3;// 选择的道具ID\
+}\
+\
+message GetBattlePassBox_S2C\
+{\
+    required int32 battlePassId = 1;//通行证ID\
+    required AlreadyOverBox box = 2;// 要领取的宝箱\
+    required int32 itemId = 3;// 选择的道具ID\
+}\
+"
+return protoStr

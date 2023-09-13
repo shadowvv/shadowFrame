@@ -1,0 +1,14 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+message GetQuestion\
+{\
+  required int32 questionId = 1;//章节奖励ID\
+}\
+\
+message GetQuestion_S2C{\
+}\
+"
+return protoStr

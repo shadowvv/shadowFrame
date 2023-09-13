@@ -1,0 +1,2 @@
+YuanNengB_04={rootTask={nodeType=1,children={[1]={nodeType=104,times=0,children={[1]={nodeType=103,interrupttag=false,checkMode=1,children={[1]={nodeType=303,selectCampType=3,includeSelf=false,firstSelectCondition=4,firstSelectConditionParam=100,secSelectCondition=0,secSelectConditionParam=0,children={}},[2]={nodeType=306,children={}},[3]={nodeType=312,idDescType=2,value=1,time=1,children={}},[4]={nodeType=316,chaseType=2,posShift={x=-1.5,y=1.2,z=0.4},children={}}}}}}}}}
+return YuanNengB_04

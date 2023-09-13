@@ -139,11 +139,6 @@ public class LineSegment2 implements ILine2Operation {
     }
 
     @Override
-    public boolean isParallelLine(ILine2Operation line) {
-        return Geometry2DUtil.isParallelLine(this, line);
-    }
-
-    @Override
     public Vector2 getDirectionVector() {
         return new Vector2(left.getY() - right.getY(), right.getX() - left.getX());
     }

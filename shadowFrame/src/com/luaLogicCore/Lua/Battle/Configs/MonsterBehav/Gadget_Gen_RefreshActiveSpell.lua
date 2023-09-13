@@ -1,0 +1,2 @@
+Gadget_Gen_RefreshActiveSpell={rootTask={nodeType=1,nodeId=10,children={[1]={nodeType=100,nodeId=11,interrupttag=false,children={[1]={nodeType=334,nodeId=12,fallingId=20008,fallingNum=1,posShift={x=0,y=0,z=0},shiftSpace=1,children={}},[2]={nodeType=7,nodeId=13,children={}}}}}}}
+return Gadget_Gen_RefreshActiveSpell

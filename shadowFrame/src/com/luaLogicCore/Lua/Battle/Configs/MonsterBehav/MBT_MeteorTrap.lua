@@ -1,0 +1,2 @@
+MBT_MeteorTrap={rootTask={nodeType=1,nodeId=10,children={[1]={nodeType=104,nodeId=11,times=0,children={[1]={nodeType=100,nodeId=12,interrupttag=false,children={[1]={nodeType=303,nodeId=13,selectCampType=3,includeSelf=false,firstSelectCondition=4,firstSelectConditionParam=0,secSelectCondition=4,secSelectConditionParam=0,children={}},[2]={nodeType=312,nodeId=14,idDescType=2,value=1,time=8,forceBreak=false,children={}},[3]={nodeType=3,nodeId=15,variables={time={variableType=1,variableValue=27}},children={}}}}}}}}}
+return MBT_MeteorTrap

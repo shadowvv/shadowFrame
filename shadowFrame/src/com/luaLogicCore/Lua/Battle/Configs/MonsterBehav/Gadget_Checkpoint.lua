@@ -1,0 +1,2 @@
+Gadget_Checkpoint={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=109,checkType=1,interruptTag=false,children={[1]={nodeType=324,variables={stateId={variableType=1,variableValue=1}},children={}}}},[2]={nodeType=236,value=5,children={}},[3]={nodeType=7,children={}}}}}}}
+return Gadget_Checkpoint

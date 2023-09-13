@@ -1,0 +1,280 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// 选完难度， 开局游戏\
+message OpenNewGame\
+{\
+  required int32 themeId = 1;// 主题ID\
+  required int32 themeDifficulty = 2;// 主题难度\
+  repeated int32 leaderIds = 3; // 选择的备战武将\
+}\
+\
+// 选完难度， 开局游戏\
+message OpenNewGame_S2C\
+{\
+  required RogueRandomLevelInfo rogueRandomLevelInfo = 1;// 肉鸽 随机的来的 关卡列表\
+  repeated int32 leaderIds = 2; // 选择的备战武将\
+  required int32 themeId = 3; // 主题ID\
+}\
+\
+// 打开buff 选择面板， 生成随机的buff 库\
+message OpenBuffPanel\
+{\
+    required int32 buffAppearType = 1;// buff 随机 出现的 时机类型， 1.关卡里给的 2. 天赋给的，3. 天赋重置（有消耗） 4.事件选项 5.事件关卡给的\
+}\
+\
+// 打开buff 选择面板， 生成随机的buff 库\
+message OpenBuffPanel_S2C\
+{\
+    required int32 buffAppearType = 1;// buff 随机 出现的 时机类型， 1.关卡里给的 2. 天赋给的，3. 天赋重置（有消耗）4.事件选项 5.事件关卡给的\
+    repeated int32 buffIdList = 2;//生成的 buff 选择库\
+    optional int32 useRefreshTime = 3;// 天赋 重置 已使用次数\
+    optional int32 useTalentId = 4;// 本次使用的天赋ID\
+    optional ResetBuffRandomEventInfo resetBuffRandomEventInfo = 5;// 事件选项引起的buff 组随机 剩余次数\
+}\
+\
+// 选择buff\
+message SelectBuff\
+{\
+  required int32 buffId = 1;//选择的buffId\
+}\
+\
+\
+// 选择buff\
+message SelectBuff_S2C\
+{\
+  required int32 buffId = 1;//选择的buffId\
+}\
+\
+// 选择 累计额外加成buff\
+message SelectExtraBuff\
+{\
+  required int32 buffId = 1;//选择的buffId\
+}\
+\
+\
+// 选择 累计额外加成buff\
+message SelectExtraBuff_S2C\
+{\
+  required int32 buffId = 1;//选择的buffId\
+}\
+\
+\
+// 选择事件\
+message SelectEvent\
+{\
+   required int32 stageId = 1;//  阶段ID   stage\
+   required int32 levelId = 2;//  RoguelikelevelRandom.id\
+   required int32 eventId = 3;//选择的eventId\
+}\
+\
+// 选择事件\
+message SelectEvent_S2C\
+{\
+    required int32 stageId = 1;//  阶段ID   stage\
+    required int32 levelId = 2;//  RoguelikelevelRandom.id\
+    required int32 eventId = 3;//选择的eventId\
+}\
+\
+// 解锁局外养成天赋\
+message OpenExternalTalentSkill\
+{\
+    required int32 talentSkillId = 1;// RoguelikeTalentSkill.Id\
+}\
+\
+\
+// 解锁局外养成天赋\
+message OpenExternalTalentSkill_S2C\
+{\
+    required int32 talentSkillId = 1;// RoguelikeTalentSkill.Id\
+}\
+\
+// 获取图鉴奖励\
+message GetRogueLikeHandbookReward\
+{\
+  repeated int32 rewardIds = 1;// 领取的奖励id 集合\
+}\
+\
+// 获取图鉴奖励\
+message GetRogueLikeHandbookReward_S2C\
+{\
+  repeated int32 rewardIds = 1;// 领取的奖励id 集合\
+}\
+\
+// 解锁剧情\
+message OpenPlot\
+{\
+  required int32 plotId = 1;// 剧情ID\
+}\
+\
+// 解锁剧情\
+message OpenPlot_S2C\
+{\
+  required int32 plotId = 1;// 剧情ID\
+}\
+\
+// 领取剧情奖励\
+message GetOpenPlotReward\
+{\
+  required int32 plotId = 1;// 剧情ID\
+}\
+\
+// 领取剧情奖励\
+message GetOpenPlotReward_S2C\
+{\
+  required int32 plotId = 1;// 剧情ID\
+}\
+\
+// 设置关卡阶段\
+message SetBarrierStage\
+{\
+  required int32 barrierId = 1;// 关卡ID\
+  required int32 barrierStage = 2;// 关卡阶段\
+}\
+\
+// 设置关卡阶段\
+message SetBarrierStage_S2C\
+{\
+  required int32 barrierId = 1;// 关卡ID\
+  required int32 barrierStage = 2;// 关卡阶段\
+}\
+\
+// 选择武将\
+message SelectRogueLeaders\
+{\
+  repeated int32 leaderIds = 1; // 选择备战武将\
+}\
+\
+// 通用逻辑更新阵型数据：通过子包ChangeFormationS2CPush回推\
+message SelectRogueLeaders_S2C\
+{\
+}\
+\
+// 登录请求肉鸽数据， 客户端按需请求，没开的时候就别请求了，请求也是空\
+message GetRogueInfoListPage\
+{\
+}\
+\
+message GetRogueInfoListPage_S2C\
+{\
+    optional RogueLikeInfo rogueLike = 1;// 玩家数据\
+}\
+\
+// 获取肉鸽 活跃点奖励\
+message GetRogueActivePointReward\
+{\
+    repeated int32 rewardIds = 1;// 活跃点奖励 ID\
+}\
+\
+// 获取肉鸽 活跃点奖励\
+message GetRogueActivePointReward_S2C\
+{\
+    repeated int32 rewardIds = 1;// 活跃点奖励 ID\
+}\
+\
+\
+// 选择buff 类型，用于有指定天赋的时候 进行选择\
+message SelectBuffType\
+{\
+    required int32 buffAddType = 1;// 选择的buff 类型\
+}\
+\
+// 选择buff 类型，用于有指定天赋的时候 进行选择\
+message SelectBuffType_S2C\
+{\
+    required int32 buffAddType = 1;// 选择的buff 类型\
+}\
+\
+// buff 选择类型推送，用于取消玩家选择 指定类型 buff 的机会\
+message BuffAddType_PUSH\
+{\
+    required int32 buffAddType = 1;// -1\
+}\
+\
+// 开始战斗\
+message StartRogueBattle\
+{\
+  required int32 stageId = 1;// 进入的阶段\
+  required int32 levelId = 2;// 进入的关卡id\
+  optional LeaderSquadInfo leaderSquadInfo = 3;//阵容信息\
+  optional int32 eventId = 4;//事件id(通过事件触发战斗需要传这个id，服务器就只做事件验证)\
+}\
+\
+message StartRogueBattle_S2C\
+{\
+  required int32 stageId = 1;// 进入的阶段\
+  required int32 levelId = 2;// 进入的关卡id\
+  required BattleEnterInfo battleEnterInfo = 3; // 战斗进入数据\
+  optional int32 eventId = 4;//事件id\
+}\
+\
+// 客户端主动结束 赛季\
+message HandOverRogue\
+{\
+\
+}\
+// 客户端主动结束 赛季\
+message HandOverRogue_S2C\
+{\
+    optional Rewards rewards=1;//奖励物品集合, 一关没过的情况下，没有这个\
+    optional int32 isFirstOver = 2;// 1: 首通， 0 或没有 不算首通\
+    repeated int32 leaderIds = 3;// 本次使用的 武将 列表\
+    optional int32 extraDropTime = 4;//  额外掉落奖励 已掉落次数\
+}\
+\
+// 开始Rogue事件关\
+message StartRogueEvent\
+{\
+  required int32 stageId = 1;// 进入的阶段\
+  required int32 levelId = 2;// 进入的关卡id\
+}\
+\
+message StartRogueEvent_S2C\
+{\
+  required int32 stageId = 1;// 进入的阶段\
+  required int32 levelId = 2;// 进入的关卡id\
+}\
+\
+// 结束Rogue事件关\
+message OverRogueEvent\
+{\
+  required int32 stageId = 1;// 结束的阶段\
+  required int32 levelId = 2;// 结束的关卡id\
+}\
+\
+message OverRogueEvent_S2C\
+{\
+  required int32 stageId = 1;// 结束的阶段\
+  required int32 levelId = 2;// 结束的关卡id\
+  repeated Rewards rewards = 3;//奖励\
+  optional RogueLevelInfo rogueLevelInfo = 4;// 关卡信息\
+}\
+\
+// 获取事件图鉴奖励\
+message GetRogueLikeEventHandbookReward\
+{\
+  repeated int32 rewardIds = 1;// 领取的奖励id 集合\
+}\
+\
+// 获取事件图鉴奖励\
+message GetRogueLikeEventHandbookReward_S2C\
+{\
+  repeated int32 rewardIds = 1;// 领取的奖励id 集合\
+}\
+\
+\
+// 消除Buff 推送消息\
+message DestroyBuff_PUSH\
+{\
+    repeated int32 buffIdList = 1;// 消除的buff ID列表\
+}\
+\
+// 肉鸽活跃点匹配等级改变 推送\
+message RogueChangeJoinLevel_PUSH\
+{\
+    required int32 joinLevel = 1;// 肉鸽活跃点匹配等级\
+}\
+"
+return protoStr

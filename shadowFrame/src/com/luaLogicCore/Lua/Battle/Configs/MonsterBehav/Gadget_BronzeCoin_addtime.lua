@@ -1,0 +1,2 @@
+Gadget_BronzeCoin_addtime={rootTask={nodeType=1,nodeId=10,children={[1]={nodeType=100,nodeId=11,interrupttag=false,children={[1]={nodeType=109,nodeId=12,checkType=1,interruptTag=false,children={[1]={nodeType=324,nodeId=13,variables={stateId={variableType=1,variableValue=1}},children={}}}},[2]={nodeType=325,nodeId=14,operType=2,value=100,children={}},[3]={nodeType=236,nodeId=15,value=1,children={}},[4]={nodeType=3,nodeId=16,variables={time={variableType=1,variableValue=2}},children={}},[5]={nodeType=7,nodeId=17,children={}}}}}}}
+return Gadget_BronzeCoin_addtime

@@ -1,0 +1,1755 @@
+local protoStr = { }
+protoStr.str = "import 'msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// 战斗服连接断开\
+message MainTcpNetClose\
+{\
+  optional int32 reasonCode = 1; // 关闭原因\
+  optional string reasonMsg = 2; // 关闭信息\
+  optional bool isForceOffline = 3; // 是否强制离线\
+}\
+\
+// 客户端请求立即断开战斗服\
+message ClientMainTcpNetClose\
+{\
+  optional int32 errorCode = 1; // 错误码\
+  optional string reason = 2; // 关闭原因\
+}\
+\
+// 战斗服错误提示\
+message BattleErrorMessage\
+{\
+  optional int32 errorCode = 1;  // 错误码\
+  optional int32 headCode = 2;  // 消息号（对应消息号返回的错误码）\
+  optional string errorMsg = 3;  // 错误文字(有errorMsg读errorMsg的文字，没有读errorCode对应的文字)\
+}\
+\
+//战斗服心跳\
+message BattleHeartBeat\
+{\
+  required int32 clientTime = 1;// 客户端时间（ms）\
+}\
+\
+message BattleHeartBeat_S2C\
+{\
+  required int32 clientTime = 1;// 客户端时间（ms）\
+  required int32 serverTime = 2;// 服务器时间（ms）\
+}\
+\
+//首次登录战斗服务器\
+message BattleLogin\
+{\
+  required int32 uid = 1;  // 玩家id\
+  required string token = 2;  // 游戏服的登录token\
+}\
+\
+//登录成功才有SC返回，登录失败直接断开Socket连接\
+message BattleLogin_S2C\
+{\
+  required int32 kcpConvId = 1;//KCP唯一id\
+  required string kcpIp = 2;//KCP服务ip\
+  required int32 kcpPort = 3;//KCP服务端口\
+}\
+\
+//请求进入场景（暂时不用）\
+message BattleScenePreEnter\
+{\
+}\
+\
+//请求进入场景\
+message BattleScenePreEnter_S2C\
+{\
+  required int32 sceneMapId = 1; // 地图id\
+  optional int32 raidId = 2;  // 副本id\
+  // required NetVector3 pos=2; // TODO 暂时不知道客户端坐标点的pb需要传什么\
+  // TODO 客户端加载场景所需参数\
+}\
+\
+//进入场景\
+message BattleSceneEnter\
+{\
+}\
+\
+message BattleSceneEnter_S2C\
+{\
+  required int32 sceneId = 1;  // 服务器场景id\
+}\
+\
+//重连进入场景\
+message BattleSceneReconnect\
+{\
+  optional int32 raidId = 1;  // 如果有副本id，需要传当前副本id\
+}\
+\
+message BattleSceneReconnect_S2C\
+{\
+  required bool result = 1;  // 重连场景结果\
+}\
+\
+// 副本玩家加载完成\
+message RaidPlayerLoadFinish_Push\
+{\
+  required int32 uid = 1;  // 加载完成的玩家id\
+}\
+\
+// 副本所有玩家加载完成\
+message RaidAllPlayerLoadFinish_Push\
+{\
+}\
+\
+// 战斗服副本开始进行\
+message BattleRaidRunStart_Push\
+{\
+  optional string timeBase = 1; // 时间基础值，1970开始计算完整时间戳（解决lua5.1不支持int64）\
+}\
+\
+// 战斗服通知战斗结束\
+message NotifyBattleOverResult_Push\
+{\
+  required int32 result = 1;  // 胜利或失败\
+}\
+\
+// 战斗结束(如果结算需要的数据中，有服务器搜集不到的数据，需要客户端发，没有的话就可以删掉这个消息)\
+message BattleOver\
+{\
+}\
+\
+// 推送战斗结算数据\
+message BattleOver_Push\
+{\
+  required int32 result = 1;  // 胜利或失败 BattleResult\
+  optional int32 condition = 2;// 胜败触发条件\
+  // TODO 结算界面需要展示什么内容待定\
+}\
+\
+// 离开战斗服\
+message BattleLeave\
+{\
+}\
+\
+// 不需要了\
+//// KCP登录协议\
+//message KcpLogin {\
+//  required int32 uid = 1;        // 玩家id\
+//}\
+//\
+//message KcpLogin_S2C {\
+//  required int32 uid = 1;        // 玩家id\
+//}\
+\
+//开始单人战斗\
+message StartSoloBattle\
+{\
+  optional int32 battleId = 1;//关卡ID(不同类型关卡对应不同表的主键id)\
+  required int32 battleType = 2;//关卡类型 BattleType\
+  optional LeaderSquadInfo leaderSquadInfo = 3;//阵容信息\
+  repeated int32 playerIds = 4;//一起联机小伙伴的uid\
+  optional int32 towerGroupId=5; //爬塔组ID（Tower配置表的id，这个id可以理解成组id）\
+  repeated LeaderSquadInfo leaderSquadInfoTower=6; //关卡阵型\
+  optional int32 multiRatio=7;//多倍倍率\
+}\
+\
+message StartSoloBattle_S2C\
+{\
+  required bool result = 1; // 是否成功开始\
+  required BattleEnterInfo battleEnterInfo = 2; // 战斗进入数据\
+  optional ServerInfo server = 3; // 战斗服信息\
+}\
+\
+// 单人战斗测试协议\
+message BattleSoloTest\
+{\
+  required int32 mainLevelId = 1;//关卡id：注意正式的协议不能让玩家传关卡id，容易有作弊风险\
+  optional int32 formationId = 2;//武将阵型id\
+}\
+\
+message BattleSoloTest_S2C\
+{\
+  required bool result = 1; // 是否成功开始\
+  required BattleEnterInfo battleEnterInfo = 2; // 战斗进入数据\
+  optional ServerInfo server = 3; // 战斗服信息\
+}\
+\
+// 测试战斗结束（机器人自测用）\
+message TestBattleOver\
+{\
+  optional int32 condition = 1; // 触发的胜败条件\
+  optional int32 result = 2; // 胜败结果 BattleResult\
+}\
+\
+message KcpConnect\
+{\
+}\
+\
+message KcpConnect_S2C\
+{\
+}\
+\
+// 测试战斗协议\
+message TestBattleDemo\
+{\
+  required int32 param1 = 1;\
+  required int64 param2 = 2;\
+  required float param3 = 3;\
+  required double param4 = 4;\
+  required bool param5 = 5;\
+  required string param6 = 6;\
+  optional bytes param7 = 7;\
+  optional BattleResult param8 = 8;\
+  optional ClientLog param9 = 9;\
+  repeated LevelExp param10 = 10;\
+  repeated int32 param11 = 11;\
+}\
+\
+message TestBattleDemo_S2C\
+{\
+  required int32 param1 = 1;\
+  required int64 param2 = 2;\
+  required float param3 = 3;\
+  required double param4 = 4;\
+  required bool param5 = 5;\
+  required string param6 = 6;\
+  optional bytes param7 = 7;\
+  optional BattleResult param8 = 8;\
+  optional ClientLog param9 = 9;\
+  repeated LevelExp param10 = 10;\
+  repeated int32 param11 = 11;\
+}\
+\
+// KCP测试协议\
+message TestKcp {\
+  required int64 clientTime = 1;\
+  required int32 msgIndex = 2;\
+  optional string content = 3;\
+}\
+\
+// KCP测试协议\
+message TestKcp_S2C {\
+  required int64 clientTime = 1;\
+  required int64 serverTime = 2;\
+  required int32 msgIndex = 3;\
+  optional string content = 4;\
+}\
+\
+//=================================================================================\
+\
+// 战斗lua通知事件\
+message BattleLuaEvent_Push {\
+  required int32 battleEvent = 1; // 战斗事件枚举，参照Msg.BattleEvent\
+  optional string params = 2;     // 事件参数\
+}\
+\
+// 怪物移动消息(同步路点)\
+message MonsterMoveInput\
+{\
+  required int32 netId = 1;\
+  repeated Vector3 posList = 2;\
+}\
+\
+// 服务器同步路点给所有客户端\
+message MonsterSyncPathPointList_S2C\
+{\
+  required int32 netId = 1;\
+  repeated Vector3 posList = 2;\
+}\
+\
+// 玩家切换角色消息\
+message PlayerChangeLeaderInput\
+{\
+  required int32 objectId = 1; // 要切换到的object的objectId\
+}\
+\
+\
+// 服务器通知玩家换英雄\
+message PlayerChangeLeader_S2C\
+{\
+  required BattlePlayerChangeLeader info = 1;\
+}\
+\
+\
+// 通知显示层玩家换英雄\
+message PlayerChangeLeaderL2S\
+{\
+  required BattlePlayerChangeLeader info = 1;\
+}\
+\
+\
+// 通知显示层创建玩家角色\
+message CreatePlayerUnitL2S\
+{\
+  repeated PlayerUnitInfo_L2S unitInfoList = 1;\
+}\
+\
+// 通知显示层创建怪物角色\
+message CreateMonsterUnitL2S\
+{\
+  repeated MonsterUnitInfo_L2S unitInfoList = 1;\
+}\
+\
+// 通知显示层创建区域单位\
+message CreateAreaTriggerUnitL2V\
+{\
+  repeated AreaTriggerUnitInfo_L2V unitInfoList = 1;\
+}\
+\
+// 通知显示层创建召唤物单位\
+message CreateSummonedMonsUnitL2V\
+{\
+  repeated SummondMonsUnitInfo_L2V unitInfoList = 1;\
+}\
+\
+// 战斗单位移动数据\
+message BattleUnitMoveDataList\
+{\
+  required int32 frameId = 1;\
+  repeated BattleUnitMoveData info = 2;\
+  optional int32 timeStamp = 3;\
+}\
+// 战斗单位改变数据\
+message BattleUnitChangeDataList\
+{\
+  required int32 frameId = 1;\
+  repeated BattleUnitChangeData info = 2;\
+}\
+// 战斗单位关键数据\
+message BattleUnitKeyDataList\
+{\
+  required int32 frameId = 1;\
+  repeated BattleUnitKeyData info = 2;\
+}\
+// 战场数据\
+message BattleFieldDataList\
+{\
+  required int32 frameId = 1;\
+  repeated BattleFieldData info = 2;\
+}\
+\
+// 通知TCP断开\
+message NotifyTcpDisconnect\
+{\
+}\
+\
+// 创建关卡触发器\
+message GenerateLevelTrigger_S2C\
+{\
+  repeated GenerateLevelTriggerInfo infoList = 1;\
+}\
+\
+// 服务器向前端发起寻路请求msg\
+message CallPathFind_S2C\
+{\
+	required int32 netId = 1;\
+  required Vector3 from = 2;\
+  required Vector3 to = 3;\
+  required int32 gridSize = 4; // 体素寻路用的单位大小 目前场景都比较空旷 填3吧\
+  required int32 requestId = 5; // 发起请求的id 取消时用相同id取消 建议填netid\
+}\
+\
+// 服务器向前端发起寻路请求取消msg 如果前一个还没返回 就要发起第二个寻路请求 建议先取消\
+message CancelPathFind_S2C\
+{\
+	required int32 netId = 1;\
+  required int32 requestId = 2; // 发起请求的id 取消时用相同id取消 建议填netid\
+}\
+\
+// 前端向表现层发起寻路请求msg\
+message PathFindRequest\
+{\
+  required int32 netId = 1;\
+  required Vector3 from = 2;\
+  required Vector3 to = 3;\
+  required int32 gridSize = 4; // 体素寻路用的单位大小 目前场景都比较空旷 填3吧\
+  required int32 requestId = 5; // 发起请求的id 取消时用相同id取消 建议填netid\
+}\
+\
+// 前端向表现层寻路请求取消msg 如果前一个还没返回 就要发起第二个寻路请求 建议先取消\
+message PathFindRequestCancel\
+{\
+  required int32 netId = 1;\
+  required int32 requestId = 2; // 发起请求的id 取消时用相同id取消 建议填netid\
+}\
+\
+// 寻路结果返回\
+message PathFindResult\
+{\
+  required int32 requestId = 1; // 发起请求的id\
+  optional string error = 2; // 错误信息 如果寻路成功的话 没有错误信息\
+  repeated Vector3 pointList = 3; // 路点集合\
+  required bool recorrectFrom = 4; // 起点是否被矫正过 如果位置不可用（障碍物中或边界外） 会尝试矫正 如果偏差过大 没法找到最近可用点 就会返回error\
+  required bool recorrectTo = 5; // 终点是否被矫正过\
+  optional int32 errorInt = 6; // 错误枚举 0 成功 1 c#层报起点错误 2 c#层报终点错误 3 c#层寻路失败 4 lua层尝试矫正起点失败 5 lua层尝试矫正起点失败 6 到达最大寻路迭代数\
+}\
+\
+// 进入下一个战斗关卡阶段\
+message GotoNextBattleLevelStage\
+{\
+\
+}\
+\
+// 通知切换战斗关卡阶段\
+message NotifyChangeBattleLevelStage\
+{\
+  required int32 fromStage = 1; // 阶段枚举(从哪个阶段)\
+  required int32 toStage = 2; // 阶段枚举(到哪个结算)\
+  optional int32 serverTime = 3;// 同步服务器时间（ms）\
+}\
+\
+// 通知切换战斗关卡阶段(Client BattleLogic -> Client)\
+message NotifyChangeBattleLevelStage_L2V\
+{\
+  required int32 fromStage = 1; // 阶段枚举(从哪个阶段)\
+  required int32 toStage = 2; // 阶段枚举(到哪个结算)\
+}\
+\
+// 玩家按键\
+message PlayerPressKey\
+{\
+  optional int32 key = 1;\
+  optional bool pressType = 2;\
+  optional Vector3 moveParam = 3;\
+  optional Vector3 cameraParam = 4;\
+  optional bool hitWall = 5;\
+  optional float timeStamp = 6;\
+  optional int32 moveOverFrameId = 7;\
+  optional Vector3 position = 8;\
+  optional Vector3 moveDir = 9;\
+}\
+\
+// 玩家撞墙\
+message PlayerHitWall\
+{\
+  optional int32 hitWallFrameId = 1;\
+}\
+\
+// 战斗单位碰撞\
+message BattleObjectHitWall\
+{\
+  repeated BattleObjectHitWallInfo hitInfo = 1;\
+}\
+\
+message BattleObjectHitWallInfo\
+{\
+  required int32 netId = 1;\
+  optional Vector3 position = 2;\
+  optional Vector3 moveDir = 3;\
+  optional bool edge = 4;\
+}\
+// 询问行为树信息\
+message AskBehaviorInfo\
+{\
+  required int32 netId = 1;\
+  required string graphName = 2;\
+}\
+//逻辑核传行为树状态给表现层\
+message PushBehaviorInfo\
+{\
+	required int32 result = 1; //0 没找到， 1 全量数据， 2 增量数据\
+	required string graphName = 2; //行为树名字\
+	repeated ProtoHashInt2Int states = 3;\
+	repeated string variables = 4; //key value key value ...\
+}\
+\
+//逻辑核传行为树状态给表现层\
+message PushBehaviorInfo_S2C\
+{\
+	required int32 result = 1; //0 没找到， 1 全量数据， 2 增量数据\
+	repeated ProtoHashInt2Int states = 2;\
+	repeated string variables = 3;//key value key value ...\
+}\
+\
+//子弹碰撞协议\
+message BattleUnitCollision\
+{\
+  repeated BulletCollisionInputInfo infoList = 1;\
+}\
+\
+//unit受伤广播\
+message UnitHurt_S2C\
+{\
+  repeated UnitHurtInfo_S2C infoList = 1;\
+}\
+\
+//通知表现层unit受伤\
+message UnitHurtL2S\
+{\
+	repeated UnitHurtInfo_L2V infoList = 1;\
+}\
+\
+//unit开启巡逻\
+message UnitPatrol_S2C\
+{\
+  required int32 netId = 1;\
+  required bool centerOnBorn = 2;\
+}\
+\
+//unit取消巡逻\
+message UnitPatrolCancel_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//KCP网络关闭\
+message KcpNetClose\
+{\
+  optional int32 errorCode = 1; // 错误码\
+  optional string reason = 2; // 关闭原因\
+}\
+\
+//KCP网络重连（服务端KCP断开后通知客户端重建）\
+message NotifyKcpNetReconnect\
+{\
+  optional int32 kcpConvId = 1;\
+  optional string kcpIp = 2;\
+  optional int32 kcpPort = 3;\
+}\
+\
+//服务端Logic -> 客户端Logic 战斗演出(通用)\
+message BattlePlayAct_S2C\
+{\
+  optional PlayActData actData = 1;  // 演出数据\
+}\
+\
+//客户端Logic -> 服务端Logic 战斗演出结束(通用)\
+message BattlePlayActEnd\
+{\
+  optional int32 id = 1;  // 演出id\
+}\
+\
+//服务端Logic -> 客户端Logic 战斗演出结束(通用)\
+message ServerBattlePlayActEnd_S2C\
+{\
+  optional int32 id = 1;  // 演出id\
+}\
+\
+//服务端Logic -> 客户端Logic 战斗剧情(通用)\
+message BattlePlayPlot_S2C\
+{\
+  optional PlayPlotData plotData = 1;  // 剧情数据\
+}\
+\
+//客户端Logic -> 服务端Logic 战斗剧情结束(通用)\
+message BattlePlayPlotEnd\
+{\
+  optional int32 id = 1;  // 剧情id\
+}\
+\
+//服务端Logic -> 客户端Logic 服务器主动通知战斗剧情结束(通用)\
+message ServerBattlePlayPlotEnd_S2C\
+{\
+  optional int32 id = 1;  // 剧情id\
+}\
+\
+//服务端Logic -> 客户端Logic 战斗UI(通用)\
+message BattlePlayUi_S2C\
+{\
+  optional PlayUiData uiData = 1;  // UI数据\
+}\
+\
+//客户端Logic -> 客户端View 战斗演出(通用)\
+message BattlePlayAct_L2S\
+{\
+  optional PlayActData actData = 1;  // 演出数据\
+}\
+\
+//客户端View -> 客户端Logic 战斗演出(通用)\
+message BattlePlayActEnd_S2L\
+{\
+  optional int32 id = 1;  // 演出id\
+}\
+\
+//客户端Logic -> 客户端View 战斗演出(通用)\
+message ServerBattlePlayActEnd_L2V\
+{\
+  optional int32 id = 1;  // 演出id\
+}\
+\
+//客户端Logic -> 客户端View 战斗剧情(通用)\
+message BattlePlayPlot_L2S\
+{\
+  optional PlayPlotData plotData = 1;  // 演剧情数据\
+}\
+\
+//客户端View -> 客户端Logic 战斗剧情(通用)\
+message BattlePlayPlotEnd_S2L\
+{\
+  optional int32 id = 1;  // 剧情id\
+}\
+\
+//客户端Logic -> 客户端View 战斗剧情(通用)\
+message ServerBattlePlayPlotEnd_L2V\
+{\
+  optional int32 id = 1;  // 剧情id\
+}\
+\
+//客户端Logic -> 客户端View 战斗UI(通用)\
+message BattlePlayUi_L2S\
+{\
+  optional PlayUiData uiData = 1;  // UI数据\
+}\
+\
+//客户端Logic -> 客户端View 显示战斗操作UI\
+message BattleShowRunUi_L2S\
+{\
+}\
+\
+//客户端Logic -> 客户端View 显示战斗结束UI, 同时传递战斗结束数据\
+message BattleOver_L2V\
+{\
+  required int32 result = 1;// 胜利失败 对应BattleResult枚举\
+  required int32 condition = 2;// 胜利失败条件 对应表\
+  repeated int32 starArray = 3;//三星\
+  optional FightPar fightPar = 4;//战斗数据\
+  optional int32 lastKillMonsterId = 5;//最后击杀怪物id\
+}\
+\
+//开始追逐目标\
+message UnitChaseTarget_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 targetNetId = 2;\
+}\
+\
+//停止追逐目标\
+message UnitStopChaseTarget_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//开始远离目标\
+message UnitEscapeTarget_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 targetNetId = 2;\
+}\
+\
+//停止远离目标\
+message UnitStopEscapeTarget_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//开始指定移动\
+message UnitMoveTowards_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 spaceType = 2;\
+  required Vector3 posShift = 3;\
+  required bool stopWhenArrive = 4;\
+}\
+\
+//停止指定移动\
+message UnitStopMoveTowards_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//开始平移行为\
+message UnitMoveTowards_2_S2C\
+{\
+  required int32 netId = 1;\
+  required Vector3 posShift = 2;\
+  required bool faceTarget = 3;\
+}\
+\
+//停止平移行为\
+message UnitStopMoveTowards_2_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//开始跟随召唤者\
+message UnitChaseSubordinate_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 chaseType = 2;\
+  required Vector3 posShift = 3;\
+}\
+\
+//停止跟随召唤者\
+message UnitStopChaseSubordinate_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//怪物使用技能\
+message MonsCastSkill_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 skillId = 2;\
+}\
+\
+// 客户端View -> 客户端Logic 触发拾取掉落物\
+message PickUpFallObject_S2L\
+{\
+  repeated int32 fallObjUnitIds = 1; // 掉落单位id\
+}\
+\
+// 客户端Logic -> 服务端Logic 拾取掉落物\
+message PickUpDropFallObject\
+{\
+  repeated int32 fallObjUnitIds = 1;    // 掉落单位id\
+}\
+\
+// 客户端Logic -> 客户端View 通知拾取掉落物\
+message PickUpFallObject_L2S\
+{\
+  required PickUpFallObject pickUpFallObject = 1;    // 拾取掉落\
+}\
+\
+// 客户端Logic -> 客户端View 掉落\
+message DropFallObject_L2S\
+{\
+  required int32 netId = 1; // 掉落单位的netId\
+  required DropFallObject dropFallObject = 2; // 掉落物\
+}\
+\
+// 客户端Logic -> 客户端View 元素反应\
+message ElementReact_L2S\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 reactionId = 3; // 反应id 对应ElementalReaction表的id\
+}\
+// 客户端Logic -> 客户端View 元素值改变\
+message ElementValueChange_L2V\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 elementId = 3; // 元素id\
+  required double elementValue = 4; // 元素当前值\
+  optional bool effecting = 5; // 元素是否处于效果触发中\
+}\
+// 客户端Logic -> 客户端View 元素附着\
+message ElementAttach_L2S\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 elementId = 3; // 元素id\
+}\
+// 客户端Logic -> 客户端View 元素移除\
+message ElementRemove_L2S\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 elementId = 3; // 元素id\
+}\
+// 客户端Logic -> 客户端View 元素衰减警告\
+message ElementReduceWarning_L2S\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 elementId = 3; // 元素id\
+}\
+// 客户端Logic -> 客户端View 元素取消衰减警告\
+message ElementCancelReduceWarning_L2V\
+{\
+  required int32 netId = 1; // netId(UnitNetId)\
+  required int32 objectId = 2; // objectId(ObjectNetId)\
+  required int32 elementId = 3; // 元素id\
+}\
+// 客户端Logic -> 客户端View 产生闪电球（电磁反应）\
+message CreateElementLightningBall_L2S\
+{\
+  required int32 id = 1;  // 闪电链id\
+  required int32 targetObjId = 2; // 被链接的目标对象\
+  required int32 fromObjId = 3; // 闪电球的来源对象，第一个产生闪电球的来源为0\
+  optional Vector3 targetObjPos = 4; // 被链接的目标对象的位置\
+  optional Vector3 fromObjPos = 5; // 闪电球的来源对象的位置\
+  optional int32 effectId = 6; // 特效id\
+}\
+// 客户端Logic -> 客户端View 产生冰风球（冰风反应）\
+message CreateElementIceWindBall_L2V\
+{\
+  required int32 id = 1;  // 冰风球id\
+  required int32 targetObjId = 2; // 冰风球的传播终点\
+  required int32 fromObjId = 3; // 冰风球的传播起点\
+  optional Vector3 targetObjPos = 4; // 被链接的目标对象的位置\
+  optional Vector3 fromObjPos = 5; // 冰风球的传播起点位置\
+  optional double spreadSpeed = 6; // 冰风球传播初始速度\
+  optional double spreadAccSpeed = 7; // 冰风球传播加速度\
+  optional int32 effectId = 8; // 特效id\
+  optional int32 endEffectId = 9; // 消失特效id\
+  optional double spreadMaxSpeed = 10; // 冰风球最大速度\
+}\
+// 客户端Logic -> 客户端View 闪电球消失（电磁反应）(废弃，可以删了)\
+message RemoveElementLightningBall_L2S\
+{\
+  required int32 id = 1;  // 闪电链id\
+  required int32 targetObjId = 2; // 被链接的目标对象\
+}\
+\
+// 逻辑核关闭\
+message BattleLogicClose_L2S\
+{\
+}\
+\
+//开始转向目标\
+message UnitFaceTarget_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 targetNetId = 2;\
+}\
+\
+//停止转向目标\
+message UnitStopFaceTarget_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//通知表现层创建弹幕发射器\
+message CreateEmitter_L2S\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required CreateEmitterInfo info = 3;\
+}\
+\
+//通知表现层销毁弹幕发射器\
+message DestroyEmitter_L2S\
+{\
+  required int32 id = 1;  //发射器唯一ID\
+}\
+\
+//通知表现层停止弹幕发射器\
+message StopEmitter_L2S\
+{\
+  required int32 id = 1;  //发射器唯一ID\
+}\
+\
+//暂停怪物AI\
+message MonsPauseAi_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//恢复怪物AI\
+message MonsResumeAi_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//打开高能预警\
+message OpenWarningUI_L2S\
+{\
+}\
+\
+//通知显示层改变战斗单位状态\
+message BattleUnitStateChange_L2S\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+  repeated StateChange stateChange = 3; // 状态变化\
+}\
+\
+//单位进入关卡触发器\
+message UnitEnterLevelTrigger\
+{\
+  required int32 netId = 1;\
+  required int32 triggerId = 2;\
+}\
+\
+//单位离开关卡触发器\
+message UnitLeaveLevelTrigger\
+{\
+  required int32 netId = 1;\
+  required int32 triggerId = 2;\
+}\
+\
+//客户端Logic -> 客户端View 单位死亡\
+message UnitDead_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 deadType = 2;   //1: 普通死亡  2：死亡但不走死亡表现\
+}\
+\
+// 战斗单位属性改变\
+message BattleUnitPropChange_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+  optional LeaderProperty changeProps = 3;  // 改变的属性值\
+}\
+\
+//通知显示层战斗单位技能数据\
+message BattleUnitSkillData_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+  required BattleUnitSkill skillInfo = 3;\
+}\
+\
+//通知显示层战斗单位buff数据\
+message BattleUnitBuffData_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+  required BattleUnitBuffInfo buffInfo = 3;\
+}\
+\
+//通知显示层战斗单位技能cd\
+message BattleUnitSkillCoolDownData_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+  required BattleUnitSkillCoolDown skillCoolDown = 3;\
+}\
+\
+//显示层触发事件\
+message BattleUnitTriggerEvent_V2S\
+{\
+  required int32 eventType = 1;\
+  required string eventParam = 2;\
+}\
+\
+//通知显示层打开战斗内通讯\
+message OpenBattleCommunicationUI_L2V\
+{\
+	required int32 talkGroupId = 1;\
+}\
+\
+//战斗登录通知显示层\
+message BattleLogin_L2V\
+{\
+  required int32 playerId = 1;\
+}\
+\
+// 武装进入过载(SL->CL)\
+message WeaponEnterOverLoad_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 武装退出过载(SL->CL)\
+message WeaponExitOverLoad_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 武装进入过载(CL->View)\
+message WeaponEnterOverLoad_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 武装退出过载(CL->View)\
+message WeaponExitOverLoad_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+//通知显示层创建战场触发器\
+message CreateLevelTrigger_L2V\
+{\
+  required GenerateLevelTriggerInfo info = 1;\
+}\
+\
+//通知显示层删除战场触发器\
+message RemoveLevelTrigger_L2V\
+{\
+  required int32 id = 1;\
+}\
+\
+//开始切换血量阶段\
+message UnitStartChangeStage_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+//通知显示层开始切换血量阶段\
+message UnitStartChangeStage_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+//切换血量阶段广播\
+message UnitChangeStage_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required int32 stageNum = 3;\
+}\
+\
+//通知显示层切换血量阶段\
+message UnitChangeStage_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required int32 stageNum = 3;\
+}\
+\
+// 极奏切换角色输入\
+message JizouChangeLeaderInput\
+{\
+  required int32 objectId = 1; // 要切换到的object的objectId\
+}\
+\
+// 弹幕触发事件输入\
+message BarrageTrigEvent_V2S\
+{\
+  repeated BarrageTrigEventInfo infoList = 1; // 触发的事件信息列表\
+}\
+\
+// 通知显示层弹幕触发事件\
+message BarrageTrigEvent_L2V\
+{\
+  required BarrageTrigEventInfo info = 1;\
+}\
+\
+// 通知显示层创建区域\
+message CreateAreaTrig_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required CreateAreaTrigInfo info = 3;\
+}\
+\
+// 通知显示层开启区域\
+message OpenAreaTrig_L2V\
+{\
+  required int32 index = 1;\
+}\
+\
+// 通知显示层关闭区域\
+message CloseAreaTrig_L2V\
+{\
+  required int32 index = 1;\
+}\
+\
+// 通知显示层销毁区域\
+message DestroyAreaTrig_L2V\
+{\
+  required int32 index = 1;\
+}\
+\
+// 实体进入区域\
+message UnitEnterArea_V2S\
+{\
+  required int32 index = 1;             //区域的唯一ID\
+  repeated int32 netIdList = 2;       //进入区域的对象的netId列表\
+}\
+\
+// 实体离开区域\
+message UnitLeaveArea_V2S\
+{\
+  required int32 index = 1;             //区域的唯一ID\
+  repeated int32 netIdList = 2;       //离开区域的对象的netId列表\
+}\
+\
+// 怪物死亡\
+message UnitObjectDead_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 怪物死亡\
+message UnitObjectDead_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required int32 deadType = 3;  //死亡方式， 1正常死亡   2沉默死亡不走死亡表现\
+}\
+\
+// 武装进入能量恢复状态\
+message WeaponEnterRecoverEnergyState_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 武装退出能量恢复状态\
+message WeaponExitRecoverEnergyState_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 完成战斗引导\
+message CompleteBattleGuide\
+{\
+  required int32 guideId = 1; // 引导id\
+}\
+\
+// 转向目标\
+message TurnToTarget_V2L\
+{\
+  required Quaternion rotation = 1;\
+}\
+\
+// 服务器广播触发战斗引导\
+message TrigBattleGuide_S2C\
+{\
+  required int32 guideId = 1; // 引导id\
+  required int32 trigType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+// 通知表现层触发战斗引导\
+message TrigBattleGuide_L2V\
+{\
+  required int32 guideId = 1; // 引导id\
+  required int32 trigType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+// 关卡触发UI操作\
+message LevelTrigUIOperate_S2C\
+{\
+  required int32 inBattleGuideId = 1; // inBattleGuideId表ID\
+  required int32 operType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+// 关卡触发UI操作\
+message LevelTrigUIOperate_L2V\
+{\
+  required int32 inBattleGuideId = 1; //  inBattleGuideId表ID\
+  required int32 operType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+// 关卡触发玩家控制器操作\
+message LevelTrigControllerOperate_S2C\
+{\
+  repeated int32 controllerIdList = 1; // 控制类型\
+  required int32 operType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+// 关卡触发玩家控制器操作\
+message LevelTrigControllerOperate_L2V\
+{\
+  repeated int32 controllerIdList = 1; // 控制类型\
+  required int32 operType = 2; // 操作类型1 开启，2 关闭\
+}\
+\
+//通知显示层创建场景物件\
+message CreateSceneObj_L2V\
+{\
+  repeated SceneObjInfo_L2V infoListOld = 1;\
+  repeated SceneObjUnitInfo_L2V infoList = 2;\
+}\
+\
+//通知显示层删除场景物件\
+message RemoveSceneObj_L2V\
+{\
+  required int32 netId = 1;\
+}\
+\
+//通知显示层切换场景物件状态\
+message ChangeSceneObjState_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 enterState = 2;\
+}\
+\
+//通知显示层切换战斗BGM\
+message ChangeBattleBGM_L2V\
+{\
+  required int32 id = 1;\
+}\
+\
+// 客户端时间同步\
+message ClientTimeSync\
+{\
+  required int32 serverTime = 1;// 同步服务器时间（ms）\
+}\
+\
+// 获取主线三星list\
+message GetMainLevelStarList_S2C\
+{\
+  repeated int32 starArray = 1;//推送获得的三星\
+}\
+\
+// 获取主线三星list\
+message GetMainLevelStarList_L2V\
+{\
+  repeated int32 starArray = 1;//获得的三星\
+}\
+\
+// 战斗单位buff触发\
+message BattleObjectBuffTrigger_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  repeated int32 buffTriggerInfo = 3;\
+}\
+\
+// 切换模式和重置时间（aimMode和holdTime互斥）\
+message BattleObjectChangeAimMode_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  optional int32 aimMode = 3;\
+  optional int32 holdTime = 4;\
+}\
+\
+// 关卡目标\
+message LevelTarget_L2V\
+{\
+  required int32 id = 1;// NewLevelTitle表id\
+  required int32 index = 2;// 子目标下标\
+  required int32 curProgress = 3;// 子目标当前进度\
+  required int32 maxProgress = 4;// 子目标最大进度\
+}\
+\
+//通知显示层创建目标点\
+message CreateTargetPointUnitL2V\
+{\
+  repeated TargetPointUnitInfo_L2V infoList = 1;\
+}\
+\
+//通知显示层单位目标改变\
+message UnitTargetChange_L2V\
+{\
+  required BattleUnitTargetInfo info = 1;\
+}\
+\
+//通知显示层创建护罩\
+message CreateShieldUnitL2V\
+{\
+  repeated ShieldUnitInfo_L2V infoList = 1;\
+}\
+\
+//悬赏任务退出战斗\
+message OverBountyMisson\
+{\
+   optional int32 result = 1;// 战斗结果\
+   optional FightPar fightPar = 2;// 战斗数据\
+}\
+\
+//悬赏任务退出战斗 返回\
+message OverBountyMisson_S2C\
+{\
+  required int32 uniqueId = 1;// 战斗唯一id\
+  required int32 battleId = 2;//关卡ID（BountyMissionsLevel.id）\
+  optional bool result = 3;//攻打结果\
+  repeated Rewards rewards = 4;//一般奖励下标0=主线关卡首次三星奖励/训练模式为战斗次数奖励 1=普通奖励\
+  required int32 passTime = 5;//通关时间\
+  repeated BountyMissionInfo bountyMissionList = 6;//可做的悬赏任务数据\
+}\
+\
+//通知显示层生命周期重置\
+message BattleObjectLifeReset_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objId = 2;\
+}\
+\
+// 悬赏任务信息推送\
+message BountyMissionInfoPush\
+{\
+  repeated BountyMissionInfo bountyMissionList = 1;//可做的悬赏任务数据\
+}\
+\
+//客户端通知开始播放timeline\
+message ClientStartTimeline_V2L\
+{\
+  required int32 timelineId = 1;\
+}\
+\
+//客户端通知结束播放timeline\
+message ClientStopTimeline_V2L\
+{\
+  required int32 timelineId = 1;\
+}\
+//瞄准的目标\
+message AimTarget_V2L\
+{\
+  required int32 netId = 1;             //发起者netId\
+  required int32 objectId = 2;          //发起者objectId\
+	required AimTargetInfo target = 3;    //瞄准的目标\
+  repeated AimTargetInfo lockList = 4;  //锁定的列表-特殊弹幕要用\
+  required int32 timeStamp = 5;					//时间戳\
+}\
+//消弹触发\
+message DestroyBullet_V2L\
+{\
+  required int32 netId = 1;// 攻击者netId\
+  required Vector3 position = 2;// 消弹位置\
+  optional int32 eCount = 3;// 第几次消弹\
+}\
+\
+//开始导航点移动\
+message UnitMoveNavPoints_S2C\
+{\
+  required int32 netId = 1;                         //netId\
+  repeated Vector3 pointList = 2;            //导航点路径\
+  required bool loopAtEnd = 3;               //是否循环\
+}\
+\
+//停止导航点移动\
+message UnitStopMoveNavPoints_S2C\
+{\
+  required int32 netId = 1;\
+}\
+\
+//同步关卡暂停时间\
+message SyncLevelPauseTime_S2C\
+{\
+  required double time = 1;\
+}\
+\
+//同步关卡暂停时间\
+message SyncLevelPauseTime_L2V\
+{\
+  required double time = 1;\
+}\
+\
+//消弹触发\
+message DestroyBullet\
+{\
+  required int32 netId = 1;// 攻击者netId\
+  required Vector3 position = 2;// 消弹位置\
+  optional int32 eCount = 3;// 第几次消弹\
+}\
+// 开始战斗推送[TCP],作用同StartSoloBattle_S2C\
+message StartBattle_push\
+{\
+  required BattleEnterInfo battleEnterInfo = 1; // 战斗进入数据\
+  optional ServerInfo server = 2; // 战斗服信息\
+}\
+\
+//可受击子弹死亡\
+message BarrageBulletDead_V2S\
+{\
+  required int32 netId = 1;                //死亡的子弹所属unit的netID\
+  required int32 objId = 2;                //死亡的子弹所属obj的objectID\
+  required int32 emitterId = 3;        //死亡的子弹所属的emitter的ID\
+  required int32 bulletLocalId = 4;        //死亡的子弹的localID\
+}\
+\
+//开启分块\
+message UnitOpenBlock_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//关闭分块\
+message UnitCloseBlock_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//开启弱点\
+message UnitOpenWeakness_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+  required int32 weaknessId = 4;        //弱点表ID\
+  required float maxHp = 5;        //弱点总血量\
+  required float curHp = 6;        //弱点当前血量\
+  required float startTime = 7;        //弱点开启的时间\
+}\
+\
+//关闭弱点\
+message UnitCloseWeakness_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//隐藏分块\
+message UnitHideBlock_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//隐藏分块结束\
+message UnitHideBlockEnd_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//隐藏分块网格\
+message UnitHideBlockMesh_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//隐藏分块网格结束\
+message UnitHideBlockMeshEnd_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+}\
+\
+//弱点血量变化\
+message UnitWeaknessHpChange_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+  required float maxHp = 4;        //弱点总血量\
+  required float curHp = 5;        //弱点当前血量\
+}\
+\
+//单位修改分块状态(行为树命令)\
+message UnitChangeBlockState_S2C\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 blockId = 3;        //分块的ID\
+  required int32 stateId = 4;        //分块的目标状态\
+  required int32 weaknessId = 5;        //弱点ID（切换到弱点状态时生效）\
+}\
+\
+//单位交互结果\
+message BattleUnitHandleResult_S2C\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 targetNetId = 3;        //交互目标的netID\
+  required int32 targetObjId = 4;        //交互目标的objID\
+  required int32 result = 5;        //交互结果 2.成功  3.失败\
+}\
+\
+//单位交互结果\
+message BattleUnitHandleResult_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required int32 targetNetId = 3;        //交互目标的netID\
+  required int32 targetObjId = 4;        //交互目标的objID\
+  required int32 result = 5;        //交互结果 2.成功  3.失败\
+}\
+\
+//单位交互状态变化\
+message BattleUnitHandleStateChange_L2V\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+  required BattleUnitHandleStateInfo info = 3;        //交互状态信息\
+}\
+\
+//单位交互输入\
+message BattleUnitHandleInput_V2S\
+{\
+  required int32 netId = 1;                //unit的netID\
+  required int32 objId = 2;                //obj的objectID\
+}\
+\
+//关卡触发一般UI操作\
+message LevelTrigNormalUIOperate_S2C\
+{\
+  required int32 uiId = 1; // \
+  required int32 textId = 2; // \
+  required int32 operType = 3; // 操作类型1 开启，2 关闭\
+  required float duration = 4; // 持续时间\
+  required int32 placeholder = 5; // 占位符替换文字\
+}\
+\
+\
+//关卡触发一般UI操作\
+message LevelTrigNormalUIOperate_L2V\
+{\
+  required int32 uiId = 1; // \
+  required int32 textId = 2; // \
+  required int32 operType = 3; // 操作类型1 开启，2 关闭\
+  required float duration = 4; // 持续时间\
+  required int32 placeholder = 5; // 占位符替换文字\
+}\
+\
+\
+//关闭结算界面\
+message CloseBattleSettle\
+{\
+}\
+\
+message CloseBattleSettle_S2C\
+{\
+}\
+\
+//点击朝向目标\
+message AutoFaceEnemy_V2S\
+{\
+  required int32 netId = 1;\
+}\
+\
+// Tag值改变\
+message ChangeTag_S2C\
+{\
+  optional int32 tag = 1;\
+  optional double value = 2;\
+}\
+\
+// 关卡Tag值改变\
+message ChangeTag_L2V\
+{\
+  optional int32 tag = 1;\
+  optional double value = 2;\
+}\
+\
+// 钻环玩法中玩家金币积分变化\
+message CollectorCoinPointsChange_L2V\
+{\
+  optional int32 netId = 1;         //发生变化的玩家的netID\
+  optional double value = 2;    //金币积分的终值\
+}\
+\
+// 采集金币次数变化\
+message CollectorCoinNumChange_L2V\
+{\
+  optional int32 netId = 1;         //发生变化的玩家的netID\
+  optional int32 value = 2;    //采集金币的次数\
+}\
+\
+// 换弹开始\
+message ReloadBulletStart_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  optional double reloadStateTime = 3; // 换弹状态时间\
+  optional bool isAuto = 4; // 是否是自动换弹\
+}\
+\
+// 换弹结束\
+message ReloadBulletEnd_L2V\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 换弹开始\
+message ReloadBulletStart_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+  required double reloadStateTime = 3; // 换弹状态时间\
+  optional bool isAuto = 4; // 是否是自动换弹\
+}\
+\
+// 换弹结束\
+message ReloadBulletEnd_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 objectId = 2;\
+}\
+\
+// 玩家离开\
+message PlayerLeave_L2V\
+{\
+  required int32 netId = 1;\
+}\
+\
+// 玩家进入\
+message PlayerEnter_L2V\
+{\
+  required int32 netId = 1;\
+}\
+\
+// 玩家断线重连恢复战场数据\
+message PlayerReconnectBattleRoomInfo_S2C\
+{\
+  optional BattleFieldInfo fieldInfo = 1;\
+  repeated BattleUnitCreateSyncInfo_S2C unitInfos = 2;\
+  repeated LevelTriggerCreateSyncInfo_S2C levelTriggerInfos = 3; //关卡触发器数据\
+}\
+\
+// 战场数据\
+message BattleFieldInfo\
+{\
+  optional double runTime = 1;// 关卡运行时间\
+  repeated LevelTargetData levelTargetData = 2;// 关卡目标数据\
+  optional FallObjectChange fallObjectChange = 3;  // 掉落物\
+}\
+\
+// 关卡触发器数据\
+message LevelTriggerCreateSyncInfo_S2C\
+{\
+  required GenerateLevelTriggerInfo generateInfo = 1;\
+}\
+\
+// 战斗单位数据\
+message BattleUnitCreateSyncInfo_S2C\
+{\
+  required int32 netId = 1;\
+  required int32 createTime = 2;\
+  repeated BattleUnitGenerateInfo originalGenerateInfo = 3;\
+  repeated BattleObjectCreateSyncInfo_S2C ObjectInfos = 4;\
+  repeated BattleBuffModel unitBuffs = 5;\
+  repeated PropertyKeyValue unitProps = 6;						// unit层属性\
+  repeated BattleUnitTagInfo unitTags = 7;                         //unitTag信息\
+  repeated StateChange stateChange = 8;\
+}\
+\
+// 战斗物体数据\
+message BattleObjectCreateSyncInfo_S2C\
+{\
+  required int32 objId = 1;\
+  required int32 createTime = 2;\
+  repeated BattleBuffModel objectBuffs = 3;\
+  optional BattleUnitPlayModeInfo playModeInfo = 4;\
+  repeated SkillCoolDown skillCoolDownInfo = 5;\
+  required BattleObjectPropCreateSyncInfo_S2C objectProps = 6; // object层属性 \
+  repeated BattleUnitBlockStateInfo objBlockStateInfo = 7;    //分块状态信息\
+  optional ElementSyncInfo elementSyncInfo = 8; // 同步元素信息\
+  optional BoundaryTriggerInfo boundaryTriggerInfo = 9;    //区域触发数据\
+}\
+\
+// obj属性恢复数据\
+message BattleObjectPropCreateSyncInfo_S2C\
+{\
+	repeated PropertyKeyValue baseProps = 1;						// 基础属性\
+	repeated PropertyKeyValue consumeProps = 2;			    // 消耗属性\
+	repeated PropertyChangeInfo propAddInfos = 3;		    // 属性加成信息\
+	required int32 curHpStage = 4;                                              //当前血量阶段\
+	required float curStageLeftHp = 5;                                        //当前阶段剩余血量\
+}\
+\
+// 玩家断线重连恢复战场数据\
+message PlayerReconnectBattleRoomInfo_L2V\
+{\
+  optional BattleFieldInfo fieldInfo = 1;\
+  repeated BattleUnitCreateSyncInfo_L2V unitInfos = 2;\
+  repeated LevelTriggerCreateSyncInfo_L2V levelTriggerInfos = 3; //关卡触发器数据\
+}\
+\
+// 关卡触发器数据\
+message LevelTriggerCreateSyncInfo_L2V\
+{\
+  required GenerateLevelTriggerInfo generateInfo = 1;\
+}\
+\
+// 战斗单位数据\
+message BattleUnitCreateSyncInfo_L2V\
+{\
+	required int32 netId = 1;\
+	required int32 unitType = 2;\
+	optional PlayerUnitInfo_L2S playerUnitInfo = 3;\
+	optional MonsterUnitInfo_L2S monsterUnitInfo = 4;\
+	optional AreaTriggerUnitInfo_L2V areaUnitInfo = 5;\
+	optional SummondMonsUnitInfo_L2V summonedUnitInfo = 6;\
+	optional SceneObjUnitInfo_L2V sceneObjUnitInfo = 7;\
+	optional TargetPointUnitInfo_L2V targetPointUnitInfo = 8;\
+	optional ShieldUnitInfo_L2V shieldUnitInfo = 9;\
+	repeated BattleObjectCreateSyncInfo_L2V objectInfos = 10;\
+    repeated BattleBuffModel unitBuffs = 11;\
+    repeated BattleUnitTagInfo unitTags = 12;                         //unitTag信息\
+  repeated StateChange stateChange = 13;\
+}\
+\
+// 战斗物体数据\
+message BattleObjectCreateSyncInfo_L2V\
+{\
+	required int32 objId = 1;\
+	required int32 objectType = 2;\
+	repeated BattleBuffModel objectBuffs = 3;\
+  optional BattleUnitPlayModeInfo playModeInfo = 4;\
+	repeated SkillCoolDown skillCoolDownInfo = 5;\
+  repeated ElementSyncInfo elementSyncInfos = 6;\
+	optional BoundaryTriggerInfo boundaryTriggerInfo = 7;    //区域触发数据\
+}\
+\
+// 战斗物体元素数据\
+message ElementSyncInfo\
+{\
+  required int32 elementId = 1;\
+  required double elementValue = 2;\
+}\
+\
+message LevelChangeTimeLimit_S2C\
+{\
+  required double changeTime = 1;// 改变值\
+}\
+\
+message LevelChangeTimeLimit_L2V\
+{\
+  required double changeTime = 1;// 改变值\
+}\
+\
+// 完成离开战斗服\
+message BattleLeaveFinish_S2C\
+{\
+}\
+\
+// 战斗单位位置非法\
+message UnitPositionIllegal\
+{\
+	required int32 netId = 1;\
+}\
+\
+// 战斗内GM工具\
+message EditorGMTools_V2L\
+{\
+  required string module = 1;        //GM模块\
+  required string command = 2;   //模块下指令\
+  required int32 target = 3;          //作用目标类型(不同的指令对应的枚举可能不一样)\
+  required string params = 4;       //指令附带的参数\
+}\
+\
+// 完成离开战斗服\
+message UnitChangeWarriorState_L2V\
+{\
+	required int32 netId = 1;// \
+	required int32 objId = 2;// \
+	optional int32 enterState = 3;//  进入的勇士状态ID\
+	optional int32 exitState = 4;//  离开的勇士状态ID\
+}\
+\
+//开始朝向目标\
+message StartFaceTarget_L2V\
+{	\
+	required int32 netId = 1;// \
+	required int32 objId = 2;// \
+}\
+\
+//结束朝向目标\
+message StopFaceTarget_L2V\
+{	\
+	required int32 netId = 1;// \
+	required int32 objId = 2;// \
+}\
+\
+//弱点击破\
+message WeaknessBroken_S2C\
+{	\
+	required int32 netId = 1;//  \
+	required int32 objId = 2;// \
+	required int32 blockId = 3;// \
+	required int32 weaknessId = 4;// \
+}\
+\
+//弱点击破\
+message WeaknessBroken_L2V\
+{	\
+	required int32 blockId = 3;// \
+	required int32 weaknessId = 4;// \
+}\
+\
+//肉鸽主公技开启状态变化\
+message RogueUnitSkillOpenedChange_L2V\
+{	\
+	required int32 netId = 1;//  \
+	required bool opened = 2;// \
+}\
+//obj创建完成通知逻辑核\
+message UnitBornFinish_V2L\
+{\
+	required int32 netId = 1;//  \
+}\
+\
+//unit覆盖护罩变化\
+message UnitCoverShieldChange_L2V\
+{	\
+	required int32 netId = 1;//  \
+	required UnitCoverShieldSimpleInfo shieldInfo = 2;// \
+}\
+"
+return protoStr

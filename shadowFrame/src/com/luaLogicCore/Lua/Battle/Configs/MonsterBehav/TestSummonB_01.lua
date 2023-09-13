@@ -1,0 +1,2 @@
+TestSummonB_01={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=true,children={[1]={nodeType=308,spaceType=1,posShift={x=0,y=0,z=30},stopWhenArrive=true,time=12,children={}},[2]={nodeType=301,deadType=1,children={}}}}}}}
+return TestSummonB_01

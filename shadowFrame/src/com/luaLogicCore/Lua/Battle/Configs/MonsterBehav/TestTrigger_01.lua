@@ -1,0 +1,2 @@
+TestTrigger_01={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=109,checkType=1,interruptTag=false,children={[1]={nodeType=311,propKey=105,compareType=6,compareValue=0,valueDescType=1,children={}}}},[2]={nodeType=301,deadType=1,children={}}}}}}}
+return TestTrigger_01

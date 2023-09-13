@@ -1,0 +1,2 @@
+TestMonster_905003={rootTask={nodeType=1,nodeId=10,children={[1]={nodeType=104,nodeId=11,times=0,children={[1]={nodeType=103,nodeId=12,interrupttag=false,checkMode=1,children={[1]={nodeType=100,nodeId=13,interrupttag=true,children={[1]={nodeType=311,nodeId=14,propKey=105,compareType=6,compareValue=0,valueDescType=1,children={}},[2]={nodeType=301,nodeId=15,deadType=1,forceKiller=false,children={}}}}}}}}}}}
+return TestMonster_905003

@@ -1,0 +1,22 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+\
+\
+\
+//=====================道具合成===========================\
+\
+//道具合成\
+message ItemCraft\
+{\
+  required int32 itemCraftId = 1;//道具合成ItemCraft id\
+  required int32 num = 2; // 道具合成数量\
+}\
+//道具合成\
+message ItemCraft_S2C\
+{\
+}\
+"
+return protoStr

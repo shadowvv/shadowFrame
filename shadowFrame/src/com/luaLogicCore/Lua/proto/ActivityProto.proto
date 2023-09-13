@@ -1,0 +1,173 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+// 获取所有开启活动
+message GetAllActivity
+{
+    required int32 activityVersion = 1;// 活动版本号
+}
+
+// 获取所有开启活动
+message GetAllActivity_s2c
+{
+    required int32 activityVersion = 1;// 活动版本号
+    repeated ActivityTabInfo activityTabInfo = 2;// 当前版本下所有活动界面配置表
+    optional ActivityTextInfo activityText = 3;// 文本描述
+    repeated ActivityInfo activityInfo = 4;// 所有活动
+    repeated int32 activityState = 5;// key = activityId , 有值表示此活动关闭
+}
+
+
+// 活动任务进度、状态更新推送
+message ActivityTaskPush
+{
+    repeated ActivityTaskBean taskBean = 1;
+}
+
+// 获取任务奖励
+message GetTaskReward
+{
+    required int32 taskId = 1;// 任务Id
+    required int32 subTaskId = 2;// activitytask 表ID
+}
+
+// 获取任务奖励
+message GetTaskReward_s2c
+{
+    required ActivityTaskBean taskBean = 1;
+}
+
+//活动签到
+message ActivitySign
+{
+    required int32 activityId = 1;// 活动总表Id
+    repeated int32 signNumber = 2;// 天数
+}
+
+//活动签到
+message ActivitySign_s2c
+{
+    //required int32 activityId = 1;// 活动总表Id
+    //repeated int32 signNumber = 2;// 已经签到的天数
+    //repeated int32 canSignNumber = 3;// 可以签到但是没签的天数
+    //required int32 lastSignTime = 4;// 上次签到时间
+    required PlayerSignActivityInfo playerSignActivityInfo = 1;
+}
+
+
+
+// 获取指定活动详细信息
+message GetTargetActivityInfo
+{
+    required int32 activityId = 1;// 活动Id
+}
+
+// 获取指定活动详细信息
+message GetTargetActivityInfo_s2c
+{
+    optional ActivityInfo activityInfo = 1;// 第一个活动
+}
+
+// 个人进度领奖
+message GetSingleActivityReward
+{
+    required int32 activityId = 1;// 活动Id
+    required int32 stageNum = 2;// 活动阶段Id
+}
+
+// 个人进度领奖
+message GetSingleActivityReward_S2C
+{
+    required int32 activityId = 1;// 活动Id
+    required int32 stageNum = 2;// 活动阶段Id
+    required int32 progressNum = 3;// 活动进度
+}
+
+// 个人进度推送
+message SingleActivityPush
+{
+    required int32 activityId = 1;// 活动Id
+    required int32 progressNum = 2;// 活动进度
+}
+
+// 签到活动推送
+message SignActivityPush
+{
+    required PlayerSignActivityInfo signActivityInfo = 1;
+}
+
+message NormalActivityPush
+{
+    repeated int32 ids = 1;//可以直接复玩的活动id
+    required int32 time = 2;//玩法复玩红点刷新时间
+}
+
+message ActivityReplay
+{
+    required int32 id = 1;
+}
+
+message ActivityReplay_S2C
+{
+    required int32 errorCode = 1;
+}
+
+message ActivityReplayRedDot
+{
+
+}
+
+message ActivityReplayRedDot_S2C
+{
+    required int32 errorCode = 1;
+}
+
+message ActivityReplayReward
+{
+
+}
+
+message ActivityReplayReward_S2C
+{
+    required int32 errorCode = 1;
+}
+
+// 抽取bingo消息
+message GetBingo
+{
+    required int32 activityId = 1;// 活动Id
+}
+
+// 抽取bingo消息
+message GetBingo_S2C
+{
+    required int32 activityId = 1;// 活动Id
+    required int32 openPosition = 2;// 位置（从0开始）
+    repeated int32 bingoOpenPosition = 3; //位置（从0开始）
+}
+
+// 领取大Bingo奖
+message GetBigBingoReward
+{
+    required int32 activityId = 1;// 活动Id
+}
+
+// 领取大Bingo奖
+message GetBigBingoReward_S2C
+{
+    required int32 activityId = 1;// 活动Id
+}
+
+
+// 重置轮次
+message ResetBingoRound
+{
+    required int32 activityId = 1;// 活动Id
+}
+
+// 重置轮次
+message ResetBingoRound_S2C
+{
+    required int32 activityId = 1;// 活动Id
+    required int32 curBound = 2;}

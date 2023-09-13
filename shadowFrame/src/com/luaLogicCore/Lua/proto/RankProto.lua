@@ -1,0 +1,49 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// ==========引用结构===========\
+\
+// 排行榜信息\
+message RankInfo\
+{\
+    required int32 uid = 1;          //玩家ID\
+    required string icon = 2;        //玩家头像\
+}\
+\
+// ==========通讯协议===========\
+\
+// 查询排行榜榜单\
+message SelectRankList\
+{\
+    required int32 rankType = 1; //排行榜类型\
+    required int64 period = 2;   //排行榜期数\
+    required int32 pageNum = 3;  //榜单页码\
+}\
+// 查询排行榜榜单-返回\
+message SelectRankList_S2C\
+{\
+    required int32 rankType = 1;     //排行榜类型\
+    required int64 period = 2;       //排行榜期数\
+    required int32 pageNum = 3;      //榜单页码\
+    repeated RankInfo rankInfos = 4; //榜单数据\
+}\
+\
+// 查询排行榜 小组 榜单\
+message SelectRankZoneList\
+{\
+    required int32 rankType = 1; //排行榜类型\
+    required int64 period = 2;   //排行榜期数\
+    required int32 zoneId = 3;   //排行榜小组id\
+}\
+// 查询排行榜 小组 榜单-返回\
+message SelectRankZoneList_S2C\
+{\
+    required int32 rankType = 1;     //排行榜类型\
+    required int64 period = 2;       //排行榜期数\
+    required int32 zoneId = 3;       //排行榜小组id\
+    repeated RankInfo rankInfos = 4; //榜单数据\
+}\
+"
+return protoStr

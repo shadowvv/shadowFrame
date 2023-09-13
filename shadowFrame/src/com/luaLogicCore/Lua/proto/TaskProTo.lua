@@ -1,0 +1,188 @@
+local protoStr = { }
+protoStr.str = "package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// 501，504  以 领完奖励  作为 任务完成状态\
+// 彦良说 任务中涉及 雷达图的 部分，或者某一类型的局部，暂时都不要管（操作），跟着后续的雷达图需求走\
+// 例如301 参数1 为4的情况。313 参数1 为4 的情况\
+// ===新版任务类型Id======\
+enum ClientTaskType\
+{ \
+	RoleLevel								            =1001;// 导师等级达到n级【前端】   原 101\
+	ThrudType                                           =1101;// 获得N名不同斯露德【前端】 斯露德类型（0=全部类型 1=突击  2=引导 3=重型）\
+	ThrudTypeLevel 							            =1102;//（x养成类型的）达到y级的斯露德有n个  参数：养成类型ID（1： 升级（斯露德等级）， 2： 品质等阶（star）,3: 式杖等级， 4：好感度等级），养成等级【前端】  【修改 3类型】 原211\
+	ObtainTargetThrud 							        =1103;//获得指定斯露德  参数： 斯露德Id 【前端】\
+\
+	CrossTargetBarrierNum					      		=1401;// 闯过指定关卡A（普通、困难为不同关卡可以指定）, 参数：关卡id 【前端】 原314\
+	TargetBarrierStarNum					      		=1402;// 指定关卡A达到X星, 参数：关卡id 【前端】\
+	CrossBarrierAllNumber					      		=1403;//闯关指定类型关卡累计N次 参数： 副本类型（0=任意类型  1=主线副本-普通  2=主线副本-困难  3=训练副本）【前端】 原313\
+	TotalBarrierStarNum					      			=1404;// 累计星级达到N颗 (通关星星数量， 无论如何序章不算)  【前端】\
+	OverChapterAllTargetStar							=1405;// 完成章节A全部关卡N星  参数：章节id 【前端】\
+	OverChapterDifficultyMode							=1406;// 完成章节A全部关卡困难难度  参数：章节id 【前端】\
+\
+	TodayCrossResourceBattleNum						    =1407;// 日累计通关XX资源关卡Y次 参数： TrainLevelGroup的levelType, TrainLevelGroup的id字段【前端】\
+	WeekCrossResourceBattleNum						    =1408;// 周累计通关XX资源关卡Y次 参数： TrainLevelGroup的levelType, TrainLevelGroup的id字段【前端】\
+	CrossResourceBattleNum						        =1409;// 累计通关XX资源关卡Y次 【前端】\
+\
+	WeekOverBattleNumber                                =1608;// 当周完成X玩法N次（一周内不会刷新周期的）参数1（1=深渊阵线 2=虚空火花）【前端】\
+\
+    UnLock_JIAO_JIE_XU_KONG_Hard                        =1623;// 解锁交接虚空困难难度 （简单难度都完成）【前端】\
+    OverTargetWeaponLevel                               =1625;// 通过宝藏关卡, 关卡ID， WeaponLevel 表【前端】\
+\
+	AllChapterTaskOver						     	    =1901;// 所属章节任务全部完成  章节id 【前端】 原504\
+	OverAchieveModule						        	=1902;// 所属成就模块下 成就全部完成 【前端】 原505\
+\
+	SignNumber								          	=2002;// 每日签到1次  上线就给（不需要签到操作）【前端】 原105\
+\
+	UnlockHandbookNumber					      		=2004;// 解锁n条图鉴 参数，图鉴类型（0=任意类型） 【前端】 原109\
+\
+	ObtainThrudSkin							        	=2006;// 获得n品质斯露德皮肤x个， 参数：品质id（0=全部  1=白  2=绿 3=蓝  4=紫 5=橙）【前端】  原212\
+	ObtainLeaderNumber						      		=2007;// 获得某种品质的 某种类型的 斯露德数目，参数，斯露德品质，斯露德类型（0=全部类型 1=突击  2=引导 3=重型）【前端】原212\
+\
+	CrossBarrierNum 							        =2101;// 进行N次战斗 副本类型（0=任意类型  1=主线副本）只统计胜利的\
+\
+	MultipleThrudSkillLevel					   			=2015;// n斯露德技能等级达到y级 ,参数：技能等级之和  【前端】 \
+	ThrudSkillLevel							        	=2016;// 指定斯露德技能等级达到X级 ,参数：斯露德ID  【前端】\
+\
+	ActivityLevelChapterOverNum						    =2411;// 某个关卡章节一共通关了几次（用于活动资源关）	给定关卡章节id，MainChapter 【前端】\
+\
+	CrossTargetBarrier						     		=2501;// 通过指定关卡A ，参数：关卡id 【前端】\
+\
+	TargetThrudFavor						     		=2106;// 指定斯露德A的好感度达到X，参数：斯露德ID 【前端】\
+	BattleshipTaskFinish						       	=2601;// 完成过某战舰任务\
+	CurrentItem			            			       	=2604;// 当前拥有某物品道具id（当前）\
+	PatrolLevel								            =3100;// 玩家通过某个乌拉拉关卡【前端】 \
+	PatrolTaskLevel  						            =3101;// 玩家通过某个乌拉拉任务【前端】 \
+\
+}\
+\
+// 对于后端记录的一些可回退 任务类型， 用特殊值 -2 表示任务进度已达标\
+enum ServerTaskType\
+{	\
+	SecretaryInteraction					      =1002;// 与秘书进行n次互动【后端】\
+	ObtainTargetWeapon							  =1204;// 获得指定武装A  （only one） 参数：律叶类型ItremID【后端】\
+	TargetWeaponRefine							  =1205;// 指定武装A 精炼等级达到N  （only one） 参数：律叶类型ItremID【后端】\
+\
+	ObtainRevelation						      =1301;// 获得A品质镜像N个 （新加， 根据累计获得数量算） 品质id（0=全部  1=白  2=绿 3=蓝  4=紫 5=橙）【后端】  原207\
+	ObtainRevelationSuit					      =1302;// 获得A品质镜像套装N套 （新加， 根据套装Id 算） 【后端】   获得总数  原208 \
+	ObtainRevelationDevelopRecord				  =1303;// N个镜像等级达到X （成就可用， 根据数量算） 参数：镜像品质id（填0表示所有） ，养成等级【后端】 原218\
+	ThrudImageQuality 							  =1304;// N名角色身上的全部镜像品质达到X  参数：镜像件数（1、2、3、4、5），品质id（0=全部  1=白  2=绿 3=蓝  4=紫 5=橙）【后端】 \
+	ActiveImageSuitEffect 						  =1305;// 激活指定镜像类型A套装的套装效果  （only one）参数：镜像套装id 【后端】\
+\
+	MoneyObtain							      	  =1501;// 累计获取物品货币数量达到N ， 参数：道具id【后端】\
+	MoneyConsume							      =1502;// 累计消耗物品货币数量达到N ， 参数：道具id【后端】原106\
+	\
+\
+	DefeatedTargetMonster						  =1601;// 累计击杀指定A怪物N次 怪物id（0=任意怪物） 【后端】\
+	DefeatedTargetTypeMonster					  =1602;// 累计击杀指定类型A怪物N次 怪物类型（0=任意类型 1：中怪   2：精英   3：boss） 【后端】\
+\
+	// UseTargetRoleCrossBarrier				      =1603;// 累计使用A斯露德进行战斗胜利N次 ，参数：斯露德id 【后端】  原 406\
+	TargetThrudUseJiZou 						  =1604;// 累计使用极奏N次  参数，角色Id 0 任意角色【后端】 原 303\
+	TriggerElemReaction 						  =1605;// 触发元素反应类型A累计N次（考虑0为不指定） 参数，反应类型（0=任意类型）【后端】 \
+	OnlyUseTargetRoleElementType				  =1606;// 使用全元素类型A通关N次 ,包含元素属性id\
+	SmallBattleTotalScope                         =1607;// 小战场总分数超过N分【后端】\
+	WeekOverSmallBattleNumber                     =1609;// 当周完成小战场玩法N次 【后端】\
+	WeekOverTowerBattleNumber                     =1610;// 当周完成爬塔玩法N次 【后端】\
+\
+	TotalKillMonsterNumber                        =1612;// 累计击杀勇士怪物N次(目前不支持成就) 【后端】\
+	TotalKillTargetMonsterNumber                  =1613;// 累计击杀指定勇士怪物N次(目前不支持成就) 【后端】\
+	TotalTriggerBuffNumber                        =1614;// 累计触发指定buffN次  勇士状态ID (目前不支持成就) 【后端】\
+	TotalTriggerBuffTypeNumber                    =1615;// 累计触发指定类型buffN次(目前不支持成就) 【后端】\
+	TotalTriggerBuffIdNumber                      =1616;// 累计触发指定buff ID N次(目前不支持成就)  【后端】\
+	TotalAttackHurtNumber                         =1617;// 累计造成1000点伤害（必要：永久，额外：每日、每周）  【后端】\
+\
+\
+    TotalOverSmallBattleNumber                    =1620;// 当前参与N次异空站线（小战场）【后端】\
+	TotalOverTowerBattleNumber                    =1621;// 累计参与N次交界虚空（爬塔）【后端】\
+	SmallBattleScoreReachNumber                   =1622;// 当期异空站线（小战场）获得分数达到N分【后端】\
+	ObtainTargetQuality_FU_LING                   =1624;// 获得N个Y品质的符灵， 品质（1=初级，2=中级，3=高级）【后端】\
+\
+    BigBattleJoinNumber                           =1626;// 大战场参与次数， 输赢不论【后端】\
+    BigBattleTotalScopeNumber                     =1627;// 大战场本周累计最高分 【后端】\
+    BigBattleAttackBossNumber                     =1628;// 大战场本周参与 任意Boss 的X难度的次数， 难度读AbyssFrontLevel.difficulty 【后端】\
+\
+\
+	SwearNumber								      =1701;// 累计抽卡N次 参数： 卡池类型（0=任意卡池  1=新手卡池 2=常驻卡池 3=限时up卡池）【后端】 原107\
+	SwearSeniorPartNumber						  =1702;// 10连抽里同时出现N个5星 参数： 卡池类型（0=任意卡池  1=新手卡池 2=常驻卡池 3=限时up卡池）【后端】 \
+	TotalSwearSeniorPartNum						  =1703;// 抽出5星物品N次, 1=角色 2=武装【后端】  \
+\
+	LoginDayNumber							      =1801;// 连续登录N天   【后端】\
+	TotalLoginDayNumber							  =1802;// 累计登录N天   【后端】\
+\
+\
+	ObtainDayActiveBoxNum						  =1803;// 领取活跃宝箱A累计N次, 参数 TaskDailyActive.xlsx主键id 【后端】\
+\
+	BuyShopCity								      =2001;// 在商城中累计购买n次物品 ，参数：商城类型id， 填0 表示所有类型【后端】 原 103\
+\
+	UseVirtualGold							      =2003;// 使用虚拟金补充感知n次， 跟补充数量无关，按操作次数计算【后端】  原 107\
+\
+	TotalActiveImageSuitEffect					  =2005;// 累计激活镜像x（件套数量）技能x次 （成就可以） 参数 套件数（2、4） 【后端】 原210\
+\
+	UpgradeSkillNumber							  =2017;// 技能升级N次   【后端】\
+\
+    KillMonsterNumber							  =2102;// 击杀指定类型A怪物N次（0不指定）怪物类型（0=任意类型）【后端】\
+\
+    CrossBountyMissionLevelNum                    =2103;//完成N次悬赏任务【后端】 (已和策划宋雨晴约好CBT2只支持每日任务投放)\
+\
+\
+	UpgradeWeaponLevel						      =2201;// 完成武装等级强化N次 律叶类型ID（0=全部类型 1=歌唱型  2=舞蹈型  3=祷告型   4=礼拜型   5=祭祀型） 养成类型id（1=等级提升 2=武器精炼）  （有经验提升）【后端】\
+	UpgradeRevelationLevel					      =2202;// 完成镜像模块强化N次 品质id（0=全部  1=白  2=绿 3=蓝  4=紫 5=橙）【后端】\
+	UpgradeThrudLevel						      =2203;// 提升斯露德的等级 不需要升级，有升级的操作行为即可， （有经验提升）【后端】\
+	WeaponRecastingNum						      =2204;// 累计武装洗练次数 【后端】\
+\
+	TotalBuyItemNumber						      =2302;//累计购买道具（从商城购买） 参数： 物品Id 【后端】\
+	TotalDayActivePointNumber					  =2303;//累计获得每日活跃度X点 【后端】\
+	TotalWeekActivePointNumber					  =2304;//累计获得每周活跃度X点 【后端】\
+	TotalOverAchievementTaskNumber				  =2305;//累计完成成就次数 【后端】\
+\
+	NotAttackedCrossBarrier					      =2401;// 完全无伤通关战斗次数，无伤是战斗中无血量降低行为  副本类型（0=任意类型  1=主线副本）  【后端】\
+	UseSkill_JiZou 							      =2402;// 在战斗中使用n次极奏  参数，次数统计【后端】\
+	UseElemReactionNumber 						  =2403;// 在战斗中触发n次元素反应  参数，次数统计【后端】\
+	UseElemSkillNumber 						  	  =2404;// 在战斗中触发n次元素技能  参数，次数统计【后端】\
+\
+	UseTargetTypeRoleCrossBarrier			      =2405;// 使用n类型角色通关关卡 参数：角色类型id【后端】\
+	UseTargetRoleCrossBarrier				      =2406;// 使用n角色通关关卡 ，参数：斯露德id 【后端】\
+	UseElemRoleCrossBarrier			 	  		  =2407;// 成功通关且队伍中包含n元素属性的角色y次  参数 副本类型，元素属性id【后端】\
+	NotUseElemRoleCrossBarrier					  =2408;// 成功通关且队伍中不包含n元素属性的角色y次  参数 副本类型，，元素属性id 【后端】\
+	CrossBarrierInTime   					      =2409;// 在n秒内通关关卡啊 参数：通关时间【后端】                 范围    <\
+	CrossBarrierAttackedNum						  =2410;// 	通关战斗时受伤次数小于N\
+\
+	OverTargetTypeTask						      =2502;// 完成n类型任务x次  参数：任务类型（0=任意类型 1=日常任务 2=主线任务 3=导师成就【后端】 原 501\
+\
+	BattleShipDineTargetNPC                       =2607;// 与npc聚餐(已和策划宋雨晴约好CBT2只支持每日任务投放)参数 npcId(0任意)， npcId2(0: 任意) 【后端】\
+\
+	OverPatrolTask                                =2608;// 完成N次巡视任务(已和策划宋雨晴约好CBT2只支持每日任务投放)参数 任务Id(0任意)【后端】\
+\
+	ObtainWeapon							          =1201;// 获得n类型的x品质律叶y把 参数：式杖类型id，式杖品质id， 式杖类型与品质填写为0时为不限制【后端】  获得总数    【可回退】 原204\
+	WeaponLevel								          =1202;// n（律叶品质）的x（律叶类型）律叶的养成等级达到y级 参数：品质ID， 类型   养成等级 【后端】      【可回退】\
+	\
+	ThrudCapatility							      =2013;// 指定斯露德达到X战力 参数， 斯露德ID 【后端】 原219\
+	MultipleThrudCapatility					      =2014;// n个斯露德战力达到X  参数，共鸣峰值 【后端】 原220\
+\
+	ObtainWeaponDevelopRecord				    =1203;//  x类型律叶的n等级达到y级， 参数： 律叶类型ID（0=全部类型）, 养成类型id ， 等级【后端】 需要从redis中拿数据\
+\
+	AcceptTaskItem						     	       	=2602;// 获得某道具（领取后计算）\
+	NPCTalk  						     	        	=2605;// 与npc对话\
+	ArrivePosition						     	       	=2606;// 到达指定区域\
+\
+	TargetTimeLogin					              =3000;// 指定时间登录【后端】\
+\
+	ActivityLevelKillMonster                      =3200;// 指定活动关卡N 杀怪数量M 的达到N次【后端】\
+	OverWuLaLaTaskNum                              =3102;// 玩家每周完成任意区域乌拉拉任务数量\
+\
+\
+    TotalOverMAI_LIU_XUN_JIAN_Task                =3103;// 累计完成N次脉流巡检任务 【后端】\
+    TotalJoinMAI_LIU_XUN_JIAN                     =3104;// 累计参与N次脉流巡检（无论输赢，参与脉流巡检战斗即可）【后端】\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+}\
+"
+return protoStr

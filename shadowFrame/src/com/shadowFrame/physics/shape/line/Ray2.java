@@ -115,11 +115,6 @@ public class Ray2 implements ILine2Operation {
     }
 
     @Override
-    public boolean isParallelLine(ILine2Operation line) {
-        return Geometry2DUtil.isParallelLine(this, line);
-    }
-
-    @Override
     public Vector2 getDirectionVector() {
         return vector;
     }

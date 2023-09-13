@@ -1,0 +1,96 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// 购买赛季经验\
+message BuySeasonExp\
+{\
+    required int32 buyExpNum = 1;// 赛季经验\
+}\
+\
+// 购买赛季经验\
+message BuySeasonExp_S2C\
+{\
+    required int32 curExpNum = 1;// 赛季经验\
+    required int32 curLevel = 2;// 赛季等级\
+}\
+\
+// 领取赛季等级奖励\
+message UpgradeSeasonLevel\
+{\
+    required SeasonType seasonType = 1;// 玩家点的奖励类型\
+    required int32 handleId = 2;// 玩家点的等级\
+}\
+\
+// 领取赛季等级奖励\
+message UpgradeSeasonLevel_S2C\
+{\
+    required SeasonType seasonType = 1;// 玩家点的奖励类型\
+    required int32 handleId = 2;// 玩家点的等级\
+}\
+\
+enum SeasonType\
+{\
+    normal =1;// 普通版本\
+    senior =2;// 高级版本\
+}\
+\
+// 切换赛季天赋\
+message SwitchSeasonTalent\
+{\
+    required int32 seasonTalentId = 1;  // 赛季天赋id，卸下的时候该值为：0\
+    required int32 operateLeaderId = 2; // 操作的斯露德id\
+}\
+\
+// 切换赛季天赋\
+message SwitchSeasonTalent_S2C\
+{\
+    required int32 seasonTalentId = 1;  // 赛季天赋id，卸下的时候该值为：0\
+    required int32 operateLeaderId = 2; // 操作的斯露德id\
+}\
+\
+// 获取赛季任务奖励\
+message GetSeasonTaskReward\
+{\
+    required int32 seasonTaskId = 1;// 赛季任务ID\
+}\
+\
+// 获取赛季任务奖励\
+message GetSeasonTaskReward_S2C\
+{\
+    required int32 seasonTaskId = 1;// 赛季任务ID\
+}\
+\
+// 查看赛季剧情\
+message WatchSeasonPlot\
+{\
+    required int32 seasonPlotId = 1;// 赛季剧情ID\
+}\
+\
+// 查看赛季剧情\
+message WatchSeasonPlot_S2C\
+{\
+    required int32 seasonPlotId = 1;// 赛季剧情ID\
+}\
+\
+// 赛季数据推送\
+message CompetitionSeasonPush\
+{\
+    required CompetitionSeasonInfo seasonInfo = 1;// 赛季数据\
+    required int32 isNewSeason = 2;// 是否是新赛季 0:否 1：是\
+}\
+\
+// 解锁进阶版 奖励条\
+message OpenSeasonHighReward\
+{\
+\
+}\
+\
+// 解锁进阶版 奖励条\
+message OpenSeasonHighReward_S2C\
+{\
+    required int32 seasonHighRewardOpen = 1;//  赛季高级奖励条解锁 1表示解锁，0表示未解锁\
+}\
+"
+return protoStr

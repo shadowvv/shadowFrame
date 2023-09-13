@@ -1,0 +1,3805 @@
+local protoStr = { }
+protoStr.str = "package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+message Test{}\
+\
+//错误返回\
+message ErrorMsg_S2C\
+{\
+	optional int32 errorCode=1;//错误码\
+	repeated string staticParams=2;//静态参数列表:客户端拿到的是id，还要根据id去不同的表里取具体文本\
+	repeated string dynamicParams=3;//动态参数列表:客户端拿到之后无脑填空\
+}\
+\
+  //客户端推送消息\
+message PushMsg2Client{\
+	repeated PushBody pushBodys=1;//\
+}\
+\
+  //附加到发送给服务器的协议后面\
+message PushMsg2Server{\
+	repeated PushBody pushBodys=1;//\
+}\
+\
+//客户端推送消息体\
+message PushBody\
+{\
+	required int32 header=1;\
+	optional bytes bodyBytes=2;\
+}\
+\
+//心跳包返回\
+message HeartBeat_S2C\
+{\
+	optional int32 time=1;//服务器当前时间戳\
+	optional int32 totalLoginSecond =2;//今天累计的登录时间(秒)\
+}\
+\
+//一个http消息包返回包,主消息或推送消息\
+message PacketBodyInfo\
+{\
+	required int32 header=1;\
+	optional bytes bodyBytes=2;\
+}\
+\
+//一次请求产生的返回包\
+message ReturnPackageInfo{\
+	required int32 packetUUid=1; //客户端传过来的唯一id\
+	required PacketBodyInfo bodyInfo=2;//主消息\
+	repeated PacketBodyInfo packetBodyInfoS=3;//推送消息包集合\
+}\
+\
+//附加到发送给客户端的包中\
+message ReturnPackagePush{\
+	repeated ReturnPackageInfo packetList=1;//需要返回的消息包集合\
+}\
+\
+//======================结构===================\
+\
+//玩家信息20.8.11\
+message PlayerLiveInfo\
+{\
+	optional int32 uid=1;//玩家ID\
+    optional string uName=2;//玩家昵称\
+	optional string nameCode=3;// 昵称后缀编码\
+    optional int32 exp=4;//玩家经验\
+	optional int32 level=5;//玩家等级\
+	optional int32 sex=6;//性别 0：女1：男\
+	optional int32 headId=7;//头像ID\
+	optional int32 serverId = 8; // 服务器id\
+	optional string platformId = 9; // 平台id\
+	optional string platformUid = 10; // 平台玩家Id\
+	optional int32 languageId = 11;//玩家语言ID\
+	required int64 birthday=12;//玩家生日, 只有月和日有效 年是赋值为闰年(2020)\
+	required int64 lastBirthdayTime=13;//修改生日的最后时间戳\
+	required string autograph=14;//签名\
+	required int32 secretary=15;//秘书\
+	required int64 regDate=16;//玩家注册时间戳\
+	optional int32 strength = 17;//体力\
+	optional int32 maxStrength = 18;//体力上限\
+	optional int32 lastStrengthTime=19;// 最后计算体力时间\
+	repeated int32 openHeadSet=20;					//仅记录客户端没法计算的头像开启集合type=0\
+	optional int64 lastUNameTime=21;					// 修改指挥官名字的最后时间戳\
+	optional int32 soundSwitch=22;//声音设置开关 1：开启， 0：关闭\
+	optional int32 bgMusicValue=23;//声音设置：背景音乐值\
+	optional int32 soundEffectValue=24;//声音设置：音效值大小\
+	optional int32 voiceValue=25;//声音设置：语音值大小\
+	optional int32 headFrameId=26;//头像框id\
+	optional string channelId=27;//渠道id\
+}\
+\
+//玩家信息(废弃)\
+message PlayerInfo\
+{\
+	optional int32 uid=1;//玩家ID\
+    optional  string uName=2;//玩家昵称\
+    optional  int32 exp=3;//玩家经验\
+	optional  int32 level=4;//玩家等级\
+	repeated int32 ChatperRewardList=7;//领取过的章节奖励\
+	optional int32 sex=10;//性别 0：女1：男\
+	optional int32 headId=11;//头像ID\
+	optional int32 serverId = 49; // 服务器id\
+	optional string platformId = 50; // 平台id\
+	optional string platformUid = 51; // 平台玩家Id\
+	optional int32 languageId=62;//玩家语言ID\
+	optional int32 maxStrength = 63;//体力上限\
+	optional int32 rechargeExp = 12;//充值经验\
+	repeated int32 rechargeTaskIds=13;//充值成就已经领取的集合\
+	// optional string autograph = 14;//签名\
+	// optional int32 secretary=15;//和头像一样的秘书（暂不知道是什么值）\
+	optional int32 playerGuide = 16;//新手引导步骤\
+	optional string nameCode = 17;	 // 昵称后缀编码\
+	optional PlayerStableInfo playerStableInfo = 18;//玩家不频繁的数据\
+}\
+\
+\
+\
+\
+// 玩家不频繁数据结构（废弃）\
+message PlayerStableInfo\
+{\
+	required int64 lastUNameTime=1;					// 修改指挥官名字的最后时间戳\
+	required int64 birthday=2;					// 玩家生日, 只有月和日有效 年是赋值为闰年(2020)\
+	required int64 lastBirthdayTime=3;		        //修改生日的最后时间戳\
+	required string autograph=4;//签名\
+	required int32 secretary=5;//秘书\
+	repeated int32 openHeadSet=6;					//仅记录客户端没法计算的头像开启集合type=0\
+	repeated int32 weaponSet=7;					//拥有过的式仗id集合\
+	required int64 regDate=8;//玩家注册时间戳\
+	repeated int32 conditionSet=9;				//已开启的小模块功能ID集合\
+}\
+\
+message MoneyPart\
+{\
+	required int64 currentNum = 1;    //当前数量\
+	required int32 itemId = 2; //消耗的货币id\
+}\
+\
+\
+//等级数据\
+message LevelExp\
+{\
+	required int32 level=6;//等级\
+	required int32 curExp=7;//当前经验\
+	required int32 maxExp=8;//升级所需经验\
+}\
+\
+\
+//客户端日志记录\
+message ClientLog\
+{\
+	required string content=1;//日志内容\
+}\
+\
+//设备信息\
+message DeviceInfo\
+{\
+	optional string deviceOS=1;//操作系统版本，例如13.0.2\
+	optional string resolution=2;//手机分辨率\
+	optional string deviceId=3;//手机识别码\
+	optional string deviceModel=4;//设备的机型，例如Samsung GT-I9208\
+	optional string network=5;//网络信息,4G/3G/WIFI/2G\
+	optional string mac=6;//mac 地址\
+	optional string cpu=7;//cpu使用率\
+	optional string gpu=8;//gpu带宽使用率\
+	optional string memorySize=9;//内存使用率\
+	optional string bUdid=10;//研发方自己记录的设备id\
+	optional string bSDKUid=11; //b服SDK udid，客户端SDK登录事件接口获取，32位通用唯一识别码\
+	optional string bGameId=12; //游戏id, 1款游戏的ID，类似app_id，b服SDK获得\
+}\
+\
+//proto用的hash结构\
+message ProtoHashInt2Int\
+{\
+	required int32 key=1;//Key\
+	required int32 value=2;//Value\
+}\
+//proto用的hash结构\
+message ProtoHashInt2String\
+{\
+	required int32 key=1;//Key\
+	required string value=2;//Value\
+}\
+//proto用的hash结构\
+message ProtoHashString2Int\
+{\
+	required string key=1;//Key\
+	required int32 value=2;//Value\
+}\
+\
+//proto用的hash结构(客户端lua没有float属性只能改为双浮点)\
+//因改引用的地方比较多所以仅改动proto内的vlue值类型(zbs 22.6.18)\
+message ProtoHashInt2Float\
+{\
+	required int32 key=1;//Key\
+	required double value=2;//Value\
+}\
+\
+//proto用的hash结构\
+message ProtoHashInt2Long\
+{\
+	required int32 key=1;//Key\
+	required int64 value=2;//Value\
+}\
+\
+//属性枚举（废弃）\
+enum PropEnum\
+{\
+    Hp  =100;//血量（整数）(后端计算)\
+    ATK = 101;//攻击（整数）(后端计算)\
+	Defense = 102;//防御（整数(后端计算)\
+	Energy = 103;//能量（整数）(后端计算)\
+	Crit = 104;//暴击（整数）(后端计算)\
+	CHp  =105;//当前血量（整数）(后端计算)\
+\
+	CritRate=254;//暴击率（比分比） (后端计算)\
+\
+\
+	CEnergy = 106;//当前能量（整数）\
+	PressurePoint = 107;//压力（整数）\
+\
+	baojishanghai = 200; //暴击伤害（百分比）\
+	shoudaobaojishanghai = 201;//受到暴击伤害（百分比）\
+	yidongsudu = 202;//速度（百分比）\
+	gongjisudu = 203;//攻击速度（百分比）\
+	AtkSpeed = 204;//攻击速度加成\
+	xiaoguomingzhong = 205;// 效果命中（百分比）\
+	shanbi = 206;// 闪避（整数）（需要转化为百分比）\
+	putongmingzhong = 207;//命中（整数）（需要转化为百分比）\
+	zaochengshanghai = 208;//造成伤害（百分比）\
+	shoudaoshanghai = 209;//受到伤害（百分比）（免伤）\
+	fantanshanghai = 210;//反弹伤害（百分比）\
+	hudunxiqu = 211;//耐久吸取（百分比）\
+	lengqueshijian = 212;//冷却时间（百分比）\
+	hudunhuifu = 213;//护盾回复（每10秒回复护盾值）（百分比）\
+	aoyijiwuqishanghai = 214;//奥义及武器伤害（百分比）\
+	jiqiangleishanghai = 215;//机枪类伤害（百分比）\
+	jinzhanleishanghai = 216;//近战类伤害（百分比）\
+	zhongxingleishanghai = 217;//重型类伤害（百分比）\
+	wushimubiaofangyu = 218;//无视防御（百分比）\
+	fumianxiaoguochixushijian = 219;//负面效果持续时间（百分比）\
+	huifuxiaoguo = 220;//回复效果（百分比）\
+	Hshuxingshanghai = 221;//H属性伤害（百分比）\
+	Ashuxingshanghai = 222;//A属性伤害（百分比）\
+	Sshuxingshanghai = 223;// S属性伤害（百分比）\
+	shoudaoHshuxingshanghai = 224;//受到H属性攻击时，伤害（百分比）\
+	shoudaoAshuxingshanghai = 225;//受到A属性攻击时，伤害（百分比）\
+	AccurateAdd = 226;//精准参数加成（百分比）\
+	yuansushuxingshanghai = 227;//元素属性伤害（百分比）\
+	yuansushuxingkangxing = 228;//元素属性抗性（百分比）\
+	zhireshanghai = 229;//过热伤害（百分比）\
+	zhirekangxing = 230;//过热抗性（百分比）\
+	lengkongshanghai = 231;//冷气伤害（百分比）\
+	lengkongkangxing = 232;//冷气抗性（百分比）\
+	cinengshanghai = 233;//磁能伤害（百分比）\
+	cinengkangxing = 234;//磁能抗性（百分比）\
+	qiyeshanghai = 235;//溶解伤害（百分比）\
+	qiyekangxing = 236;//溶解抗性（百分比）\
+	jiqiangxingneng = 237;//机枪性能（蓄力速度/造成伤害提高）（百分比）\
+	jinzhanxingneng = 238;//近战性能（锁定持续时间/锁定释放后的冷却时间）（百分比）\
+	zhongxingxingneng = 239;//重型性能（导弹伤害/完美导弹伤害倍率）（百分比）\
+	zhiyuannengli = 240;//支援能力（百分比）\
+	yuannengshanghai=242;//源能伤害（百分比）\
+	yuannengkangxing=243;//源能抗性（百分比）\
+	putongshanghai=244;//普通攻击造成的伤害(对应五种元素属性那个)（百分比）\
+	shoudaoputongshanghai=245;//受到普通攻击时，伤害(对应五种元素属性那个)（百分比）\
+	liaojishanghai=246;//僚机伤害倍率（作为僚机时，伤害倍率）（百分比）\
+	yichangshijianxiaojian=247;//异常时间削减（百分比）\
+	xidongfengsuo=248;//行动封锁(无法移动)\
+	gongjifengsuo=249;//攻击封锁(无法攻击)\
+	zishenquanbuzidanfeixingsudu=250;//自身全部子弹飞行速度\
+	BREAKxingneng=251;//BREAK性能\
+	hudungongjixingneng=252;//护盾攻击性能\
+	nenglianghuifubaifenbi=253;//能量恢复百分比\
+	dodgeRecover=255;//闪避回复速度\
+	ENCostRate=256;//能量消耗\
+\
+	DodgeRate=257;//闪避率（实际闪避率 = 闪避值 *  MAX {（P1 – 等级 * 等级 * P2）,P3} / P4）\
+\
+	Perception = 301;//普通增伤率（百分比）\
+	Maneuvers = 302;//普通反增伤率\
+	mianshangbi = 258;//免伤比（值）\
+	CritRateShow=265;// 蓄力速度加成\
+	DodgeRateShow=266;//显示在ui上的闪避率\
+	mianshangbiShow = 267;//显示在ui上的免伤比（值）\
+\
+\
+	// 2021.3.30 新增属性枚举\
+	suishihp = 108;//目前损失hp（整数）\
+	zuihousunxu = 109;//最后一次损血（整数）\
+	jizounengliang = 110;//当前极奏能量（整数）\
+	xueliangchengzhang=120;//血量成长（百分比）\
+	gongjichengzhang=121;//攻击成长（百分比）\
+	fangyuchengzhang=122;//防御成长（百分比）\
+	nengliangchangzhang=123;//能量成长（百分比)\
+	baojichangzhang=124;//暴击成长（百分比)\
+\
+	jiguangdanzhongshanghai = 259;//激光弹种伤害加成\
+	flybulletdanzhongshanghai = 260;//flybullet弹种伤害加成\
+	paowuxiandanzhongshanghai = 261;//抛物线弹种伤害加成\
+	jizouzongnengliang = 262;//极奏总能量\
+	nengliangxishu = 263;//能量系数\
+	jizouhuifuxiaolv = 264;//极奏回复效率(百分比）\
+\
+\
+\
+	putongjianshanglv = 303;//普通减伤率(百分比）\
+	putongfanjianshanglv = 304;//普通反减伤率(百分比）\
+	tongyongyuansushanglv = 311;//通用元素伤害加成（百分比）\
+\
+	tongyongfanyuansushanglv = 312;//通用反元素伤害加成（百分比）\
+	tongyongyuansukangxing = 313;//通用元素伤害抗性（百分比）\
+	tongyongfanyuansukangxiang = 314;//通用反元素伤害抗性（百分比\
+	huoyuansushanglv = 321;//火元素伤害加成（百分比）\
+	huofanyuansushanglv = 322;//火反元素伤害加成（百分比）\
+	huoyuansukangxing = 323;//火元素伤害抗性（百分比）\
+	huofanyuansukangxing = 324;//火反元素伤害抗性（百分比）\
+	bingyuansushanglv = 331;//冰元素伤害加成（百分比）\
+	bingfanyuansushanglv = 332;//冰反元素伤害加成（百分比）\
+	bingyuansukangxing = 333;//冰元素伤害抗性（百分比）\
+	bingfanyuansukangxing = 334;//冰反元素伤害抗性（百分比）\
+	fengyuansushanglv = 341;//风元素伤害加成(百分比）\
+	fengfanyuansushanglv = 342;//风反元素伤害加成(百分比）\
+	fengyuansukangxing = 343;//风元素伤害抗性(百分比）\
+	fengfanyuansukangxing = 344;//风反元素伤害抗性（百分比）\
+	leiyuansushanglv = 351;//雷元素伤害加成（百分比）\
+	leifanyuansushanglv = 352;//雷反元素伤害加成（百分比）\
+	leiyuansukangxing = 353;//雷元素伤害抗性（百分比）\
+	leifanyuansukangxing = 354;//雷反元素伤害抗性（百分比）\
+	yuannengyuansushanglv = 361;//源能元素伤害加成（百分比）\
+	yuannengfanyuansushanglv = 362;//源能反元素伤害加成（百分比）\
+	yuannengyuansukangxing = 363;//源能元素伤害抗性（百分比）\
+	yuannengfanyuansukangxing = 364;//源能反元素伤害抗性（百分比）\
+\
+\
+\
+\
+\
+}\
+\
+//属性枚举(2022.2.18) 没有详细说明的 去battlelimit.xls表格查看细节 和策划这个表对齐\
+enum PropEnumNew\
+{\
+	Hp_new  =100;//血量（整数）(后端计算)\
+	ATK_new = 101;//攻击（整数）(后端计算)\
+	Defense_new = 102;//防御（整数(后端计算)\
+	Energy_new = 103;//能量（整数）(后端计算)\
+	Crit_new = 104;//暴击（整数）(后端计算)\
+	CHp_new  =105;//当前血量（整数）(后端计算)\
+\
+	suishihp_new = 108;//目前损失hp（整数）\
+	zuihousunxu_new = 109;//最后一次损血（整数）\
+	// jizounengliang_new = 110;//当前极奏能量（整数）\
+\
+	xueliangchengzhang_new=120;//血量成长（百分比）\
+	gongjichengzhang_new=121;//攻击成长（百分比）\
+	fangyuchengzhang_new=122;//防御成长（百分比）\
+	nengliangchangzhang_new=123;//能量成长（百分比)\
+	baojichangzhang_new=124;//暴击成长（百分比)\
+\
+	TotalHpPercentAdd = 130; // 战斗内用总血量百分比加成\
+	AtkPercentAdd = 131;//攻击—百分比\
+	DefPercentAdd = 132; //防御—百分比\
+	EnPercentAdd = 133; //能量—百分比\
+	CriticalPercentAdd = 134;//暴击—百分比\
+	CurHpPercentAdd = 135; //战斗内用当前血量百分比加成\
+\
+	CritValuePercent_200            = 200; //爆伤加成\
+	CriticalRate = 201; // 暴击率？有空问问颜良这是啥意思\
+	EnParam = 202; //能量系数\
+	CureAddPercent   = 203; // 施法者治疗加成\
+	AtkSpeed_new = 204; // 普通攻击速度加成\
+	BeCureAddPercent = 205; //被施法者治疗加成\
+	HoldingAtkSpeedAdd = 206; //蓄力攻击速度加成\
+	SkillCacheEn = 207; //特殊技能积攒能量\
+	HoldingAtkConsumeAdd = 208; //蓄力攻击弹药消耗百分比加成\
+	SkillCacheEnMax = 209; //特殊技能积攒能量最大值\
+\
+	MoveSpeedAdd        = 210; // 移动速度\
+	CommonBulletSpeedAdd = 211; //闪避值回复速度\
+	AllBulletSpeedAdd = 212; // 最大闪避值\
+	ShanBiRecovery = 213; //当前闪避值\
+	JizouTotalEnergy = 214; //  闪避消耗率\
+	ShanBiMax = 215; //冲刺消耗率\
+	FlyRecovery = 216; //极奏能量\
+	JiZouEnergyGet = 217; //当前极奏能量\
+	JiZouCD = 218; //极奏能量获取效率\
+	BulletEnergyMax = 219; //极奏能量CD冷却缩减\
+	BulletEnergyRecovery = 220; //子弹能量\
+	BulletEnergyDelayRecovery = 221; //当前子弹能量\
+	ABulletEnergyCost = 222; //子弹能量恢复\
+	BBulletEnergyCost = 223; //子弹能量消耗率\
+	// SynthesisBulletEnergyCost = 224; //综合子弹能量消耗率\
+	ActiveSkillCDReduce = 224; //主动技能CD冷却缩减\
+	AccurateAdd_new = 225; //精准参数加成\
+	SprintAdd = 226; // 冲刺速度加成百分比\
+	AmiRangeAdd = 227; // 瞄准范围加成\
+	HurtReduceDisAddValue = 228;// 攻击距离衰减范围加成（数值）\
+	ReloadSpdAdd = 229;        //换弹时间(速度)加成\
+	WeakHurtAdd = 230;  //弱点伤害加成\
+	CurBulletEnergyJialifu = 231;// 加利福当前子弹能量\
+	MaxBulletEnergyJialifu = 232;// 加利福最大子弹能量\
+	ZuoyideStashEnergy = 233;// 佐伊德存储属性(当前值)\
+	ZuoyideStashEnergyMax = 234;// 佐伊德存储属性(最大值)\
+	ShootStability = 235;// 射击稳定性\
+	BulletNumber = 236;// 弹丸数量\
+	BulletFlySpd = 237;// 子弹飞行速度\
+	WeaponHurtScore = 238;// 武器伤害评分\
+	WeaponShootSpd = 239;// 武器射击速度\
+	NormalAtkHurtAdd = 240;// 普攻伤害提升\
+	ActiveSkillHurtAdd = 241;// 主动伤害提升\
+	JizouHurtAdd = 242;// 序曲伤害提升\
+	Sprint_En_Max_2 = 243;// 最大闪避值2（超过100%后的第二个上限）\
+	NormalCureAdd = 244;// 普攻治疗提升\
+	ActiveSkillCureAdd = 245;// 主动治疗提升\
+	JizouCureAdd = 246;// 序曲治疗提升\
+\
+	AllElementHurtIncreases         = 301; //通用元素伤害加成\
+	AllElementInverseHurtIncreases  = 302; //通用反元素伤害加成\
+	AllElementHurtReduce            = 303; //通用元素伤害抗性\
+	AllElementInverseHurtReduce     = 304; //通用反元素伤害抗性\
+	ElementWeaknessBreak                = 305; //元素击破\
+	EleBreakHurtAdd                               = 306;//元素击破伤害加成(百分比)\
+\
+	HurtIncreases                   = 311;//物理增伤率\
+	InverseHurtIncreases            = 312;//物理反增伤率\
+	HurtReduce                      = 313;//物理减伤率\
+	InverseHurtReduce               = 314;//物理反减伤率\
+\
+	FireHurtIncreases               = 321;//火元素伤害加成\
+	FireInverseHurtIncreases        = 322;//火反元素伤害加成\
+	FireHurtReduce                  = 323;//火元素伤害抗性\
+	FireInverseHurtReduce           = 324;//火反元素伤害抗性\
+	FireAccAdd                                 = 325;//火元素积累效率加成\
+	FireInverseAccAdd				    	= 326;//火元素积累抗性加成\
+	FireBreakHurtAdd                       = 327;//火弱点击破伤害加成\
+	FireWeakCommonHurtAdd     = 328;//火弱点目标通用伤害加成\
+\
+\
+	ThunderHurtIncreases            = 331;//雷元素伤害加成\
+	ThunderInverseHurtIncreases     = 332;//雷反元素伤害加成\
+	ThunderHurtReduce               = 333;//雷元素伤害抗性\
+	ThunderInverseHurtReduce        = 334;//雷反元素伤害抗性\
+	ThunderAccAdd                                 = 335;//雷元素积累效率加成\
+	ThunderInverseAccAdd				    	= 336;//雷元素积累抗性加成\
+	ThunderBreakHurtAdd                       = 337;//雷弱点击破伤害加成\
+	ThunderWeakCommonHurtAdd     = 338;//雷弱点目标通用伤害加成\
+\
+	IceHurtIncreases                = 341;//冰元素伤害加成\
+	IceInverseHurtIncreases         = 342;//冰反元素伤害加成\
+	IceHurtReduce                   = 343;//冰元素伤害抗性\
+	IceInverseHurtReduce            = 344;//冰反元素伤害抗性\
+	IceAccAdd                                 = 345;//冰元素积累效率加成\
+	IceInverseAccAdd				    	= 346;//冰元素积累抗性加成\
+	IceBreakHurtAdd                       = 347;//冰弱点击破伤害加成\
+	IceWeakCommonHurtAdd     = 348;//冰弱点目标通用伤害加成\
+\
+	WindHurtIncreases               = 351;//风元素伤害加成\
+	WindInverseHurtIncreases        = 352;//风反元素伤害加成\
+	WindHurtReduce                  = 353;//风元素伤害抗性\
+	WindInverseHurtReduce           = 354;//风反元素伤害抗性\
+	WindAccAdd                                 = 355;//风元素积累效率加成\
+	WindInverseAccAdd				    	= 356;//风元素积累抗性加成\
+	WindBreakHurtAdd                       = 357;//风弱点击破伤害加成\
+	WindWeakCommonHurtAdd     = 358;//风弱点目标通用伤害加成\
+\
+	SuperPowerHurtIncreases         = 361;//源能元素伤害加成\
+	SuperPowerInverseHurtIncreases  = 362;//源能反元素伤害加成\
+	SuperPowerHurtReduce            = 363;//源能元素伤害抗性\
+	SuperPowerInverseHurtReduce     = 364;//源能反元素伤害抗性\
+	SuperPowerMaxValueReduce				= 365;//源能反元素积累抗性\
+\
+	GrivatyHurtIncreases            = 371;//重力元素伤害加成\
+	GrivatyInverseHurtIncreases     = 372;//重力反元素伤害加成\
+	GrivatyHurtReduce               = 373;//重力元素伤害抗性\
+	GrivatyInverseHurtReduce        = 374;//重力反元素伤害抗性\
+	GrivatyMaxValueReduce				    = 375;//重力反元素积累抗性\
+\
+	ElementAccSpdAdd_NormalSkill                  = 377;//元素积累效率提升-普攻\
+	ElementAccSpdAdd_ActiveSkill                  = 378;//元素积累效率提升-主动\
+	ElementAccSpdAdd_JizouSkill                  = 379;//元素积累效率提升-极奏\
+	ElementAccSpdAdd_All                              = 380;//全元素积累效率提升\
+\
+	AdvDistanceMin = 401; //优势距离最小值\
+	AdvDistanceMax = 402; //优势距离最大值\
+	AttenuationDistanceMin = 403;  //中衰减距离最小值\
+	AttenuationDistanceMax = 404;  //中衰减距离最大值\
+	HighAttenuationDistanceMin = 405; //高衰减距离最小值\
+	HighAttenuationDistanceMax = 406;  //高衰减距离最大值\
+	UselessDistanceMin = 407;  //无效距离边界最小值\
+	UselessDistanceMax = 408;  //无效距离边界最大值\
+\
+	RotateSensitivityX = 501;  //横向转向灵敏度\
+	RotateSensitivityY = 502;  //纵向转向灵敏度\
+\
+	RogueUnitSkillEnMax_Fire = 601;  //肉鸽主公技最大能量-火\
+	RogueUnitSkillEnCur_Fire = 602;  //肉鸽主公技当前能量-火\
+	RogueUnitSkillEnMax_Thunder = 611;  //肉鸽主公技最大能量-雷\
+	RogueUnitSkillEnCur_Thunder = 612;  //肉鸽主公技当前能量-雷\
+	RogueUnitSkillEnMax_Ice = 621;  //肉鸽主公技最大能量-冰\
+	RogueUnitSkillEnCur_Ice = 622;  //肉鸽主公技当前能量-冰\
+	RogueUnitSkillEnMax_Wind = 631;  //肉鸽主公技最大能量-风\
+	RogueUnitSkillEnCur_Wind = 632;  //肉鸽主公技当前能量-风\
+\
+}\
+\
+//属性对象\
+message PropVal\
+{\
+	required PropEnum propEnum=1;//Key\
+	required double value=2;//Value\
+}\
+\
+//奖励附加参数和RewardItem一块使用\
+message RewardParameterInfo{\
+	required int32 oldLv=1;//改变前的等级\
+	required int32 level=2;//改变后的等级\
+	optional string par =3;//参数 type:1=角色碎片id 2=式仗碎片id，3=改变前的指挥官经验 4=角色服装id 5=改变前的角色经验，6=改变前的好感度经验  7=获得镜像\
+}\
+\
+//奖励物品结构\
+message RewardItem\
+{\
+	required int32 itemId=1;//物品ID\
+	required int32 curCount=2;//当前数量\
+	required int32 count=3;//总数量\
+	required int32 type =4;//1=获得角色,2=获得式仗,3=指挥官等级，4=获得角色服装，5=角色增加经验，6=角色好感度增加经验， 7=获得镜像\
+	// optional int32 par =5;//参数\
+	optional RewardParameterInfo rewardParInfo =5;//附加参数\
+	optional string uuid =6;//唯一id\
+	optional int64 beginTime=7;//开始时间\
+	optional int64 endTime=8;//结束时间\
+	optional int32 comeFrom=9;//奖励来源（关联ActionEnum）\
+	optional int32 rewardType=10;//奖励类型（关联msg.proto RewardType）\
+}\
+\
+enum RewardType\
+{\
+	Common = 0; // 默认无状态\
+	LevelFirstPass = 1; // 首通\
+	LevelStar = 2; // 星级奖励\
+	LevelGod = 3; // 金币加成\
+}\
+\
+//奖励物品集合\
+message Rewards\
+{\
+	repeated RewardItem rewardItem=1;//奖励物品集合\
+}\
+\
+//副本星级奖励列表\
+message PveStarRewards\
+{\
+	required int32 star=1;//第几颗星\
+	required Rewards rewards=2;//奖励物品集合\
+}\
+\
+\
+//武将阵型信息\
+message LeaderFormationInfo\
+{\
+	required int32 position=1;//位置\
+	required int32 leaderId=2;//武将Id\
+	optional bool isTrail=3;// 试用角色，true：是\
+	optional int32 uid=4;// 角色所属玩家，当前用于乌拉拉类型 仅用于客户端传给服务器\
+	optional int32 level = 5;//当前leader的等级\
+	optional int32 clothId = 6;//当前leader的衣服\
+}\
+\
+//武将阵法信息\
+message LeaderSquadInfo\
+{\
+	required int32 id = 1;//阵法id 预设编队共3个  1000以后的是功能模块编队记录\
+	repeated LeaderFormationInfo leaderSet = 2;//武将阵型信息(1,2,3)\
+	repeated SquadBakLeaderInfo squadBakLeader = 3;// 备选武将(有数据则从备选武将中选择，没数据则从自身的武将中选择)\
+}\
+\
+//备选武将信息\
+message SquadBakLeaderInfo\
+{\
+	required int32 leaderId = 1;// 角色id\
+	optional double remainHpPercent = 2;// 剩余血量百分比\
+}\
+\
+message SmallBattleLeaderSquadInfo\
+{\
+	required int32 id=1;//关卡\
+	required int32 point=2;//积分\
+	repeated LeaderFormationInfo leaderSet=3;//武将阵型信息(1,2,3)\
+	required int32 auto = 4; //是否能够扫荡 0表示不行 1表示可以\
+}\
+\
+\
+//武将信息\
+message LeaderInfo\
+{\
+	required int32 id=1;//武将实例ID\
+	required int32 level=2;//武将等级\
+	required int32 exp=3;//武将经验\
+	required int32 star=4;//位阶品质\
+	required int32 starLevel=5;//位阶等级\
+	required int32 favorabilityLevel=6;//好感度等级 默认1级\
+	required int32 favorabilityExp=7;//好感度经验 默认0\
+	required int32 clothingId=8;//服装ID\
+	required string weaponId=9;//式仗唯一id\
+	optional CalcPropModelInfo calcPropModelInfo=10;//武将属性\
+	repeated TalentSkill talentSkills=11;//武将被动技能信息\
+	optional int32 breachLevel=12;//突破等级\
+	// required int32 aceLevel=13;//王级等级\
+	repeated ProtoHashInt2Int aceEquipMap=14;//王牌穿戴后的装备key=装备位置value=装备id\
+	// required int32 archivesLevel=15;//履历等级默认为0 未开启\
+	repeated int32 archivesReadSet=16;//履历读取状态  仅客户端使用\
+	repeated ActiveSkillInfo activeSkills=17;//武将主动技能信息\
+	repeated int32 archivesSoundSet=18;//档案已查看的语音;\
+	repeated int32 archivesStorySet=19;//档案已查看的故事;\
+	repeated ProtoHashInt2String revelationMap=20;//当前武将身上已经穿戴的镜像 key=装备位置， value=装备唯一Id\
+	// required int32 signStage=21;//式仗阶段1开始\
+	required int32 signLv=22;//式仗等级0开始\
+	repeated ProtoHashInt2Int stickSkills = 23;// 斯露德式杖技能槽， key = 技能槽Id， value = 表Id\
+    required string perkId=25;//穿戴的Perk.id\
+	optional int32 seasonTalentId = 24; //赛季天赋id，未选中的时候该值为：-1\
+}\
+\
+//队伍-武将信息\
+message LeaderTeamInfo\
+{\
+	required int32 id=1;//武将实例ID\
+	required int32 level=2;//武将等级\
+	optional int32 capability=3;//战力:目前标识式仗战力\
+	required int32 star=4;//位阶品质\
+	required int32 clothingId=5;//服装ID\
+	required string weaponId=6;//式仗唯一id\
+	optional int32 breachLevel=7;//突破等级\
+	repeated ProtoHashInt2String revelationMap=8;//当前武将身上已经穿戴的镜像 key=装备位置， value=装备唯一Id\
+	optional int32 starLevel=9;//位阶等级\
+}\
+\
+//武将显示信息\
+message LeaderShowInfo\
+{\
+	required int32 id=1;//武将实例ID\
+    optional int32 level=2;//武将等级\
+	optional int32 star=3;//武将星级\
+	optional float capability=4;//武将战力\
+	optional int32 weaponId=5;//式仗配置表id\
+}\
+\
+//武装信息\
+message WeaponInfo\
+{\
+	required int32 id=1;//武器实例ID\
+	required int32 leaderId=2;//所属武将ID\
+	required int32 exp=3;//经验\
+	required int32 level=4;//武器等级\
+	required int32 breachLevel=5;//突破等级\
+	required string onlyId=6;//式仗唯一id\
+	optional CalcPropModelInfo calcPropModelInfo=7;//属性值列表\
+	required int32 getTime=8;//式仗获得的时间\
+	required int32 defleaderId=9;//武将ID(标志属于谁的默认式仗，非默认式仗=0)\
+	required int32 skinId=10;//涂装id默认为零\
+	required int32 lockState=11;//0：未锁， 1：上锁 上锁的不能分解\
+	optional int32 refineLevel=12;//律叶精炼等级\
+\
+	optional WeaponRandomInfo weaponRandomInfo = 17;// 随机数据（对外使用的数据）\
+	optional WeaponRandomInfo lastWeaponRandomInfo = 18;// 洗练出来的没保存的数据\
+	required int32 recastingTime = 19;// 洗练属性次数\
+	required int32 recastingSkillTime = 20;// 洗练技能次数\
+}\
+\
+// 武装随机数据\
+message WeaponRandomInfo\
+{\
+    repeated int32 weaponRandomSkill=1;// 随机技能\
+    optional SecondaryPropInfo secondaryPropInfo = 2;// 随机属性\
+}\
+\
+//已经打完的PVE地图信息\
+message PVEMap{\
+	required int32 id=1;//PVEID\
+	required int32 attackNum=2;//总攻打次数\
+	required int32 todayAttNum=3;//今日攻打次数\
+	required int32 battlePoint=4;//战斗点数\
+	required int64 lastAttackTime=5;//最后攻打时间\
+	repeated int32 stars=6;//星级 1=第一颗星2=第二颗星3=第三颗星 |亮了\
+	optional string fileName=7;//上传的战斗日志文件名\
+	optional string md5code=8;//文件md5码\
+	required bool perfectAdopt=9;//是否完美通关\
+	required int32 firstAdopt=10;//首次通关状态0=不能领取1=可领取2=已领取\
+	required int32 percentAdopt=11;//百分百通关奖励0=不能领取1=可领取2=已领取\
+	// optional int32 battleStrength=12;//消耗体力的战斗次数仅在扫荡前用于判断\
+	repeated int32 battleStrengS=12;//战斗完成的id集合（客户端用于显示消耗的体力值）\
+	optional int32 monsterMaxScore=13;//关卡怪物最高得分\
+	repeated ProtoHashInt2String firstStarRewards=14;//首次获得星星的奖励物品集合key=星星value=奖励集合（itemId:num,itemid,num）\
+	required int32 videotapeTime=15;//最后允许上传录像的开始时间（用于判断失败原因）\
+	optional string showName=16;//显示的录像名字（后端不用，仅用于客户端显示）\
+}\
+//碎片\
+message Part\
+{\
+	required int32 id=1;//碎片ID\
+	required int32 num=2;//碎片数量\
+	optional int32 comeFromLeaderId=3;//来源 0:正常添加 其他:武将ID/灵兽ID\
+	required string uuid=4; // uuid\
+	optional int64 beginTime=5; // 开始的时间\
+	optional int64 endTime=6; // 结束的时间\
+}\
+\
+\
+//武将的攻击属性\
+message LeaderAtkProp\
+{\
+	repeated ProtoHashInt2Float attributeMap=1;//属性列表(对应Msg.PropEnum)\
+	optional  int32 capability=2;//战力\
+}\
+\
+//属性值列表\
+message CalcPropModelInfo\
+{\
+	repeated ProtoHashInt2Float attributeMap=1;//属性列表(对应Msg.PropEnum)\
+	repeated ProtoHashInt2Float growMap=2;//grow属性列表(对应Msg.PropEnum)\
+	repeated ProtoHashInt2Float percentageMap=4;//属性百分比列表(对应Msg.PropEnum)\
+	optional int32 capability=3;//战力\
+}\
+\
+// 随机属性\
+message SecondaryPropInfo\
+{\
+	repeated int32 secondaryKeyList=1;//随机属性key列表(对应Msg.PropEnum)，\
+	repeated double secondaryValueList=2;//随机属性value列表， 与secondaryKeyList中的 key 一一对应\
+	repeated ProtoHashInt2Float growMap=3;//加成属性列表(对应Msg.PropEnum)\
+    optional double weaponPropScope=4;//随机属性评分\
+    repeated int32 randomPropPoolIndex=5;// weaponRandomId\
+    repeated int32 randomEquipAttrIndex=6;// equipAttribute  index\
+}\
+//为了让同种属性可以同时出现\
+message attributeList\
+{\
+	repeated ProtoHashInt2Float secondaryProp=1;// 随机属性(对应Msg.PropEnum)\
+}\
+\
+\
+\
+//玩家资源 （废弃）\
+message PlayerRes {\
+    optional  int32 money=1;//金币数\
+    optional  int32 coin=2;//当前钱庄铜钱数量\
+	optional  int32 strength=3;//体力\
+	optional  int32 skillPoint=4;//技能点\
+	optional  int32 currency=5;//神秘结晶-金字塔\
+}\
+\
+//被动技能\
+message TalentSkill\
+{\
+	required int32 id=1;//技能ID\
+	required int32 level=2;//技能等级\
+	required int32 state=3;//状态 0：未解锁 1:解锁\
+	optional int32 count=4;//技能数量\
+}\
+\
+//rogue技能\
+message RogueUnitSkillInfo\
+{\
+	required int32 id = 1;//技能ID\
+	repeated int32 strengthSkillIds = 2;//强化的技能id\
+	optional bool opened = 3;//当前已开启状态\
+}\
+\
+//主动技能\
+message ActiveSkillInfo\
+{\
+	required int32 id=1;//技能ID\
+	required int32 level=2;//技能等级\
+	required int32 type=3;//1=主动2=极奏3=QTE4=支援暂时不用,5=普攻,6=蓄力技能\
+}\
+\
+ //商城 如果刷新类型为0 不刷新,则没有这条\
+ message Shop{\
+	required int32 shopType=1;//商城类型\
+	optional int64 lastRefreshTime=2;//最后刷新时间\
+	repeated ShopItem shopItems=3;//物品列表\
+	required int32 refreshTimes=4;//刷新次数\
+	repeated ProtoHashInt2Int buyItems=5;//已购买的物品列表（key = id value = 数量）\
+	optional int64 nextRefreshTime=6;//下一次刷新时间\
+ }\
+//商城物品\
+message ShopItem\
+{\
+	required int32 shopItemId=1;//shop表主键ID\
+	required int32 buyNum=2;//购买次数\
+	repeated int32 perkEntryList=3;//Perk商品随机副词条集合(非perk此值为空)\
+	required int64 lastReflashTime=4;//上次刷新时间仅shop.classifyRefreshTpye=4的商店类型有效\
+	optional int64 nextReflashTime=5;//下一次刷新时间仅shop.classifyRefreshTpye=4的商店类型有效\
+}\
+\
+//任务结构\
+message Task\
+{\
+	required int32  dayTaskPoint=1;					//日常任务活跃点（每天清空）\
+	repeated int32 passedDayPoints=2;		        //已经领取日常活跃点奖励id集合（每天清空）\
+	repeated ProtoHashInt2Int apPointMap=3;	        //key=势力id value=成就点\
+	repeated int32 APPoints=4;		                //已经领取成就点奖励id集合  1\
+	repeated ProtoHashInt2Int achievementsTask=5;	//成就任务条件\
+	repeated ProtoHashInt2Int dayTask=6;	        //日常任务条件（每天清空）\
+	repeated int32 passedDayTask=7;		            //已经完成的日常任务\
+	repeated int32 passedAchievementsTask=8;        //已经完成的成就任务\
+}\
+\
+// //势力结构\
+// message Power\
+// {\
+// 	required int32  id=1;					        //id\
+// 	required int32  level=2;					    //势力等级\
+// 	required int32  skillId=3;					    //势力技能id\
+// }\
+\
+//怪物死亡结构 （暂不需要传值）\
+message MonsterDeath\
+{\
+	required int32  monsterId=1;		            //怪物id\
+	required int32  leaderId=2;					    //击杀武将id\
+	repeated int32  skillType =3;                   //死亡时挂载的技能类型 暂定会读取skill类型 1=极奏 2=感电；3=混沌\
+}\
+\
+//战斗参数结构\
+message FightPar\
+{\
+	repeated int32 leaderInjuryS = 1;//武将重伤集合（hp <= 20%为重伤）以历史行为为准\
+	repeated int32 leaderdeathS = 2;//战斗中死亡的武将id列表 以结算时刻为准 中间复活算没死\
+	repeated ProtoHashInt2Int skillTypeNums = 3;//战斗中使用的 行动类型，行为Id （1.极奏、2.主动、3.能量攻击、4.普攻, 5. 完美闪避， 6.元素共鸣，7. QTE. 8. 式杖技能，9.角色技能, 10.空弹状态） key = 行为Id value = 次数 普攻无法统计次数。。 迪康说 普攻先按照前端的规则计\
+	optional bool isNoInjurie = 4;//是否无伤通关 以历史行为为准 中间掉血就算有伤 打护盾上算无伤\
+	optional int32 attackTime = 5;//战斗攻打时长(秒)\
+	optional int32 battleTime = 6;//战斗持续时间包括进场和出场特效时间（秒）\
+	repeated ProtoHashInt2Int monsterTypeKill = 7;//战斗中击杀的怪物类型以及次数 key=怪物类型Id(MonsterTemplate.id)  value=击杀次数\
+	repeated BattleGuideInfo completeGuides = 8;//完成的战斗引导\
+	repeated ProtoHashInt2Int monsterIdKill = 9;//战斗中击杀的怪物id 以及次数 key=怪物Id(MonsterInstance,id)  value=击杀次数\
+	repeated ProtoHashInt2Int elementType = 10;//key : 触发元素反应类型, value : 次数\
+	optional int32 injuredNumber = 11;// 受伤次数\
+	repeated ProtoHashInt2Int useJIZOUNumber = 12;//key : 使用极奏的leaderId, value : 次数\
+	repeated BattleAttribute finalLeaderAttribute = 13;//武将的最终的属性列表(对应Msg.PropEnum)\
+	optional int32 monsterKillWave = 14;// 击杀怪物波次\
+	optional double remainLeaderTotalHp = 15;// 武将剩余总血量百分比\
+	optional double killMonsterTotalHp = 16;// 击杀怪物总血量\
+	repeated ProtoHashInt2Int buffIdAttachCount = 17;//战斗中附着的buff以及次数 key=buffId(BuffGroup.id)  value=附着次数 : 目前只记录玩家自己给自己上的buff\
+	repeated ProtoHashInt2Float monsterIdRemainHp = 18;//战斗结束时怪物的剩余血量 key=怪物Id(MonsterInstance,id)  value=剩余血量百分比\
+	repeated ProtoHashInt2Int elementEffectType = 19;//key : 元素类型, value : 次数\
+	repeated ProtoHashInt2String unitTags = 20;//key : 单位Tag key,value\
+	repeated LeaderConsumePropPercent leaderConsumePropPercent = 21;//key:武将id, value:剩余属性百分比\
+	repeated ProtoHashInt2Float unitConsumePropPercent = 22;//key:属性id, value:剩余属性百分比\
+}\
+\
+message LeaderConsumePropPercent\
+{\
+	required int32 leaderId = 1;// 武将id\
+	repeated ProtoHashInt2Float consumePropPercent = 2;//key:武将id, value:剩余血量百分比\
+}\
+\
+//邮件中的资源\
+message MailThings\
+{\
+	required int32 objType=1;//资源类型 1:玩家经验 2:米特拉 3:神迹之光(充值货币) 4:体力 5:物品\
+	required int32 objId=2;//对应的资源ID\
+	required int32 num=3;//数量\
+}\
+\
+//邮件\
+message Mail{\
+	  required string id=1;//唯一id 修改一下onlyId 不然有bug\
+    required int32 type=2;//邮件类型 1：普通邮件 2：附件邮件\
+    repeated MailThings thingses=3;//附件\
+    required int32 beginTime=4;//开始时间\
+    required int32 endTime=5;//结束时间\
+    required int32 state=6; //状态 1：未读 2：已读 3:已领取\
+    optional int32 classification=7;// 分类 0 自动 1 手动\
+		optional int32 mailId = 8;//游戏内邮件 模板Id Mail.xls  ID。 系统邮件（GM） mailId = 0\
+		repeated string params = 9; // 游戏内邮件 需要的参数集合\
+		repeated ProtoHashInt2String titls=10;//标题(key=Action.MailLanguageEnum)  只有maild为0时才有值\
+		repeated ProtoHashInt2String contents=11;//内容(key=Action.MailLanguageEnum)  只有maild为0时才有值\
+		repeated ProtoHashInt2String senderNames=12;//发件人(key=Action.MailLanguageEnum)  只有maild为0时才有值   （2021.08.31废除）\
+		required int32 iconId=13;//发送者邮件图标\
+		// required int32 bgImage=12;//背景图片id(-1=没有图片)\
+\
+		optional string bgImage=14;//背景图片文件名称（带后缀）\
+		optional string bgImageAb=15;//背景ab地址\
+}\
+\
+//玩家聊天框信息\
+message PlayerChatInfo\
+{\
+	required int32 icon = 1;	 // 头像ID\
+	required string name = 2;	 // 昵称\
+	required int32 id = 3;		 // 玩家ID\
+	required int32 level = 4;	 // 等级\
+	optional string nameCode = 5;	 // 昵称后缀编码\
+	optional string userSign = 6;// 玩家签名\
+	optional int32 bgImgId = 7;// 玩家名片背景板Id\
+	optional int32 state = 8;// 1: 上线  2： 下线\
+	optional int32 timestamp = 9;// 时间戳， 用于区分在线状态 是否有效\
+	optional string desc = 10;// 备用名\
+	optional BattleStateType battleState = 11; // 战斗状态\
+	optional int32 headFrameId=12;//头像框id\
+	optional int32 sex=13;//性别\
+}\
+\
+// 好友信息变动相关字段\
+message PlayerChangeInfo\
+{\
+    required int32 icon = 1;	 // 头像ID\
+	required string name = 2;	 // 昵称\
+	required int32 id = 3;		 // 玩家ID\
+	required int32 level = 4;	 // 等级\
+	optional int32 bgImgId = 5;  // 背景板Id\
+	optional int32 headFrameId=6;//头像框id\
+	optional int32 sex=7;//性别\
+}\
+\
+//系统邮件结构\
+message SystemChatMessage\
+{\
+	required int32 languageId = 1;//玩家语言ID\
+	required string message = 2;//内容\
+}\
+\
+//服务器结构信息（用于登录后发送：聊天，战斗，服务器信息）\
+message ServerInfo\
+{\
+	required int32 serverId = 1;//服务器id\
+	required int32 serverType = 2;//服务器类型 2 战斗服；3 聊天服\
+	required string serverIP = 3;//服务器url\
+	required int32 socketPort = 4;//服务器socket端口\
+	required int32 serverVersion = 5;//服务器版本\
+}\
+\
+//简单玩家信息（废弃待确定）\
+message SimplePlayer\
+{\
+	optional int32 uid=1;//玩家ID\
+    optional  string uName=2;//玩家昵称\
+    optional  int32 exp=3;//玩家经验\
+	optional  int32 level=4;//玩家等级\
+	optional int32 sex=5;//性别 0：女1：男\
+	optional int32 headId=6;//头像ID\
+	optional string platformId = 8; // 平台id\
+	optional string platformUid = 9; // 平台玩家Id\
+	optional int32 languageId=10;//玩家语言ID\
+	optional int32 maxStrength = 11;//体力上限\
+	optional string autograph = 12;//签名\
+}\
+\
+//简单玩家信息\
+message ShowPlayer\
+{\
+	optional int32 uid=1;//玩家ID\
+    optional string uName=2;//玩家昵称\
+    optional string nameCode=3;//nameCode 昵称后缀编码\
+	optional int32 level=4;//玩家等级\
+	// optional int32 sex=5;//性别 0：女1：男\
+	optional int32 headId=6;//头像ID\
+	optional string autograph = 7;//签名\
+	// optional int32 secretary=8;//和头像一样的秘书（暂不知道是什么值）\
+	optional int64 birthday = 9;// 玩家生日，时间戳精确到毫秒\
+	optional int32 headFrameId= 10;// 头像框ID\
+}\
+\
+//玩家显示信息（用于聊天或好友查看其它玩家信息）\
+message ShowGameInfo\
+{\
+	optional ShowPlayer showPlayer=1;//玩家简单数据\
+	optional int32 leaderNum=2;//收集角色数量\
+	optional int32 weaponNum=3;//收集式杖数量\
+	optional int32 overBattleNum=4;//已通关卡 数量\
+	optional int32 achieveNum=5;//达成成就数量\
+	optional int32 totalAchieveNum=6;//成就总数量\
+	optional PlayerShowInfoSundry showSundry = 7;\
+}\
+\
+// 玩家斯露德展示信息，展示背景板信息\
+message PlayerShowInfoSundry\
+{\
+	repeated LeaderShowInfo leaderInfos=1;//展示的 武将列表\
+	optional int32 bgImgId=2;//导师详情的背景板\
+}\
+\
+//用于实现事先计算好的奖励\
+message PriorReward\
+{\
+	required int32 itemId=1;//物品ID\
+	required int32 itemNum=2;//当前数量\
+	required int32 giftNum=3;//在reward中的第几个礼包\
+	optional int32 par =4;//在各功能协议中参数不通： 战斗怪物宝箱代表宝箱id\
+	optional int32 index =5;// 暂只表示宝箱下标（同一个宝箱中的下标相同）\
+}\
+\
+//战斗内带出的属性值已武将为单位\
+message BattleAttribute\
+{\
+	required int32 leaderId = 1;//武将ID\
+	repeated ProtoHashInt2Float attributeMap = 2;//属性列表(对应Msg.PropEnum)\
+}\
+\
+\
+//事件获得的buff和装置\
+message BuffDeviceInfo\
+{\
+	required int32 id=1;//装置或buffid\
+	required int32 num=2;//仅用于装置的剩余次数 -1=全场使用 0=已失效需要置灰(此属性已废弃,需要等客户端开发时替换prop.msg)\
+	required int32 time=3;//时间戳（秒）\
+	required int32 layerNum=4;//层条件,跳层后递减 -1=全场使用（rader_device.parm_condition）\
+	required int32 eventNum=5;//事件或战斗触发后递减 -1=全场有效（rader_device.condition）\
+}\
+\
+//阿里云临时钥匙(用户存储副本扫荡信息)\
+message AliyunOSSKeyInfo\
+{\
+	required int32 expiration=1;//到期时间戳(用于判定钥匙是否到期)\
+	required string accessKey=2;//访问钥匙\
+	required string accessKeySecret=3;//访问钥匙密钥\
+	required string securityToken=4;//安全令牌\
+	required string endpoint=5;//访问地址\
+	required string bucketName=6;//集合名字\
+	required string callbackUrl=7;//回调的服务器地址\
+}\
+\
+//副本玩家杂项对象\
+message PVESundryInfo\
+{\
+	repeated int32 mainChapterRewardSet = 1;//已经领取mainLevel章节奖励id集合\
+	repeated BountyMissionInfo bountyMissionList = 2;//可做的悬赏任务数据\
+}\
+\
+//功能红点结构\
+message FunctionRedDotInfo\
+{\
+	required int32 type=1;//红点类型 1=式仗 2=角色 3=...（更多类型在Action.RedDot）\
+	repeated ProtoHashInt2String redDotMap=2;//红点模块id\
+}\
+\
+ //充值商城 记录有限购次数的商品\
+ message RechargeShopInfo{\
+	repeated ProtoHashInt2Int buyItems=1;//已购买的人民币物品列表（key = id value = 数量）\
+ }\
+\
+  //兑换商城 记录有限购次数的商品\
+  message ExchangeShopInfo{\
+	repeated ProtoHashInt2Int buyItems=1;//已购买的限购物品列表（key = id value = 数量）\
+ }\
+\
+ //充值信息基础数据\
+message BasicsRechargeInfo\
+{\
+	required int32 rechargeId=1;//recharge配置表id\
+	required int32 payNum=2;//支付金额\
+	required int32 cpOrderTime=3;//游戏充值订单时间（时间戳秒）\
+}\
+\
+//活动战斗对象\
+message PVEActivityInfo\
+{\
+	repeated int32 battleIds = 1;//允许挑战的活动关卡id列表\
+	repeated ProtoHashInt2Int battleNums=2;//战斗活动挑战次数，跨天清空(key = special_Battle.Id  value = 挑战次数)\
+	repeated ProtoHashInt2Int battleTypeNums=3;//战斗活动类型挑战次数，跨天清空(key = special_Battle.BattleType  value = 挑战次数)\
+	repeated ProtoHashInt2Int intervalNums=4;//加倍状态下的消耗次数，跨天清空(key = special_interval.result_type  value = 挑战次数)\
+}\
+\
+//已经打完的新版PVE关卡信息\
+message MainPVEInfo{\
+	required int32 id=1;//PVEID\
+	required int32 attackNum=2;//总攻打次数\
+	required int32 todayAttNum=3;//今日攻打次数\
+	required int32 battlePoint=4;//战斗点数\
+	required int64 lastAttackTime=5;//最后攻打时间\
+	repeated int32 stars=6;//星级 1=第一颗星2=第二颗星3=第三颗星 |亮了\
+	optional string fileName=7;//上传的战斗日志文件名\
+	optional string md5code=8;//文件md5码\
+	required int32 videotapeTime=9;//最后允许上传录像的开始时间（用于判断失败原因）\
+	optional string showName=10;//显示的录像名字（后端不用，仅用于客户端显示）\
+}\
+\
+//战斗验证结构-进入战斗前给前端用于判断是否需要上传战斗日志\
+message WarCheckInfo\
+{\
+	required bool isVerification=1;//是否需要上传战斗日志(true=需要上传)\
+	required string uuid=2;//战斗验证唯一id\
+	required string fileName=3;//上传的战斗日志文件名\
+	required int64 lastUploadTime=4;//最后允许上传时间\
+}\
+\
+\
+//雷达图位置信息结构\
+message RadarPositionInfo\
+{\
+	required int32 x=1;//位置x点\
+	required int32 y=2;//位置y点\
+	required int32 eventId=3;//事件id\
+	required int32 state=4;//0=未被攻打成功1=已经攻打成功\
+	required int32 id=5;//map_position表唯一id\
+	repeated int32 starList = 6;//评级  内容为1,2,3标识三星\
+	required int32 dialogType = 7;//坐标点剧情类型 0=没有剧情1=战斗前剧情2=战斗后剧情\
+	optional int32 monsterScore = 8;//单场怪物得分\
+	repeated ProtoHashInt2Int evaluateMap = 9;//评分列表 //key=挑战时间戳秒 value=评价（就是星星数量）\
+	optional int32 eventstep = 10;//用于判断多事件的步骤是否全部执行完（默认值0每执行一次加2）\
+	optional int32 eventNPCNum = 11;//npc小队挑战失败次数(达到最大值结束地图)\
+}\
+\
+//雷达图队伍信息\
+message RadarFormationInfo\
+{\
+	required int32 formationId=1;//小队id\
+	required int32 x=2;//位置x点\
+	required int32 y=3;//位置y点\
+	required bool death=4;//小队是否死亡\
+	required LeaderSquadInfo leaderSquadInfo=5;//小队信息\
+	// repeated int32 rightOffDevices = 6;//立即使用的装置集合\
+	repeated BuffDeviceInfo useDevices = 7;//正在使用的装置\
+	repeated BuffDeviceInfo useBuffs = 8;//正在使用的buff集合\
+}\
+\
+//雷达图结构(正在挑战的数据结构)\
+message RadarChartInfo\
+{\
+	required int32 id=1;//塔ID rader_level.id\
+	required int32 mapId=2;//层ID rader_main.id\
+	required int32 raderInfoId=3;//层ID rader_info.id\
+	required int32 raderStoreyWinId=4;//层ID rader_storeyWin.id\
+	repeated RadarPositionInfo radarPositions=5;//地图位置信息（事件和挑战地块）\
+	optional RadarFormationInfo formation=6;//副本地图队伍信息\
+	required int32 aura=7;//灵视值\
+	required int32 battlePoint=8;//战斗点数\
+	required int32 mapStartTIme=9;//地图开始时间(秒)，超时时间在map_level.SceneName\
+	repeated ProtoHashInt2Int deviceList = 11;//可使用的装置id集合key=排序位置1,2,3,value=装置id\
+	repeated BattleAttribute battleAttributes = 12;//战斗内带出的属性值已武将为单位\
+	repeated int32 plots=13;//完成的对话集合\
+	optional int32 evaluate=14;//地图评价 1=b 2=a 3=s\
+	optional string skyBox=15;//天空盒\
+	optional int32 monsterScore=16;//怪物总得分\
+	repeated int32 deathLeaderSet=17;//战斗中死亡的武将列表\
+	repeated ProtoHashInt2Int knapsack = 18;//扫塔本层获得的奖励集合key=itemsId,value = 数量\
+	optional int32 layer=19;//当前所在的塔层\
+	optional int32 done=20;//本层通关条件 1=通关条件已完成 2=本层所有事件已完成 3=本次扫塔所有层已完成\
+	optional int32 choiceBuffId=21;//本层玩家主动选择的技能id 0=未选择\
+	optional int32 clearPointid=22;//通关条件事件id rader_CheckPoint.Clear_id\
+	optional bool sendReward=23;//本层奖励是否已发放\
+	optional int32 reviveLayerNum=24;//扫塔关卡恢复次数\
+}\
+\
+//已经挑战完成的雷达塔信息\
+message RadarPagodaInfo{\
+	required int32 id=1;//雷达塔ID\
+	required int32 topFloor=2;//挑战过的最高塔层\
+	required int32 attackNum=3;//总攻打次数\
+	required int32 todayAttackNum=4;//今日攻打次数\
+}\
+\
+//角色服装信息\
+message ClothingInfo\
+{\
+	repeated int32 clothingIdSet=1; //已存在的服装id集合\
+}\
+\
+//玩家 头像框 信息\
+message HeadFrameInfo\
+{\
+	required int32 headFrameId = 1; // 头像框id\
+	required int32 expireTime = 2;  // 过期时间(秒)\
+}\
+\
+//==================抽卡==========================================\
+\
+//卡池信息结构\
+message SwearPoolInfo\
+{\
+	required int32 id=1;             //卡池ID， cardbox_intsance.Id\
+	optional int32 totalTimes=2;     //卡池开启时间内，已抽总次数, 有的卡池不限制，就不需要记录\
+	optional int32 upSwearId=3;      //默认up 的 swear_type.Id\
+	// repeated ProtoHashInt2Int todayTimes=4; // key 与instance表里的SwearNumber字段对应， value 今日已抽取次数, 有的卡池不限制，就不需要记录\
+	optional int32 specialCoinCount=5;//特殊代币已经产出次数\
+}\
+\
+// 抽卡记录结构\
+message SwearRecordInfo\
+{\
+	required int32 itemId=1; // 抽到道具ID\
+	required int32 itemNum=2; // 抽到道具数量\
+	required int32 timeStamp=3; // 时间戳\
+	required int32 drawCardPoolId=4;//来自哪个卡池\
+	optional int32 specialCoinItemId=5;// 抽卡得到的特殊代币id\
+	optional int32 specialCoinItemNum=6;// 抽卡得到的特殊代币数量\
+	required int64 recordId = 7;// 抽卡记录ID， 唯一值\
+}\
+\
+// 各个保底目前的循环步数\
+message SwearNumberInfo\
+{\
+	optional int32 bottomgroup=1;//掉落计数同步组\
+	repeated ProtoHashInt2Int dropbottomMap=2;//key=dropbottomId 的列序号（从0开始计） value= 对应的循环次数\
+}\
+\
+// 抽卡所有信息\
+message SwearInfo\
+{\
+	repeated SwearNumberInfo swearNumberInfo=1;//各个保底组 的抽卡总次数 key=bottomgroup  value= 对应的组内抽卡总次数\
+	repeated SwearPoolInfo poolInfo=2;\
+	repeated SwearRecordInfo recordInfo=3;\
+	repeated DropPropTimeInfo dropPropTimeInfo=4;\
+}\
+\
+// 抽卡概率步数信息\
+message DropPropTimeInfo\
+{\
+    required int32 bottomGroup2=1; // 卡池表 bottomGroup2 字段\
+    repeated ProtoHashInt2Int dropPropTime=2;// key = 保底序列（1 : 小保底  2： 大保底）， value = 次数\
+}\
+\
+//==================抽卡==========================================\
+\
+// 初心者任务信息 结构\
+message FirstThoughtInfo\
+{\
+	required int32 signNumber=1; // 累计签到天数\
+	required bool redDot=2; // 阅读的红点\
+	required int64 signTimeStamp=3; // 上次签到的时间戳\
+	required int64 openTimeStamp=4;// 见习任务开启时间戳\
+	repeated int32 signBingoList=5;// 已经翻开的bingo 格子  和 已经领奖了的 连线\
+}\
+\
+// ======= 新版=========\
+// 任务进度结构\
+message TaskProgressInfo\
+{\
+	required int32 dayTaskPoint=1;				 //日常任务活跃点（每天清空）\
+	repeated ProtoHashInt2Int progressTaskIdS=2; //进行中的任务进度key=id value=num ，当value = -2 的时候表示任务处于可领取状态\
+	required int32 chapterIndex=3;				//主线任务章节\
+	required int32 dayGroupIndex=4;				//日常任务分组\
+	required int32 weekTaskPoint=5;				 //周任务活跃点（每周一清空）\
+}\
+\
+// 已完成已领奖的任务结构\
+message TaskInfo\
+{\
+   repeated ProtoHashInt2Int passedTaskIdS=1;					// 已经完成的任务状态  key= 任务id, value = 完成时间\
+   repeated int32 passedDayPoints=2;		        //已经领取日常活跃点奖励id集合（每天清空）\
+   repeated int32 passedWeekPoints=3;		        //已经领取周活跃点奖励id集合（每周清空）\
+}\
+\
+\
+//式仗/服装/皮肤/涂装结构\
+message WeaponSkinInfo\
+{\
+	repeated int32 existIdSet=1; //已存在的式仗皮肤id集合\
+}\
+\
+// 镜像道具结构\
+message RevelationInfo\
+{\
+	required int32 id=1;//镜像主键ID\
+	required int32 leaderId=2;//所属武将ID， 有Id说明已装备\
+	required int32 exp=3;//经验\
+	required int32 level=4;//镜像等级\
+	required int32 breachLevel=5;//镜像突破等级\
+	required string onlyId=6;//唯一id\
+	optional CalcPropModelInfo calcPropModelInfo=7;//属性值列表, 主属性\
+	optional int32 lockStatus=8;//镜像锁，0：未锁， 1：上锁， 上锁的不能分解\
+	optional int32 getTime=9;//获得的时间\
+	optional SecondaryPropInfo SecondaryPropInfo=10;// 副属性（随机属性）\
+	optional int32 mainAttrGrowId=11;//主属性成长ID\
+	optional CalcPropModelInfo curRefinePropModelInfo=12;//洗练属性值列表\
+	optional CalcPropModelInfo lastRefinePropModelInfo=13;//上次洗练属性值列表\
+	optional int32 lastConsumeId=14;//上次洗练吃掉的道具id\
+	optional int32 lastConsumeLevel=15;//上次洗练吃掉的道具等级\
+}\
+\
+// 镜像全部信息\
+message AllRevelationInfo\
+{\
+	repeated RevelationInfo revelationInfo=1;//镜像道具信息\
+}\
+\
+\
+// 镜像、武装 拥有过的数据\
+message CommonSundry\
+{\
+	repeated int32 weaponSet=1;//拥有过的武装Id集合\
+	repeated int32 revelationSet=2;//拥有过的镜像Id集合\
+}\
+\
+ // 图鉴结构\
+message HandbookInfo\
+{\
+	repeated int32 openRewardIdS=1;//已经领完的收集奖励Id集合\
+	//repeated int32 unlockWordIdS=3;//解锁的 道具名词 Id集合\
+	repeated int32 unlockRemainIdS=4;//已解锁的遗物图鉴Id集合， 雷达图掉落 (废弃，雷达图已经没了)\
+	repeated ProtoHashInt2Int monsterTypeKill = 5;//战斗中击杀的怪物类型以及次数 key=怪物类型Id(MonsterTemplate.id)  value=击杀次数\
+}\
+\
+//统一开关时间结构\
+message ServerActivityTimeMoudle\
+{\
+	required int32 timeId=1;// 时间Id\
+	required int64 beginTime=2;//开始时间\
+	required int64 endTime=3;//结束时间\
+}\
+\
+//=====================================================各模块数据收集====================================================================\
+\
+// 所有收集的数据\
+message AllModuleStatisticsData\
+{\
+	optional CollectDataInfo collectDataInfo = 1;\
+	optional DataStatistics dataStatistics = 2;\
+	optional BattleTimeDataInfo battleTimeDataInfo = 3;\
+}\
+\
+\
+// 道具消耗、收集 结构, 不含镜像，武装\
+message CollectDataInfo\
+{\
+	repeated CollectItemInfo collectItemS = 1;\
+}\
+\
+// 道具消耗、收集 结构， 不含镜像，武装\
+message CollectItemInfo\
+{\
+	required int32 itemId = 1;// 本次操作道具Id\
+	required int32 obtainNum = 2;// 本次获得道具数量\
+	required int32 consumeNum = 3;// 本次消耗道具数量\
+	required int32 operateTime = 4;// 本次操作时间\
+}\
+//道具使用\
+message UsePart\
+{\
+	required int32 itemId = 1;//本次操作道具Id\
+	optional string uuid = 2;//本次操作道具的唯一ID\
+	required int32 num = 3;//花费的数量\
+	optional int32 changeId = 4;//转化的道具\
+}\
+\
+// 各模块数据收集， 不含战斗通关时间统计，不含道具消耗收集\
+message DataStatistics\
+{\
+	repeated ProtoHashInt2Int loginDataMap=1;//key=统计类型（0：连续登录， 1： 累计登录） value=对应的统计次数\
+	repeated ProtoHashInt2Int shopBuyDataMap=2;//key=商城类型Id， value=对应的类型购买次数\
+	repeated ProtoHashInt2Int swearDataMap=3;//key=抽卡类型Id（1=角色招募  2=式杖招募）， value=对应的类型抽卡次数\
+\
+	optional int32 useVirtualGold = 4;//使用虚拟金补充感知次数\
+	optional int32 secretaryInteraction=5;//秘书互动统计次数\
+	optional int32 upgradeThrudLevel=6;// 提升斯露德等级次数收集数据\
+	optional int32 upgradeWeaponLevel=7;// 提升式杖等级次数收集数据\
+	optional int32 upgradeRevelationLevel=8;// 提升镜像等级次数收集数据\
+\
+	optional int32 notAttackedCrossBarrier=9; //完全无伤通关战斗次数，无伤是战斗中无血量降低行为\
+	repeated ProtoHashInt2Int skillTypeMap=10;//战斗中使用的 行动类型，行为Id （1.极奏、2.主动、3.能量攻击、4.普攻, 5. 完美闪避， 6.元素共鸣，7. QTE. 8. 式杖技能，9.角色技能） key = 行为Id value = 次数 普攻无法统计次数。\
+	repeated ProtoHashInt2Int onlyUseRoleTypeMap=11;// 仅使用某类型角色，统计次数。key =角色类型，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int notUseRoleTypeMap=12;// 没有使用某类型角色，统计次数。key =角色类型，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int onlyUseRoleElementTypeMap=13;// 仅使用某元素属性角色，统计次数。key =元素属性，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int notUseRoleElementTypeMap=14;// 没有使用某元素属性角色，统计次数。key =元素属性，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int useTargetRoleMap=15;// 使用指定角色通关，统计次数。key =指定角色ID，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int useTargetNumRoleMap=16;// 使用指定数量角色通关，统计次数。key =角色数量，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int useTargetTypeRoleMap=17;// 使用指定类型角色通关，统计次数。key =角色类型id，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int useTargetElementRoleMap=18;// 使用指定属性角色通关，统计次数。key =角色元素属性id，value= 此类型统计次数。\
+	repeated ProtoHashInt2Int underNumberRoleDiedMap=19;// n名以下角色撤退情况下通关，统计次数。key =角色数量，value= 此类型统计次数。\
+\
+	repeated ProtoHashInt2Int overTargetTaskMap=20;// key =任务类型，value= 统计次数。\
+}\
+\
+// 战斗时间数据收集\
+message BattleTimeDataInfo\
+{\
+	repeated ProtoHashInt2Int battleTimeMap=1;// key =通关时间，value= 统计次数。\
+}\
+//=====================================================各模块数据收集====================================================================\
+\
+// 发送给客户端的 可以连接的聊天服信息\
+// message ConnectChatServerInfo\
+// {\
+	// optional ServerInfo serverInfo = 1;//聊天服务器结构信息\
+	// optional int32 channelId = 2;//聊天服 允许进入的房间号，用于登录时，服务器分给玩家默认房间\
+	// optional int64 seatCode = 3;// 座位号， 向聊天服发起连接的时候需要带上\
+// }\
+\
+// 今日在线时长\
+message TotalLoginSecond\
+{\
+	optional int64 currentLoginTime = 1;//本次登录时间戳，精确到毫秒\
+	optional int32 totalLoginSecond = 2;//今日累计在线时长， 单位：秒\
+}\
+//=====================================================战斗服副本====================================================================\
+//=============================进入战斗===============================================\
+// 战斗结果\
+enum BattleResult\
+{\
+	NO_RESULT=0;//没有结果\
+	EQUAL=1;//平局\
+	WIN=2;//胜利\
+	FAIL=3;//失败\
+}\
+\
+//战斗事件类型\
+enum BattleEvent {\
+	BATTLE_START = 1;// 战斗开始\
+	PLAYER_DISCONNECT = 2;//	玩家离线\
+	PLAYER_RECONNECT = 3;//	玩家重连\
+	PLAYER_LEAVE = 4;//	玩家离开战斗房间\
+	PLAYER_ENTER = 5;//玩家进入战斗房间\
+	PLAYER_CHANGE_NET_STATE_NORMAL = 6;//玩家网络状态切至正常\
+	PLAYER_CHANGE_NET_STATE_ABNORMAL = 7;//玩家网络状态切至异常\
+}\
+\
+// 战斗进入数据（战斗所需的战场完整数据）\
+message BattleEnterInfo\
+{\
+	required int32 battleId = 1;// 战斗id（服务器副本id，不知道客户端用不用）\
+	required int32 levelInstanceId = 2;// 战斗表id\
+	required int32 levelStageId = 3;// 战斗数值表id\
+	required int32 battleType = 4;// 战斗类型 BattleType枚举\
+	required int32 levelId = 5;// 战斗表id(不同关卡的表id)\
+	repeated BattlePlayerInfo battlePlayerInfo = 6;// 玩家数据\
+	optional bool indieGame = 7;// 是否是独立游戏\
+	repeated int32 playerBuffIds = 8;// 关卡所有玩家的初始buff\
+	repeated int32 monsterBuffIds = 9;// 关卡所有怪物的初始buff\
+	optional int32 randomSeed = 10;// 随机种子\
+	required double teamCapability = 11;  // 队伍战力\
+	repeated string customParams = 12; // 自定义参数\
+	optional int32 season = 13;  // 当前赛季\
+}\
+\
+// 玩家战斗数据（战斗所需的玩家完整数据）\
+message BattlePlayerInfo\
+{\
+	required int32 playerId = 1;// 玩家id\
+	required string name = 2;// 玩家名字\
+	required int32 level = 3;// 玩家等级\
+	required int32 curLeaderId = 4;// 当前武将id\
+	repeated LeaderBattleInfo leaders = 5;// 武将\
+	repeated BattleGuideInfo completeGuideIds = 6;// 完成引导步骤(id+触发次数)\
+	optional int32 playerIndex = 7;// 玩家的下标\
+	repeated string customParams = 8; // 玩家自定义参数\
+	optional CalcPropModelInfo unitPropInfo = 9;// 玩家属性\
+	optional RogueUnitSkillInfo rogueUnitSkillInfo = 10;//武将主动技能信息\
+}\
+\
+// 战斗引导信息\
+message BattleGuideInfo\
+{\
+	required int32 guideId = 1;	// 引导id\
+	required int32 triggerTimes = 2;	// 触发次数\
+}\
+\
+//武将战斗信息（战斗所需的武将完整数据）\
+message LeaderBattleInfo\
+{\
+	required int32 id = 1;//武将实例ID\
+	optional int32 level = 2;//武将等级\
+	optional int32 exp = 3;//武将经验\
+	optional int32 star = 4;//位阶品质\
+	optional int32 starLevel = 5;//位阶等级\
+	optional int32 favorabilityLevel = 6;//好感度等级 默认1级\
+	optional int32 favorabilityExp = 7;//好感度经验 默认0\
+	optional int32 clothingId = 8;//服装ID\
+	optional WeaponInfo weapon = 9;//式仗\
+	optional CalcPropModelInfo calcPropModelInfo = 10;//武将属性\
+	repeated TalentSkill talentSkills = 11;//武将被动技能信息\
+	repeated ActiveSkillInfo activeSkills = 12;//武将主动技能信息\
+	repeated RevelationInfo revelations = 13;//当前武将身上已经穿戴的镜像 key=装备位置， value=装备唯一Id\
+	optional int32 signLv = 14;//式仗等级0开始\
+	optional bool trial = 15;//试用角色\
+	optional double capability = 16;//角色战力\
+	optional PerkInfo perk = 17;// perk\
+	repeated int32 buffIds = 18;// 角色初始加的buff列表\
+	optional int32 seasonTalentId = 19;// 赛季天赋\
+	repeated ProtoHashInt2Int stickSkills = 20; // 技能槽\
+	optional int32 uid = 21;//所属玩家id(机器人是0)\
+	optional int32 trailId = 22;//试用角色id\
+}\
+\
+message CommonBattleData\
+{\
+	required int32 head = 1; // 消息号\
+	required bytes data = 2;	// 消息体\
+}\
+\
+//=============================通用结构===============================================\
+// 3元向量\
+message Vector3\
+{\
+	required float x = 1;\
+	required float y = 2;\
+	required float z = 3;\
+}\
+\
+// 4元数\
+message Quaternion\
+{\
+	required float x = 1;\
+	required float y = 2;\
+	required float z = 3;\
+	required float w = 4;\
+}\
+\
+//transform数据结构\
+message TransformInfo\
+{\
+	required Vector3 position = 1;  //当前位置\
+	required Quaternion rotation = 2; //当前朝向\
+	required Vector3 velocity = 3; //当前速度\
+	required Vector3 accelerate = 4; //当前加速度\
+}\
+\
+\
+//=============================战斗单位===============================================\
+\
+//战斗单位的初始投放信息\
+message BattleUnitGenerateInfo\
+{\
+	required int32 unitType = 1;// 单位类型\
+	required int32 netId = 2;// netId\
+	required int32 dicId = 3;// 表id，如果玩家有这个字段则为强制指定英雄ID\
+	optional int32 playerId = 4;// 所属玩家id\
+	required int32 firstCamp = 5; //一级阵营\
+	required int32 secCamp = 6; //二级阵营\
+	optional int32 subordinateNetId = 7; //召唤者netId\
+	optional int32 subordinateObjId = 8; //召唤者objId\
+	required Vector3 position = 9;\
+	required Vector3 rotation = 10;\
+	required Vector3 scale = 11;\
+	required Vector3 velocity = 12;\
+	optional int32 levelUnitId = 13;\
+	required float delayTime = 14;\
+	repeated int32 objIdList = 15;\
+	required int32 timeStamp = 16;// 创建时间戳\
+	optional int32 initState = 17; // 战场物件用的，初始状态，暂时先留着，回头可以改掉\
+	optional int32 castObjId = 18; //创建者objId\
+	optional int32 snapShotIndex = 19; //外部属性快照ID\
+	optional int32 sourceType = 20; //来源类型 1技能  2buff\
+	optional int32 sourceId = 21;  //来源ID\
+	optional int32 skillNodeId = 22;\
+	optional float maxDis = 23;\
+	repeated PropertyKeyValue baseProps= 24;						// 外部的基础属性\
+	optional int32 subordinateLevel = 25; //召唤者等级\
+	required bool alive = 26;// 当前是否存活\
+	optional int32 originalHeroSkillId = 27;// 初始玩家技能ID\
+	optional int32 originalBlockId = 28;  //原始部位ID\
+	optional UnitGenerateStackInfo generateStackInfo = 29;  //透传信息\
+	optional int32 specificStackNum = 30;  //指定层数\
+	repeated UnitGenerateCoverShieldInfo coverShieldList = 31;  //覆盖护罩信息\
+	required int32 targetPointId = 32;  //引导线编号\
+}\
+\
+//创建单位的透传信息\
+message UnitGenerateStackInfo\
+{\
+	optional double hurtParamFix = 1;  //外部传入的伤害参数\
+	optional double specifiedReacId = 2;  //外部传入的元素反应ID\
+	optional double specifiedEleBreakId = 3;  //外部传入的元素击破ID\
+	optional double originalHurt = 4;  //外部传入的原始伤害数值\
+	optional int32 elementBallCount = 5; //元素球传导次数\
+	optional int32 eleBallSpreadHurtFix = 6; //闪电链传导附加的伤害修正系数\
+	optional bool isEleBreakTrig = 7; //是否是元素击破触发的\
+}\
+\
+//创建单位时携带的覆盖护罩信息\
+//用于服务器通知前端逻辑核的创建消息\
+message UnitGenerateCoverShieldInfo\
+{\
+	required int32 index = 1;  // 唯一ID\
+	required int32 objId = 2;  // 所属OBJ的ID\
+	required int32 buffGroupId = 3;  //\
+	required double maxValue = 4;  //当前护罩的最大值\
+	required double curValue = 5;  //当前护罩剩余值\
+}\
+\
+//服务器通知前端创建英雄的数据\
+message GeneratePlayerInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 playerId = 2;// 所属玩家id\
+	required int32 forceLeaderId = 3; //强制指定英雄ID\
+	repeated int32 objIdList = 4;\
+	required int32 timeStamp = 5;// 创建时间戳\
+}\
+\
+//服务器通知前端创建怪物的数据\
+message GenerateMonsterInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 dicId = 2;// 表id\
+	required int32 firstCamp = 3; //一级阵营\
+	required int32 secCamp = 4; //二级阵营\
+	required Vector3 position = 5;\
+	required Vector3 rotation = 6;\
+	required Vector3 scale = 7;\
+	required Vector3 velocity = 8;\
+	required int32 levelUnitId = 9;\
+	required float delayTime = 10;\
+	repeated int32 objIdList = 11;\
+	required int32 timeStamp = 12;// 创建时间戳\
+}\
+\
+//服务器通知前端创建召唤物的数据\
+message GenerateSummondMonsInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 dicId = 2;// 表id\
+	required int32 subordinateNetId = 3; //召唤者netId\
+	required int32 subordinateObjId = 4; //召唤者objId\
+	required Vector3 position = 5;\
+	required Vector3 rotation = 6;\
+	required Vector3 scale = 7;\
+	required Vector3 velocity = 8;\
+	required int32 levelUnitId = 9;\
+	required float delayTime = 10;\
+	repeated int32 objIdList = 11;\
+	required int32 timeStamp = 12;// 创建时间戳\
+}\
+\
+//服务器通知前端创建关卡触发器的数据\
+message GenerateLevelTriggerInfo\
+{\
+	required int32 id = 1;// levelUnitId  todo: 这个东西要特殊处理\
+	required Vector3 position = 3;\
+	required Vector3 rotation = 4;\
+	required Vector3 scale = 5;\
+	required float delayTime = 6;\
+	required int32 timeStamp = 7;// 创建时间戳\
+}\
+\
+//服务器通知前端创建场景物件的数据\
+message GenerateSceneObjInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 dicId = 2;// 表id\
+	required int32 firstCamp = 3; //一级阵营\
+	required int32 secCamp = 4; //二级阵营\
+	required Vector3 position = 5;\
+	required Vector3 rotation = 6;\
+	required Vector3 scale = 7;\
+	required Vector3 velocity = 8;\
+	required int32 levelUnitId = 9;\
+	required float delayTime = 10;\
+	required int32 initState = 11;// 初始状态\
+	repeated int32 objIdList = 12;\
+	required int32 timeStamp = 13;// 创建时间戳\
+}\
+\
+\
+//服务器通知前端创建目标点的数据\
+message GenerateTargetPointInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 dicId = 2;// 表id\
+	required int32 firstCamp = 3; //一级阵营\
+	required int32 secCamp = 4; //二级阵营\
+	required Vector3 position = 5;\
+	required Vector3 rotation = 6;\
+	required Vector3 scale = 7;\
+	required Vector3 velocity = 8;\
+	required int32 levelUnitId = 9;\
+	required float delayTime = 10;\
+	repeated int32 objIdList = 11;\
+	required int32 timeStamp = 12;// 创建时间戳\
+}\
+\
+//服务器通知前端创建护罩的数据\
+message GenerateShieldInfo\
+{\
+	required int32 netId = 1;// netId\
+	required int32 dicId = 2;// 表id\
+	required int32 subordinateNetId = 3; //召唤者netId\
+	required int32 subordinateObjId = 4; //召唤者objId\
+	required int32 levelUnitId = 5;\
+	required float delayTime = 6;\
+	repeated int32 objIdList = 7;\
+	required int32 timeStamp = 8;// 创建时间戳\
+}\
+\
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\
+\
+\
+\
+//通知显示层创建场景物件的数据\
+//这里保留了老版本的消息结构，暂时避免表现层修改\
+message SceneObjInfo_L2V\
+{\
+	required int32 index = 1;// netId\
+	required int32 levelUnitId = 2;\
+	required Vector3 position = 3;\
+	required Vector3 rotation = 4;\
+	required Vector3 scale = 5;\
+	required int32 instanceId = 6;// 表id\
+	required int32 initState = 7;// 初始状态\
+	required float delayTime = 8;\
+}\
+\
+//显示层PlayerUnit基础数据\
+message PlayerUnitInfo_L2S\
+{\
+	required int32 netId = 1;// netId\
+	required int32 playerId = 2;// 所属玩家id\
+	required int32 firstCamp = 3; //一级阵营\
+	required int32 secCamp = 4; //二级阵营\
+	required int32 currentObjectId = 5; //unit当前使用的objectId\
+	repeated PlayerObjectInfo_L2S objectList = 6; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 7;\
+	required string name = 8;// 玩家名字\
+	required int32 level = 9;// 玩家等级\
+	required Vector3 scale = 10;\
+	repeated ProtoHashInt2Float UnitProps = 11;  // 玩家层的属性值\
+	required bool alive = 12;   //当前是否存活\
+	required int32 createTime = 13;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 14;  //覆盖护罩信息\
+	optional RogueUnitSkillInfo rogueUnitSkillInfo = 15;  //肉鸽主公技信息\
+	required int32 targetPointId = 16;  //引导线编号\
+}\
+\
+//显示层MonsterUnit基础数据\
+message MonsterUnitInfo_L2S\
+{\
+	required int32 netId = 1;// netId\
+	required int32 firstCamp = 2; //一级阵营\
+	required int32 secCamp = 3; //二级阵营\
+	required int32 currentObjectId = 4; //unit当前使用的objectId\
+	repeated MonsterObjectInfo_L2S objectList = 5; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 6;\
+	required Vector3 scale = 7;\
+	repeated ProtoHashInt2Float UnitProps = 8;  // 玩家层的属性值\
+	required bool bossShow = 9;  // 是否需要BOSS出场\
+	required bool alive = 10;   //当前是否存活\
+	required int32 createTime = 11;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 12;  //覆盖护罩信息\
+	required int32 targetPointId = 13;  //引导线编号\
+}\
+\
+//显示层AreaTriggerUnit基础数据\
+message AreaTriggerUnitInfo_L2V\
+{\
+	required int32 netId = 1;// netId\
+	required int32 fromNetId = 2;     //创建者netId\
+	required int32 fromObjId = 3;     //创建者objId\
+	required int32 firstCamp = 4; //一级阵营\
+	required int32 secCamp = 5; //二级阵营\
+	required int32 currentObjectId = 6; //unit当前使用的objectId\
+	repeated AreaTriggerObjectInfo_L2V objectList = 7; //unit携带的object信息\
+	required int32 sourceType = 8;   //创建来源类型 1.技能  2.buff\
+	required int32 sourceId = 9;   //所属玩家技能ID(由技能创建时, 否则为-1)\
+	required int32 playerSkillNodeId = 10;   //所属玩家技能节点ID(由技能创建时, 否则为-1)\
+	required BattleUnitMoveOutput moveInfo = 11;\
+	required Vector3 scale = 12;\
+	repeated ProtoHashInt2Float UnitProps = 13;  // 玩家层的属性值\
+	required bool alive = 14;   //当前是否存活\
+	required int32 createTime = 15;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 16;  //覆盖护罩信息\
+	required int32 targetPointId = 17;  //引导线编号\
+}\
+\
+//显示层召唤物基础数据\
+message SummondMonsUnitInfo_L2V\
+{\
+	required int32 netId = 1;// netId\
+	required int32 SubordinateNetId = 2;     //召唤者netId\
+	required int32 SubordinateObjId = 3;     //召唤者objId\
+	required int32 firstCamp = 4; //一级阵营\
+	required int32 secCamp = 5; //二级阵营\
+	required int32 currentObjectId = 6; //unit当前使用的objectId\
+	repeated SummondMonsObjectInfo_L2V objectList = 7; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 8;\
+	required Vector3 scale = 9;\
+	repeated ProtoHashInt2Float UnitProps = 10;  // 玩家层的属性值\
+	required int32 SummondMonsDicId = 11;  // SummondMons表ID\
+	required bool alive = 12;   //当前是否存活\
+	required int32 createTime = 13;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 14;  //覆盖护罩信息\
+	required int32 targetPointId = 15;  //引导线编号\
+}\
+\
+//显示层战场物件基础数据\
+message SceneObjUnitInfo_L2V\
+{\
+	required int32 netId = 1;// netId\
+	required int32 firstCamp = 2; //一级阵营\
+	required int32 secCamp = 3; //二级阵营\
+	required int32 currentObjectId = 4; //unit当前使用的objectId\
+	repeated SceneObjObjectInfo_L2V objectList = 5; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 6;\
+	required Vector3 scale = 7;\
+	repeated ProtoHashInt2Float UnitProps = 8;  // 玩家层的属性值\
+	required bool alive = 9;   //当前是否存活\
+	required int32 createTime = 10;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 11;  //覆盖护罩信息\
+	required int32 targetPointId = 12;  //引导线编号\
+}\
+\
+//显示层TargetPointUnit基础数据\
+message TargetPointUnitInfo_L2V\
+{\
+	required int32 netId = 1;// netId\
+	required int32 firstCamp = 2; //一级阵营\
+	required int32 secCamp = 3; //二级阵营\
+	required int32 currentObjectId = 4; //unit当前使用的objectId\
+	repeated TargetPointObjectInfo_L2V objectList = 5; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 6;\
+	required Vector3 scale = 7;\
+	repeated ProtoHashInt2Float UnitProps = 8;  // 玩家层的属性值\
+	required bool alive = 9;   //当前是否存活\
+	required int32 createTime = 10;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 11;  //覆盖护罩信息\
+	required int32 targetPointId = 12;  //引导线编号\
+}\
+\
+//显示层护罩基础数据\
+message ShieldUnitInfo_L2V\
+{\
+	required int32 netId = 1;// netId\
+	required int32 SubordinateNetId = 2;     //召唤者netId\
+	required int32 SubordinateObjId = 3;     //召唤者objId\
+	required int32 firstCamp = 4; //一级阵营\
+	required int32 secCamp = 5; //二级阵营\
+	required int32 currentObjectId = 6; //unit当前使用的objectId\
+	repeated ShieldObjectInfo_L2V objectList = 7; //unit携带的object信息\
+	required BattleUnitMoveOutput moveInfo = 8;\
+	required Vector3 scale = 9;\
+	repeated ProtoHashInt2Float UnitProps = 10;  // 玩家层的属性值\
+	required int32 ShieldDicId = 11;  // 护罩表ID\
+	required bool alive = 12;   //当前是否存活\
+	required int32 createTime = 13;  //创建时间戳\
+	optional UnitCoverShieldSimpleInfo coverShieldInfo = 14;  //覆盖护罩信息\
+	required int32 targetPointId = 15;  //引导线编号\
+}\
+\
+//显示层playerObject基础数据\
+message PlayerObjectInfo_L2S\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;// leader表ID\
+	required int32 clothId = 3;// 服装ID\
+	repeated ProtoHashInt2Float property = 4; //属性列表\
+	required int32 weaponId = 5; //当前武装ID\
+	required int32 weaponSkin = 6; //当前武装涂装ID\
+	required int32 aimMode = 7;\
+	repeated BattleUnitBlockStateInfo blockInfoList = 8;  //分块信息\
+	required bool alive = 9; //当前是否存活\
+	required int32 createTime = 10;  //创建时间戳\
+	optional PerkInfo perkInfo = 11;  //perk信息，可能为空\
+	repeated int32 eleWeakTypeList = 12;  //元素弱点ID列表\
+}\
+\
+//显示层MonsterObject基础数据\
+message MonsterObjectInfo_L2S\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;// monsterInstance表ID\
+	required int32 templateId = 3;// template表Id\
+	repeated ProtoHashInt2Float property = 4; //属性列表\
+	required int32 curStage = 5;// 当前血量阶段\
+	required int32 aimMode = 6;\
+	repeated BattleUnitBlockStateInfo blockInfoList = 7;  //分块信息\
+	required bool alive = 8; //当前是否存活\
+	required int32 createTime = 9;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 10;  //元素弱点ID列表\
+}\
+\
+//显示层AreaTriggerObject基础数据\
+message AreaTriggerObjectInfo_L2V\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;// monsterInstance表ID\
+	repeated ProtoHashInt2Float property = 3; //属性列表\
+	repeated BattleUnitBlockStateInfo blockInfoList = 4;  //分块信息\
+	required bool alive = 5; //当前是否存活\
+	required int32 createTime = 6;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 11;  //元素弱点ID列表\
+}\
+\
+//显示层召唤物Object基础数据\
+message SummondMonsObjectInfo_L2V\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;// monsterInstance表ID\
+	required int32 templateId = 3;// template表Id\
+	repeated ProtoHashInt2Float property = 4; //属性列表\
+	required int32 curStage = 5;// 当前血量阶段\
+	repeated BattleUnitBlockStateInfo blockInfoList = 6;  //分块信息\
+	required bool alive = 7; //当前是否存活\
+	required int32 createTime = 8;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 9;  //元素弱点ID列表\
+}\
+\
+//显示层战场物件Object基础数据\
+message SceneObjObjectInfo_L2V\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;// Gadget表ID\
+	repeated ProtoHashInt2Float property = 3; //属性列表\
+	required int32 curStage = 4;// 当前血量阶段\
+	required int32 initState = 5;// 初始状态值\
+	repeated BattleUnitBlockStateInfo blockInfoList = 6;  //分块信息\
+	required bool alive = 7; //当前是否存活\
+	required int32 createTime = 8;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 9;  //元素弱点ID列表\
+}\
+\
+//显示层TargetPointObject基础数据\
+message TargetPointObjectInfo_L2V\
+{\
+	required int32 objectId = 1;// objectId\
+	required int32 dicId = 2;//表ID\
+	repeated BattleUnitBlockStateInfo blockInfoList = 3;  //分块信息\
+	required bool alive = 4; //当前是否存活\
+	required int32 createTime = 5;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 6;  //元素弱点ID列表\
+}\
+\
+//显示层护盾Object基础数据\
+message ShieldObjectInfo_L2V\
+{\
+	required int32 objectId = 1;// objectId\
+	repeated ProtoHashInt2Float property = 2; //属性列表\
+	required int32 curStage = 3;// 当前血量阶段\
+	repeated BattleUnitBlockStateInfo blockInfoList = 4;  //分块信息\
+	required bool alive = 5; //当前是否存活\
+	required int32 createTime = 6;  //创建时间戳\
+	repeated int32 eleWeakTypeList = 7;  //元素弱点ID列表\
+}\
+\
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\
+\
+//关卡触发器关键数据\
+message LevelTriggerOutPut\
+{\
+	optional GenerateLevelTriggerInfo createInfo = 1; //创建信息\
+	optional int32 removeId = 2; //销毁信息\
+}\
+\
+//战斗BGM输出\
+message BattleBGMOutPut\
+{\
+	optional int32 enterId = 1; //进入的BGM\
+}\
+\
+// 战斗单位移动\
+message BattleUnitMoveOutput\
+{\
+	required Vector3 v = 1;\
+	required Vector3 position = 2;\
+	required Quaternion rotation = 3;\
+	required Vector3 accelerate = 4;\
+	required Vector3 moveParam = 5;\
+	optional Vector3 cameraParam = 6;\
+	optional int32 type = 7;//一般移动0,闪避1,冲刺2\
+	optional int32 isReset = 8;//是否为重置位置\
+	optional float airFriction = 9;\
+	optional float breakAcc = 10;\
+	optional float maxVelocity = 11;\
+	optional Vector3 forceAcc = 12;\
+	optional double rotateSensitivityX = 13;   //水平转向灵敏度\
+	optional double rotateSensitivityY = 14;   //竖直转向灵敏度\
+	optional int32 dashDir = 15;\
+}\
+\
+// 战斗单位使用技能\
+message BattleUnitSkill\
+{\
+	required int32 skillId = 1;\
+	repeated SkillNode nodeInfo = 2;\
+}\
+\
+// 技能节点\
+message SkillNode\
+{\
+	required int32 nodeId = 1;\
+	optional string param = 2;\
+}\
+\
+// 战斗单位创建\
+message BattleUnitCreate\
+{\
+	optional GeneratePlayerInfo createPlayerInfo = 1;   //玩家的创建信息\
+	optional GenerateMonsterInfo createMonsInfo = 2;   //怪物的创建信息\
+	optional GenerateSummondMonsInfo createSummondMonsInfo = 3; //召唤物的创建信息\
+	optional GenerateSceneObjInfo createSceneObjInfo = 4; //场景物件的创建信息\
+	optional GenerateTargetPointInfo createTargetPointInfo = 5; //目标点的创建信息\
+	optional GenerateShieldInfo createShieldInfo = 6; //护罩的创建信息\
+}\
+\
+// 战斗单位死亡\
+message BattleUnitDead\
+{\
+	required int32 netId = 1;   //1: 死亡单位的netId\
+	required int32 objectId = 2;   //1: 死亡单位的objId(在obj死亡时才有用)\
+	required int32 deadType = 3;   //1: 普通死亡  2：死亡但不走死亡表现\
+}\
+\
+// 战斗单位死亡\
+message BattleUnitFieldInfo\
+{\
+	repeated BattleUnitGenerateInfo createInfo = 1;   //创建信息\
+	optional BattleUnitDead objDeadInfo = 2;   //obj死亡信息\
+	optional BattleUnitDead unitDeadInfo = 3;   //unit死亡信息\
+}\
+\
+//Unit层覆盖护罩的简要信息，用于给表现层传值\
+message UnitCoverShieldSimpleInfo\
+{\
+	required double maxValue = 1;// 最大值\
+	required double curValue = 2;// 当前值\
+}\
+\
+// 战斗玩家切换角色\
+message BattlePlayerChangeLeader\
+{\
+	required int32 playerId = 1;\
+	required int32 objectId = 2;\
+	required int32 objectAimMode = 3;\
+}\
+\
+// 弹幕数据\
+message BarrageData\
+{\
+	optional CreateEmitterInfo CreateEmitterData = 1;  //弹幕发射器创建信息\
+	optional int32 DestroyEmitterId = 2;  //销毁的弹幕发射器唯一ID(销毁发射器和子弹)\
+	optional int32 StopEmitterId = 3;  //停止的弹幕发射器唯一ID（停止接续发射，不销毁子弹）\
+	optional BarrageTrigEventInfo BarrageEventData = 4;  //弹幕事件信息\
+}\
+\
+//弹幕事件信息\
+message BarrageTrigEventInfo\
+{\
+  required int32 emitterId = 1; // 发射器ID\
+  required int32 eventIndex = 2; // 事件index\
+  required int32 trigNetId= 3; // 触发目标的netID\
+  required Vector3 position = 4;//位置\
+  required Vector3 rotation = 5;//旋转\
+  required int32 bulletIndex = 6;  //子弹表现层ID，默认为0  发射器id * 100000 + 子弹index\
+  required float distance = 7;  //前方障碍物距离\
+	required int32 trigNO = 8;// 触发序数-触发的第几次\
+	required int32 timeStamp = 9; // 时间戳\
+	optional int32 trigBlockId = 10; // 触发部位ID\
+	repeated int32 targetObjIdList = 11; // 多个目标时用这个\
+}\
+\
+//创建弹幕发射器数据\
+message CreateEmitterInfo\
+{\
+  required int32 id = 1;     //唯一ID\
+  required int32 PlayerSkillId = 2;   //所属玩家技能ID\
+  required int32 PlayerSkillNodeId = 3;   //所属玩家技能节点ID\
+  required int32 barrageEjectorInfoDataId = 4;  //barrageEjectorInfoData表ID\
+  required int32 ejectorIndex = 5;  //对应表里的index\
+  optional Vector3 position = 6;  //位置，可能没有\
+  optional Vector3 rotation = 7;  //旋转，可能没有\
+  required int32 bulletIndex = 8;  		//子弹表现层ID，默认为0  发射器id * 100000 + 子弹index\
+  required int32 timeStamp = 9; 			// 时间戳\
+  required int32 heroSkillOnlyId = 10;     //所属玩家技能的唯一ID\
+  required int32 heroSkillLevel = 11;     //所属玩家技能的等级\
+}\
+\
+// unit标记变化\
+message BattleUnitTagInfo\
+{\
+	required int32 tagType = 1;\
+	required int32 tagValue = 2;\
+	required int32 OldValue = 3;\
+}\
+\
+// 战斗单位移动数据\
+message BattleUnitMoveData\
+{\
+	required int32 netId = 1;\
+	required int32 objId = 2;\
+	required BattleUnitMoveOutput moveInfo = 3;\
+}\
+\
+// 战斗单位目标数据\
+message BattleUnitTargetInfo\
+{\
+	required int32 netId = 1;							//\
+	required int32 objectId = 2;          //发起者objectId\
+	required AimTargetInfo target = 3;    //瞄准的目标\
+	repeated AimTargetInfo lockList = 4;  //锁定的列表-特殊弹幕要用\
+	required int32 timeStamp = 5;					//时间戳\
+}\
+\
+// 模式改变\
+message BattleUnitPlayModeInfo\
+{\
+	optional int32 aimMode = 3;\
+	optional float holdTime = 4;\
+}\
+\
+// 分块状态\
+message BattleUnitBlockStateInfo\
+{\
+	optional int32 blockId = 1;\
+	optional int32 oldState = 2;\
+	optional int32 blockState = 3;      //分块当前状态  0：普通分块未开启  1：普通分块已开启  2：弱点已开启（弱点开启时分块一定开启）\
+	optional int32 weaknessId = 4;\
+	optional int32 startTime = 5;\
+	optional int32 totalTime = 6;\
+	optional float weaknessMaxHp = 7;\
+	optional float weaknessCurHp = 8;\
+	optional float normalHurtParam = 9;\
+	optional float reactHurtParam = 10;\
+}\
+\
+// 交互状态\
+message BattleUnitHandleStateInfo\
+{\
+	optional int32 stateId = 1;           //状态ID 1.无交互 2.可交互  3.交互中\
+	optional float stateChangeTime = 2;       //本次状态切换的开始时间\
+	optional float stateTotalTime = 3;       //状态持续总时间/秒  -1为交互不需要读条\
+	optional float stateInheritTime = 4;          //状态切换时已继承计时(毫秒)\
+	optional int32 targetNetId = 5;          //目标netId\
+	optional int32 targetObjId = 6;          //目标objId\
+}\
+\
+// unit覆盖护罩变化信息\
+message BattleUnitCoverShieldChangeInfo\
+{\
+	optional int32 removeIndex = 1;           //移除的护罩\
+	optional UnitGenerateCoverShieldInfo generateInfo = 2;       //添加的护罩\
+	required double maxValue = 3;          //护罩总血量最大值\
+	required double curValue = 4;          //护罩总血量当前值\
+}\
+\
+// 战斗单位改变数据\
+message BattleUnitChangeData\
+{\
+	required int32 netId = 1;\
+	required int32 objId = 2;\
+	optional PropertyChangeInfo changeProps = 3;  // 武将改变的属性值\
+	optional LeaderProperty changeUnitProps = 4;  // 玩家改变的属性值\
+	repeated int32 buffTriggerInfo = 5;\
+	repeated BattleUnitTagInfo unitTagChange = 6; //unit标记变化\
+	optional BattleUnitTargetInfo unitTargetChange = 7; //unit目标变化\
+	optional BattleUnitPlayModeInfo aimMode = 8;//模式变化\
+	optional BattleUnitBlockStateInfo blockState = 9;//分块状态变化\
+	optional BattleUnitHandleStateInfo handleState = 10;//交互状态变化\
+	optional BattleUnitCoverShieldChangeInfo unitShieldInfo = 11;//unit覆盖护罩变化\
+}\
+\
+// 区域触发数据\
+message AreaTrigData\
+{\
+	optional CreateAreaTrigInfo CreateAreaTrigData = 1;  //创建信息\
+	optional int32 OpenAreaTrigIndex = 2;  //开启的Index\
+	optional int32 CloseAreaTrigIndex = 3;  //关闭的Index（暂时不用）\
+	optional int32 DestroyAreaTrigIndex = 4;  //销毁的Index\
+}\
+\
+//创建区域数据\
+message CreateAreaTrigInfo\
+{\
+	required int32 fromNetId = 1;     //创建者netId\
+	required int32 fromObjId = 2;     //创建者objId\
+    required int32 index = 3;     //唯一ID\
+	required int32 PlayerSkillId = 4;   //所属玩家技能ID(由技能创建时, 否则为-1)\
+	required int32 PlayerSkillNodeId = 5;   //所属玩家技能节点ID(由技能创建时, 否则为-1)\
+	required int32 dicId = 6;   // AreaColliderInstance 表ID\
+	optional Vector3 position = 7;  //位置，可能没有\
+	optional Vector3 rotation = 8;  //旋转，可能没有\
+}\
+\
+\
+// 战斗单位关键数据\
+message BattleUnitKeyData\
+{\
+	required int32 netId = 1;\
+	required int32 objId = 2;\
+	optional BattleUnitSkill skillInfo = 3; //释放技能\
+	optional FallObjectChange fallObjectChange = 4;  // 掉落物变化\
+	optional BattleUnitBuffInfo buffInfo = 5; // buff信息\
+	optional BarrageData barrageInfo = 6; //弹幕信息\
+	optional ElementChange elementChange = 7;  // 元素变化\
+	repeated StateChange stateChange = 8; // 状态变化\
+	optional BattleUnitSkillCoolDown skillCoolDown = 9;// 技能CD\
+	optional LevelTargetData levelTargetData = 10;// 关卡目标数据\
+}\
+\
+// 战场\
+message BattleFieldLevelStageInfo {\
+\
+}\
+\
+// 技能cd\
+message BattleUnitSkillCoolDown {\
+	repeated SkillCoolDown skillCoolDownInfo = 1;\
+}\
+\
+// 关卡目标\
+message LevelTargetData {\
+	required int32 id = 1;// NewLevelTitle表id\
+	required int32 index = 2;// 子目标下标\
+	required int32 curProgress = 3;// 子目标当前进度\
+	required int32 maxProgress = 4;// 子目标最大进度\
+}\
+\
+// 技能cd\
+message SkillCoolDown {\
+	required int32 skillId = 1;\
+	required float coolDown = 2;\
+	required int32 coolDownNum = 3;\
+	required float coolDownServerTime = 4; // cd最终时刻\
+}\
+\
+\
+// 单位状态变化\
+message StateChange {\
+	required int32 isLeave = 1;\
+	required int32 stateId = 2;\
+	required int32 param = 3;\
+}\
+\
+// 战场数据\
+message BattleFieldData\
+{\
+	optional BattleUnitFieldInfo unitInfo = 1;  //战斗单位数据\
+	optional LevelTriggerOutPut LevelTriggerInfo = 2; //关卡触发器数据\
+	optional BarrageData barrageInfo = 3; //弹幕信息\
+	optional BattleBGMOutPut bgmInfo = 4;\
+	optional BattleUIOutPut UIInfo = 5;  //一些逻辑触发的UI事件\
+	optional AreaTrigData areaTrigInfo = 6; //区域消息\
+	optional ElementFieldInfo elementFieldInfo = 7; //元素消息\
+}\
+\
+message ElementFieldInfo\
+{\
+	optional CreateElementLightningBall createLightningBall = 1;  // 产生闪电球（电磁反应）\
+	optional CreateElementIceWinBall createIceWinBall = 2;  // 产生冰风球（冰风反应）\
+}\
+\
+// 逻辑触发的UI事件信息\
+message BattleUIOutPut\
+{\
+	optional int32 warningOpen = 1;  //打开高能预警\
+	optional int32 warningClose = 2; //关闭高能预警\
+	optional int32 communicationId = 3; //打开战斗内通讯的ID\
+}\
+\
+// buff 信息\
+message BattleUnitBuffInfo\
+{\
+	repeated BattleBuffModel addBuffList = 1;\
+	repeated int32 removeBuffList = 2;\
+}\
+\
+// buff 映射关系\
+message BattleBuffModel\
+{\
+	required int32 instId = 1;\
+	required int32 dictId = 2;\
+	optional float startTime = 3;\
+	optional int32 stackNum = 4;\
+	optional float durationTime = 5;\
+	optional float castNetId = 6;\
+	optional float objectId = 7;\
+}\
+\
+// 子弹碰撞输入\
+message BulletCollisionInputInfo\
+{\
+	required int32 emitterId = 1;           		//发射器唯一ID\
+	repeated int32 objIdList = 2;               //受伤单位的objID\
+	repeated int32 blockList = 3;               //受伤的分块ID\
+	repeated int32 netIdList = 4;               //受伤单位的netID\
+	repeated string collisionList = 5;          //实际打到的碰撞盒\
+	required int32 bulletIndex = 6;							//子弹index\
+	required int32 hurtNO = 7;								  //伤害序数-穿透次数\
+	repeated Vector3 direction = 8;				    	//方向\
+}\
+\
+// 战斗单位受伤广播\
+message UnitHurtInfo_S2C\
+{\
+	required int32 netId = 1;\
+	required int32 fromNetId = 2;                         //受伤来源NETID\
+	required int32 fromObjId = 3;                        //受伤来源OBJID\
+	required int32 type = 4;                                    //受伤类型 1：伤害   2：治疗\
+	required int32 num = 5;                                    //血量变化（正值）\
+	required bool isCritical = 6;                               //是否为暴击\
+	required int32 hurtEleType = 7;             //元素伤害类型\
+	required bool isEleReaction = 8;             //是否是元素反应伤害\
+	required int32 reactionType = 9;             //元素反应类型\
+	required int32 objectId = 10;             //objectId\
+	required string collision = 11;            //碰撞盒名字，空字符串表示按照本体位置查找\
+	required int32 sourceType = 12;       //来源类型 1技能 2buff\
+	required int32 sourceId = 13;       //来源id(技能ID或者buffId)\
+	required int32 originalSkillId = 14;   //原始技能ID\
+	required bool isWeaknessHurt = 15;   //是否击中弱点\
+	required double curStageLeftHp = 16;   //当前阶段剩余血量\
+}\
+\
+// 通知表现层战斗单位受伤\
+message UnitHurtInfo_L2V\
+{\
+	required int32 netId = 1;\
+	required int32 fromNetId = 2;                         //受伤来源NETID\
+	required int32 fromObjId = 3;                        //受伤来源OBJID\
+	required int32 type = 4;                                    //受伤类型 1：伤害   2：治疗\
+	required int32 num = 5;                                    //血量变化（正值）\
+	required bool isCritical = 6;                               //是否为暴击\
+	required int32 hurtEleType = 7;             //元素伤害类型\
+	required bool isEleReaction = 8;             //是否是元素反应伤害\
+	required int32 reactionType = 9;             //元素反应类型\
+	required int32 objectId = 10;             //objectId\
+	required string collision = 11;            //碰撞盒名字，空字符串表示按照本体位置查找\
+	required int32 sourceType = 12;       //来源类型 1技能 2buff\
+	required int32 sourceId = 13;      //来源id(技能ID或者buffId)\
+	required int32 originalSkillId = 14;   //原始技能ID\
+	required bool isWeaknessHurt = 15;   //是否击中弱点\
+	required double curStageLeftHp = 16;   //当前阶段剩余血量\
+}\
+\
+// 属性同步结构\
+message LeaderProperty\
+{\
+	repeated PropertyKeyValue props = 1;						// 属性\
+}\
+\
+// 属性改变信息\
+message PropertyChangeInfo\
+{\
+	repeated PropertyKeyValue baseValueAdd = 1;						// 基值数值增加\
+	repeated PropertyKeyValue basePercentAdd = 2;						// 基值百分比增加\
+	repeated PropertyKeyValue additionValueAdd = 3;						// 终值数值增加\
+	repeated PropertyKeyValue additionPercentAdd = 4;						// 终值百分比增加\
+	repeated PropertyKeyValue consumeProps = 5;						// 消耗型属性\
+}\
+\
+// 属性同步结构\
+message PropertyKeyValue\
+{\
+  required int32 propId = 1;                          // 属性id\
+  required double propValue = 2;                        // 属性值\
+}\
+\
+// 播放消息数据\
+message PlayActData\
+{\
+	optional int32 id = 1;// 唯一id(用于播完回调)\
+	optional int32 actType = 2;// 表演类型 0 无 1 角色出场	2 关卡演出	3 虚拟相机 4 仅UI\
+	optional string param = 3;// 参数 (也有可能是string)\
+	optional Vector3 position = 4;//位置\
+	optional Vector3 roatation = 5;//旋转\
+}\
+\
+// 剧情消息数据\
+message PlayPlotData\
+{\
+	optional int32 id = 1;// 唯一id(用于播完回调)\
+	optional int32 plotType = 2;// 剧情类型 0 无 1 AVG	2 Timeline	3 CG\
+	optional string param = 3;// 参数 (也有可能是string)\
+}\
+\
+// 播放UI数据\
+message PlayUiData\
+{\
+	optional string uiType = 1;// UI类型 0 无 1 关卡目标 2 倒计时\
+	optional string param = 2;// 参数 (也有可能是string)\
+}\
+\
+// 元素变化\
+message ElementChange\
+{\
+	optional ElementReact elementReact = 1;  // 元素反应\
+	optional ElementEffect elementEffect = 2;  // 元素效果\
+	optional ElementAttach elementAttach = 3;  // 元素附着\
+	optional ElementRemove elementRemove = 4;  // 元素移除\
+	optional ElementValueChange elementValueChange = 5;  // 元素值改变\
+	optional ElementStage elementStage = 6;  // 元素阶段\
+}\
+\
+// 元素阶段切换\
+message ElementStage\
+{\
+	required int32 elementId = 1; // 元素id\
+	required int32 stage = 2; // 元素阶段\
+}\
+\
+// 元素附着\
+message ElementValueChange\
+{\
+	required int32 elementId = 1;    // 元素id\
+	required double elementValue = 2; // 元素值\
+	optional bool effecting = 3; // 元素是否处于效果触发中\
+}\
+\
+// 触发元素效果\
+message ElementEffect\
+{\
+	required int32 elementId = 1;    // 元素id\
+}\
+\
+// 发生元素反应\
+message ElementReact\
+{\
+	required int32 reactionId = 1;    // 元素反应id ElementReaction表id\
+	required int32 reactElementValue = 2; // 反应元素值\
+	required int32 curElementId = 3; // 当前元素id\
+	required double curElementValue = 4; // 当前元素值\
+}\
+\
+// 元素附着\
+message ElementAttach\
+{\
+	required int32 elementId = 1;    // 元素id\
+	required double curElementValue = 2; // 元素值\
+}\
+\
+// 元素移除\
+message ElementRemove\
+{\
+	required int32 elementId = 1;    // 元素id\
+}\
+\
+// 产生闪电球（电磁反应）\
+message CreateElementLightningBall\
+{\
+	required int32 id = 1; // 闪电球id\
+	required int32 targetObjId = 2; // 被链接的目标对象\
+	required int32 fromObjId = 3; // 闪电球的来源对象，第一个产生闪电球的来源为0\
+	optional Vector3 targetObjPos = 4; // 被链接的目标对象的位置\
+	optional Vector3 fromObjPos = 5; // 闪电球的来源对象的位置\
+	optional int32 effectId = 6; // 特效id\
+}\
+\
+// 产生冰风球（冰风反应）\
+message CreateElementIceWinBall\
+{\
+	required int32 id = 1; // 冰风球id\
+	required int32 targetObjId = 2; // 被链接的目标对象\
+	required int32 fromObjId = 3; // 冰风球的来源对象，第一个产生闪电球的来源为0\
+	optional Vector3 targetObjPos = 4; // 被链接的目标对象的位置\
+	optional Vector3 fromObjPos = 5; // 冰风球的来源对象的位置\
+	optional double spreadSpeed = 6; // 冰风球的初始速度\
+	optional double spreadAccSpeed = 7; // 冰风球的加速度\
+	optional int32 effectId = 8; // 特效id\
+	optional int32 endEffectId = 9; // 消失特效id\
+	optional double spreadMaxSpeed = 10; // 冰风球最大速度\
+}\
+\
+message FallObjectChange\
+{\
+	repeated DropFallObject dropFallObjects = 1;	// 掉落物体\
+	repeated PickUpFallObject pickUpFallObjects = 2;	// 拾取掉落物\
+}\
+\
+// 拾取掉落物\
+message PickUpFallObject\
+{\
+	required int32 ownerNetId = 1;    // 拾取者netId\
+	required int32 ownerObjId = 2;    // 拾取者netId\
+	required int32 fallObjUnitId = 3;    // 单位id\
+}\
+\
+// 掉落物\
+message DropFallObject\
+{\
+	required int32 fallObjUnitId = 1;    // 单位id(拾取时需要这个id)\
+	required int32 parentUnitId = 2;    // 父单位id\
+	required int32 fallObjId = 3;    // 掉落物id 对应FallObject表\
+	optional int32 ownerNetId = 4;    // 归属者netId，只有这个人能捡起这个掉落物\
+	optional int32 ownerObjId = 5;    // 归属者objectId，只有这个人能捡起这个掉落物\
+	optional Vector3 position = 6;    // 位置\
+	optional Vector3 rotation = 7;    // 角度\
+}\
+// 瞄准目标信息\
+message AimTargetInfo\
+{\
+	required int32 netId = 1;         //目标 netId\
+	required int32 objectId = 2;			//objectId\
+	required int32 blockId = 3;				//分块id 默认1\
+}\
+\
+//=====================================================爬塔相关======================================================================\
+\
+// 爬塔队伍结构\
+message TowerTeam\
+{\
+	required int32 towerGroupId = 1; //当前副本的id\
+	repeated int32 rewardTowerId =2; //领完奖励的id\
+	optional int32 towerId =3;// 当前副本存档点的id\
+	repeated LeaderSquadInfo towerTeam =5; //当前队伍1号队伍信息\
+}\
+\
+message TowerWeekTeam\
+{\
+	required TowerTeam towerTeam = 1; //当前周期的副本\
+	repeated int32 rewardWeekTowerId = 2; //当前周期领取的奖励数据\
+}\
+\
+message TowerHistoryTeam\
+{\
+	required TowerTeam towerTeam =1;\
+	required int32 towerTime = 2 ; //当前的每关的耗时时间\
+	required int32 uid = 3;\
+	required string userName = 4;\
+	required int64 time = 5;\
+	required int32 headerId=6;\
+	required int32 sex = 7;\
+	required int32 kill = 8; //击杀数量\
+	optional int32 headFrameId=9; // 头像框id\
+	optional int32 nameCard = 10; // 名片\
+}\
+\
+\
+//=====================================================战斗服副本====================================================================\
+\
+//战斗结算导师信息\
+message OverSoloPlayerInfo\
+{\
+	required int32 oldExp = 1;//旧经验\
+	required int32 oldLevel = 2;//旧等级\
+	required int32 newExp = 3;//新经验\
+	required int32 newLevel = 4;//新等级\
+	repeated OverSoloFormationInfo formationInfos = 5;//编队\
+}\
+\
+//战斗结算编队信息\
+message OverSoloFormationInfo\
+{\
+	required int32 leaderId = 1;//武将id\
+	required int32 favorabilityExp = 2;//好感度经验\
+	required int32 favorabilityLevel = 3;//好感度等级\
+	required int32 favorabilityOldExp = 4;//旧的好感度经验\
+	required int32 favorabilityOldLevel = 5;//旧的好感度等级\
+}\
+\
+// 关卡战斗类型\
+enum BattleType\
+{\
+	MainLevel = 1; // 主线关卡\
+	TrainLevel = 2; // 训练关卡\
+	TrainLevel_Multi = 3; // 联机训练关卡\
+	TowerLevel = 5; // 爬塔关卡\
+	BountyMission = 6; // 悬赏任务关卡\
+	WeaponLevel = 7; // 武器关卡\
+	LimitedTimeLevel = 8; // 限时关卡\
+	MultiPveBoss = 9; // 多人Boss pve\
+	PatrolLevel = 10; //乌拉拉关卡\
+	TrialRoleLevel = 11; // 角色使用关卡\
+	SmallBattle = 12;//小战场关卡\
+	AbyssFrontBoss = 13;//大战场关卡\
+	GuildWar = 14;//团本\
+	RogueLevel = 15;//rogue关卡\
+}\
+\
+//已经打完的主线关卡信息(2022.3.17版本)\
+message MainLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	repeated int32 stars = 2;//星级 1=第一颗星2=第二颗星3=第三颗星 |亮了\
+	optional int32 todayAttackNum = 3;// 打过的次数\
+	optional int32 attackNum = 4;// 总次数\
+	optional int64 lastAttackTime = 5;// 最后打的时间戳(ms)\
+	optional int64 seasonAttackTime = 6;// 本赛季打的次数\
+	optional int32 maxAttackScope = 7;// 本关卡最高分数\
+	optional int32 curAttackScope = 8;// 本关卡本次分数\
+	optional bool isNewScope = 9;// 是新纪录\
+	required int32 passTime = 10;// 最短通关时间\
+}\
+\
+//已经打完的训练关卡信息(2022.3.17版本)\
+message TrainLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	optional int32 todayAttackNum = 2;// 打过的次数\
+	optional int32 attackNum = 3;// 总次数\
+	optional int64 lastAttackTime = 4;// 最后打的时间戳(ms)\
+	optional int64 seasonAttackTime = 5;// 本赛季打的次数\
+	optional int64 secureAttackTime = 6;// 保底奖励的攻打计数\
+	optional int64 weekAttackTime = 7;// 每周的攻打计数\
+	required int32 passTime = 8;// 最短通关时间\
+}\
+\
+//武器关卡信息\
+message WeaponLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	optional int32 attackNum = 2;// 已打过的次数\
+	optional int32 allAttackNum = 3;// 总共可打的次数\
+}\
+\
+//限时关卡信息\
+message LimitedTimeLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	optional int64 limitEndTime = 2;// 截止时间戳UTC（毫秒）\
+}\
+\
+//多人pve关卡信息\
+message MultiPveBossLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	optional int32 remainRewardNum = 2;// 剩余奖励次数\
+	optional int32 allRewardNum = 3;// 总奖励次数\
+	repeated int32 stars = 4;//星级 1=第一颗星2=第二颗星3=第三颗星 |亮了\
+	optional int32 todayAttackNum = 5;// 打过的次数\
+	optional int32 attackNum = 6;// 总次数\
+}\
+\
+//团本关卡信息\
+message GuildWarLevelInfo\
+{\
+	required int32 id = 1;// 关卡\
+	optional GuildWarLevelPlayerInfo firstPassPlayer = 2;// 首个三星通关玩家\
+	optional int32 rewardState = 3;// 奖励状态，枚举GuildWarLevelRewardState\
+	optional int64 unlockTime = 4;// 解锁时间(没到时间则是未解锁，到时间则是解锁)\
+	repeated int32 stars = 5;//星级 1=第一颗星2=第二颗星3=第三颗星 |亮了\
+}\
+\
+// 团本三星通关玩家信息\
+message GuildWarLevelPlayerInfo\
+{\
+	required int32 headId = 1; // 头像id\
+	required string name = 2; // 玩家名字\
+	required int64 passTime = 3; // 通关时间\
+}\
+\
+// 团本关卡领奖状态\
+enum GuildWarLevelRewardState\
+{\
+	// 未通关\
+	NOT_PASS = 1;\
+	// 可领奖\
+	CAN_REWARD = 2;\
+	// 完成领奖\
+	FINISH = 3;\
+}\
+\
+\
+//Rogue关卡信息\
+message RogueLevelInfo\
+{\
+	required int32 stageId = 1;// 阶段id\
+	required int32 levelId = 2;// 关卡id\
+}\
+//==================================================================\
+//==================================================================\
+// 推送消息\
+//经验推送\
+message PlayerChangeExpAndLvl_Push\
+{\
+	required int32 curLevel=1;//当前等级\
+	required int32 curExp=2;//当前经验\
+}\
+//钱\
+message ChangeMoney_Push\
+{\
+	repeated MoneyPart money =1;//当前货币\
+}\
+//体力改变推送\
+message ChangeStrength_Push\
+{\
+	required int32 curStrength=1;//当前体力\
+}\
+//玩家头像\
+message ChangeHead_Push\
+{\
+	repeated int32 types =1;//修改头像列表\
+}\
+//玩家 头像框\
+message ChangeHeadFrame_Push\
+{\
+	repeated HeadFrameInfo headFrameInfos = 1;//修改 头像框 列表\
+}\
+//武将信息发生变化 服务器推送\
+message LeaderAttrChanged_Push\
+{\
+	repeated LeaderInfo leaderInfo=1;//武将信息\
+}\
+//镜像信息发生变化 服务器推送\
+message RevelationChanged_Push\
+{\
+	repeated RevelationInfo revelationInfo=1;//镜像信息\
+	// repeated int32 revelationSet=2;//拥有过的镜像id集合\
+}\
+//角色新服装推送\
+message NewClothing_Push\
+{\
+	repeated ClothingInfo clothingInfo=1;//服装信息\
+}\
+//式仗获得新的涂装推送\
+message NewWeaponSkin_Push\
+{\
+	repeated WeaponSkinInfo weaponSkinInfo=1;//式仗涂装信息\
+}\
+//式仗信息发生变化 服务器推送\
+message WeaponChanged_Push\
+{\
+	repeated WeaponInfo weaponInfo=1;//式仗信息\
+	// repeated string weaponSet=2;//拥有过的式仗id集合\
+}\
+message ChangePart_Push\
+{\
+	repeated Part part =1;//修改道具\
+}\
+\
+//好感度信息发生变化 服务器推送\
+message FavorChanged_Push\
+{\
+	repeated FavorInfo favorInfo=1;//好感度信息\
+}\
+\
+//战舰结构(正在挑战的数据结构)\
+message BattleshipInfo\
+{\
+	required BattleshipPositionInfo initPositionInfo=1;//初始化位置\
+	required BattleshipPositionInfo positionInfo=2;//当前位置\
+	required int32 taskTraceId=3;//当前任务追踪的id\
+	required int32 timeType=4;//时间类型（暂定）1,上午2=晚上\
+	repeated int32 leaderHunger=5;//聚餐中饥饿的角色\
+	required int32 exp=6;//战舰经验\
+	required int32 level=7;//战舰等级\
+	required int32 shipStrength=8;//战舰体力\
+	required int64 lastCalcShipStrengthTime=9;//最后计算体力时间\
+	required int32 talentNum=10;//战舰天赋点数\
+	repeated int32 talentTreeS=11;//已经激活已领取的天赋树集合\
+	required int32 dispatchCount=12;//派遣任务上限\
+	repeated int32 dinnerFriendIdS=13;//聚餐羁绊过的id集合\
+	optional int32 maxShipStrength = 14;// 根据开放天赋点计算出最后的最大恢复体力值\
+}\
+\
+//战舰坐标结构\
+message BattleshipPositionInfo\
+{\
+	required double x=1;//坐标x\
+	required double y=2;//坐标y\
+	required double z=3;//坐标z\
+}\
+\
+//战舰npc信息\
+message BattleshipNPC\
+{\
+	required int32 npcId=1;//npcID\
+	required int32 sceneId=2;//场景id\
+	repeated ProtoHashInt2Int taskIdMap = 3;//任务id暂定为集合 可能为空, key = taskId value 从那个表里读的任务id 1= WarshipNpcGroup.relateMission 2,= WarshipMission.acceptNpcId(key=WarshipMission.id)，3,= WarshipMissionSub.objective   2605类型\
+	required int32 state=4;//0=不知道1=可接2=可交\
+	required BattleshipPositionInfo positionInfo=5;//位置\
+	required int32 id=6;//npc配置表自增id WarshipNpcGroup.id\
+	required double rotation=7;//npc朝向 WarshipNpcGroup.rotation\
+	required int32 groupId=8;//npc配置表groupId WarshipNpcGroup.groupId\
+	required int32 relateCamera=9;//npc配置表groupId WarshipNpcGroup.relateCamera\
+	required string npcModel=10;//Npc预制体 npc配置表groupId WarshipNpcGroup.npcModel\
+	repeated float cameraPos=11;//交谈界面镜头位置偏移  npc配置表groupId WarshipNpcGroup.cameraPos\
+	required float cameraEul=12;//交谈界面镜头位置偏移  npc配置表groupId WarshipNpcGroup.cameraEul\
+	required float playerPos=13;//角色的距离  npc配置表groupId WarshipNpcGroup.playerPos\
+	required float playerAngle=14;//当前朝向的偏移  npc配置表groupId WarshipNpcGroup.playerAngle\
+}\
+//战舰任务进度条件\
+message BattleshipTaskCondition\
+{\
+	required int32 type=1;//进度类型 WarshipMissionSub.objective\
+	required int32 key=2;//进度类型 附加目标参数id\
+	required int32 value=3;//任务进度\
+	required int32 maxNum=4;//最大进度（0=特殊处理，客户端不能判断大于等于此参数了）\
+	required int32 id=5;//WarshipMissionParam.id\
+}\
+\
+//战舰任务结构\
+message BattleshipTask\
+{\
+	required int32 taskId=1;//任务id WarshipMission.id\
+	required int32 taskSubId=2;//任务id WarshipMissionSub.id\
+	required int32 state=3;//1=进行中3=已完成\
+	repeated BattleshipTaskCondition condition=4;//任务条件和进度\
+}\
+\
+//战舰剧情结构\
+message BattleshipStory\
+{\
+	required int32 storyId=1;//3d剧情id Storyshow.id\
+	repeated BattleshipStorySubOption storySub=2;//句子和选项\
+}\
+\
+//战舰剧情句子和选项\
+message BattleshipStorySubOption\
+{\
+	required int32 storySubId=1;//WarshipStorySub.id\
+	required int32 option=2;//已经领奖的option下标\
+}\
+\
+//战舰角色吃过喜欢吃的结构\
+message BattleshipDishesEatenInfo\
+{\
+	required int32 leaderId=1;//角色id\
+	repeated int32 menuIds=2;//菜单id集合\
+}\
+\
+//战舰体力改变推送\
+message ChangeShipStrength_Push\
+{\
+	required int32 curShipStrength=1;//当前战舰体力\
+}\
+\
+//战舰经验改变推送 服务器推送\
+message ChangeShipExp_Push\
+{\
+	required int32 exp=1;//经验\
+	required int32 level=2;//等级\
+}\
+\
+//战舰天赋点数改变推送\
+message ChangeShipTalentNum_Push\
+{\
+	required int32 talentNum=1;//战舰天赋点数\
+}\
+\
+//战舰派遣任务结构\
+message BattleshipDispatchInfo\
+{\
+	required int32 taskId=1;//任务id WarshipDispatchTask.id\
+	required int32 leaderId=2;//派遣的角色id\
+	required int32 state=3;//1=进行中2=已完成\
+	required int32 overTime=4;//完成时间戳\
+}\
+\
+// 帮助中心\
+message HelpCenterData\
+{\
+	repeated int32 activatedId = 1;//已激活未查看 ID集合\
+	repeated int32 receivedAwardId = 2;//已领奖ID 集合\
+}\
+\
+//好感度信息\
+message FavorInfo\
+{\
+	required int32 objectId=1;//对象ID\
+	required int32 objectType=2;//对象类型：1=斯露德2=NPC\
+	required int32 level=3;//好感度等级\
+	required int32 exp=4;//好感度的经验\
+	//repeated ProtoHashInt2Int selectTalentIdMap=5;//选中的天赋ID字典<等级,天赋id>\
+}\
+\
+//悬赏任务结构\
+message BountyMissionInfo\
+{\
+	required int32 id=1;//BountyMissionsLevel.id\
+	repeated int32 buffIdSet = 2;//BountyMissonBuff.id集合\
+	required int32 pointId=3;//WorldMapPointShow.id\
+}\
+\
+// 新手引导结构\
+message GuideInfo\
+{\
+    optional string guideData = 1;//已完成的新手引导信息\
+    repeated int32 forceGuideStep = 2;// 新手引导强制跳过组Id 集合\
+}\
+\
+// 玩家状态类型\
+enum BattleStateType\
+{\
+	// 匹配\
+	MATCH_TYPE = 1;\
+	// 战斗\
+	BATTLE_TYPE = 2;\
+	// 结算\
+	BATTLE_SETTLE_TYPE = 3;\
+}\
+\
+// 玩家状态类型\
+enum PlayerStateType\
+{\
+	// 匹配\
+	MATCH = 1;\
+	// 战斗\
+	BATTLE = 2;\
+	// 结算\
+	BATTLE_SETTLE = 3;\
+	// 在、离线\
+	ON_OFF_LINE = 4;\
+}\
+\
+// 队伍类型\
+enum TeamType\
+{\
+	// 多人作战\
+	RAID = 1;\
+	// 乌拉拉\
+	WU_LA_LA = 2;\
+\
+	Guild_War  = 3;//团本\
+\
+}\
+\
+// 队伍队员的属性变化类型\
+enum TeamMemberPropChangeType\
+{\
+	// 角色 战力\
+	CAPABILITY = 1;\
+	// 角色 升级\
+	UP_LEVEL = 2;\
+	// 角色 皮肤\
+	CLOTH = 3;\
+// ======角色、玩家分割线======  //\
+	// 玩家信息\
+	PLAYER_INFO = 11;\
+	// 玩家等级\
+	PLAYER_LEVEL = 12;\
+}\
+\
+// 消耗体力类型\
+enum CostStrengthType\
+{\
+	// 默认\
+	NORMAL = 1;\
+	// 倍率\
+	MULTIPLE = 2;\
+	// 助战\
+	HELP = 3;\
+}\
+\
+// 队伍信息\
+message TeamInfo\
+{\
+	optional TeamType teamType=1;//队伍类型\
+	optional int32 teamId=2;//队伍id\
+	optional int32 battleType=3;//战斗类型:1=主线关卡、2=训练关卡、5=爬塔关卡、6=悬赏任务关卡\
+	optional int32 targetId=4;//队伍目标id\
+	repeated TeamMemberInfo teamMemberInfos=5;//队员信息列表\
+	optional bool inMatch=6;//是否在匹配中\
+	optional int32 enterMatchTime=7;//队伍进入匹配时间点（秒）\
+	repeated ProtoHashInt2Long applyDemandMap=8;//入队申请 字典\
+}\
+\
+// 队员信息\
+message TeamMemberInfo\
+{\
+	required int32 uid=1;//玩家的uid\
+	optional string uName=2;//玩家昵称\
+	optional int32 level=3;//玩家等级\
+	optional int32 headId=4;//头像ID\
+	optional int32 bgImgId=5;//导师详情的背景板\
+	required int32 inMatch=6;//是否在匹中：0=否、1=是\
+	required int32 inBattle=7;//是否在战斗中：0=否、1=是\
+	required int32 inBattleSettle=8;//是否在战斗结算界面：0=否、1=是\
+	required int32 online=9;//是否在线：0=否、1=是\
+	optional int32 readyState=10;//准备状态：0=否、1=是\
+	optional int32 replaceLeaderState=11;//更换斯露德状态：0=否、1=是\
+	optional int32 inTeamPanel=12;//是否在队伍面板：0=否、1=是\
+	repeated LeaderTeamInfo leaderInfos=13;// 斯露德信息列表\
+	repeated WeaponInfo weaponInfoS=14;//武装集合(目前仅乌拉拉类型赋值)\
+	repeated ProtoHashString2Int revelationIdS = 15;// 镜像集合key=唯一id value = 配置表id（目前仅乌拉拉类型赋值）\
+	optional int32 maxLevelId=17;//挑战成功过的最大关卡（目前仅用于乌拉拉）\
+	optional int32 headFrameId=18;//头像框ID\
+	optional int32 sex=19;//性别\
+}\
+\
+// 退出匹配队列原因\
+enum MatchExitReason\
+{\
+  // 匹配成功\
+  MATCH_SUCCESS = 0;\
+  // 主动取消匹配\
+  MATCH_CANCEL = 1;\
+  // 匹配超时\
+  MATCH_TIME_OUT = 2;\
+  // 状态异常\
+  MATCH_STATE_ERROR = 3;\
+	// 匹配目标结束\
+	MATCH_TARGET_END = 4;\
+\
+}\
+\
+// 玩家的好友模块数据\
+message FriendInfo\
+{\
+    repeated int32 forbidIdSet = 1;// 拉黑的好友\
+    required int32 lastRecommendTime = 2;// 上次好友推荐时间\
+}\
+\
+// 好友传输消息 结构\
+message FriendMsgInfo\
+{\
+    required int32 friendUid = 1;// 好友Id\
+    optional string friendName = 2;// 好友昵称\
+    optional int32 friendLevel = 3;// 好友等级\
+    optional string friendSign = 4;// 好友签名\
+}\
+\
+// 好友离线聊天消息\
+message FriendChatOfflineMsg\
+{\
+    required int32 fromUid = 1; // 消息来源\
+    required string content = 2;// 消息内容\
+    required int32 time = 3;// 发送时间\
+}\
+\
+// 组队离线聊天消息\
+message TeamChatOfflineMsg\
+{\
+    required int32 fromUid = 1; // 消息来源\
+    required string content = 2;// 消息内容\
+    // required int32 toTeamId = 3; // 接受消息组队Id\
+    required int32 time = 4;// 发送时间\
+}\
+\
+// 我的好友的信息\
+message FriendRecordInfo\
+{\
+    required int32 friendUid = 1;// 玩家的好友uid\
+    optional string desc = 2;//玩家好友备注名\
+}\
+\
+//============乌拉拉===========================\
+// 乌拉拉参与活动的角色信息\
+message PatrolLeaderInfo\
+{\
+    repeated int32 leaderIdSet = 1;// 参与组队的角色id集合\
+}\
+\
+// 乌拉拉活动信息\
+message PatrolInfo\
+{\
+    required int32 startTime = 1;//参与乌拉拉活动的时间戳(配置表时间)\
+	required int32 speedUpOverTime = 2;//加速结束时间\
+	required int32 speedUpCount = 3;//加速总秒数\
+	repeated int32 paceRewardSet = 4;// 已经领取的进度奖励PatrolReward.id\
+	required int32 id = 5;//PatrolTask.id\
+	required int32 lastTime = 6;//最后乌拉拉活动的时间戳\
+}\
+\
+// 乌拉拉关卡信息\
+message PatrolLevelInfo\
+{\
+	required int32 id = 1;//PatrolLevel.id\
+	optional int32 memberUid = 2;//队员id，帮助自己打过此关卡的大佬\
+	optional string memberUName = 3;//队员名字，帮助自己打过此关卡的大佬\
+	optional int32 memberTime = 4;//队员通关时间\
+	optional int32 lastTime = 5;//最后攻打时间\
+	repeated ProtoHashInt2Int speedUpUidS = 6;// 帮我加速uid的集合\
+}\
+\
+// 乌拉拉队伍内可加速结构\
+message PatrolSpeedUpInfo\
+{\
+	required int32 uid = 1;//玩家id\
+	required int32 id = 2;//PatrolLevel.id\
+	required int32 time = 3;//时间戳\
+}\
+\
+// 乌拉拉队伍关卡结构\
+message PatrolTeamLevelInfo\
+{\
+	required int32 uid = 1;//玩家id\
+	required int32 id = 2;//PatrolLevel.id\
+	required int32 time = 3;//时间戳\
+}\
+\
+// 乌拉拉推荐队伍结构\
+message RecommendTeamInfo\
+{\
+	required int32 type = 1;//1=推荐队友2=推荐队伍\
+	optional int32 uid = 2;//玩家id\
+	optional int32 teamId = 3;//队伍id\
+}\
+\
+// 推荐队伍结构简写结构\
+message TeamSimpleInfo\
+{\
+	required int32 teamId = 1;//队伍id\
+	repeated TeamMemberSimpleInfo teamMemberSimpleInfoS = 2;//\
+	optional int32 byWhomUid = 3;//通过谁来查询的uid\
+}\
+\
+// 区域触发数据\
+message BoundaryTriggerInfo\
+{\
+	required int32 state = 1;//当前状态  1,   --创建未开启   2,    --开启未关闭   3,    --已关闭  4, --等待销毁\
+	required int32 stateStartTime = 2;//当前状态开始时间\
+	required int32 trigTimes = 3;//当前已触发次数\
+}\
+\
+// 队员简单信息\
+message TeamMemberSimpleInfo\
+{\
+	required int32 uid=1;//玩家的uid\
+	optional string uName=2;//玩家昵称\
+	optional int32 level=3;//玩家等级\
+	optional int32 headId=4;//头像ID\
+	optional int32 bgImgId=5;//导师详情的背景板\
+	repeated MemberLeaderInfo leaderIdAndLevelS = 6;// 斯露德信息列表 key=Leader value = level\
+	optional int32 headFrameId=7;//头像框ID\
+\
+}\
+\
+// 队员角色信息\
+message MemberLeaderInfo\
+{\
+	required int32 leaderId=1;//角色id\
+	required int32 level=2;//角色等级\
+	required int32 clothingId=3;//服装ID\
+}\
+\
+\
+//============乌拉拉===========================\
+\
+// 月签到结构\
+message SignInfo\
+{\
+	required int32 monthGetSignRewardTimes=1;//本月领取签到次数\
+	required int32 lastGetSignRewardTime=2;//最后领取签到奖励时间\
+	required int32 days=3;//最后领取签到奖励时间\
+}\
+\
+//============支付商店sdk支付结构===========================\
+// 支付商店配置表\
+message PaymentShopInfo\
+{\
+	required int32 id=1;//id\
+	required int32 weight=2;//二级页签权重越大越靠前\
+	required string shopName=3;//商店名\
+	required string shopEnName=4;//商店英文名\
+	required string shopIcon=5;//商店图标\
+	required int32 shopId=6;//商店ID一个主页签下若只有一个子商店，只显示主页签商店名\
+	required int32 shopWeight=7;//一级页签权重越大越靠前\
+	required int32 shopType =8;//商店类型不填：礼包1：付费2：礼包币3：推荐页（单商品）4：推荐页（多商品）5：月卡6：皮肤\
+	required string shopBg =9;//商店大图资源\
+	required int32 shopOpen =10;//商店开启\
+	required string classifyName = 11;//子商店名\
+	required string classifyEnName = 12;//子商店名英文\
+	required int32 classifyOpen = 13;//子商店开启条件\
+	required string classifyTimeStart = 14;// 二级页签出现时间, 不填：立刻出现\
+	required string classifyTimeEnd = 15;// 二级页签出现时间, 不填：立刻出现\
+	required int32 classifyTop = 16;//自商店购买框顶条显示读取Currency_Show的ID加减商店页签必须配置UIVIEW表！\
+	required int64 overTime = 17;//货架倒计时的结束时间默认-1\
+}\
+\
+// 支付商店物品配置表\
+message PaymentGoodsInfo\
+{\
+	required int32 id =1;//id\
+    repeated int32 paymentShopIds =2;//所属货架\
+    required int32 itemWeight =3;//权重排序\
+    required string goodsName =4;//商品名\
+    required int32 itemId =5;//道具id\
+    required int32 itemCount =6;//道具数量\
+    required int32 extraItemId =7;//额外附赠道具id\
+    required int32 extraItemNum =8;//首充额外附赠数量\
+    required int32 extraItemNumNotFrist =9;//非首充额外附赠数量\
+    required int32 paymentId =10;//sdk付费id优先级最高不填时才会读取costId和costNum\
+    required int32 costId =11;//消耗id礼包币形式需要使用\
+    required int32 costNum =12;//消耗数量礼包币形式需要使用\
+    required string icon =13;//商品icon不填就用商品道具图标\
+	required int32 buyCondition =14;//购买限制购, 买了前置商品，才能购买当前商品\
+    required int32 unlockConditionId =15;//解锁条件当条件未达到时，商品显示但锁定。\
+    required int32 showConditionId =16;//出现条件当条件未达到时，商品隐藏\
+    required float discount =17;//折扣仅用于显示假价格由程序往上乘如果碰到小数，向上取整\
+    required int32 limitBuy =18;//可购买次数不填：不限制购买\
+    required int32 refreshType =19;//刷新类型不填：不刷新1：日刷新2：周刷新3：月刷新\
+    required string timeBegin =20;//商品出售开始时间不填：立刻出现\
+    required string timeEnd =21;//商品出售结束时间不填：商品不消失\
+    required int32 switchTime =22;//是否显示结束时间不填：不显示1：显示\
+    required int32 switchRedDot =23;//上新是否显示本地红点不填：不显示1：显示\
+    required int32 switchShow =24;//售罄后是否显示不填：不显示1：显示\
+    required string title =25;//<color=#ff000000>需要变色的文本文本文本</color>000000 想要的颜色1、热销2、限购3、爆款 等等\
+    required int32 titleStroke =26;//标签文字描边0无描边1有描边\
+    required string titleColor =27;//标签底图颜色\
+	required int32 hide =28;//是否隐藏\
+    required int32 version =29;//版本号用于重置商品的限购次数、首充等\
+	required string textPro =30;\
+}\
+\
+// sdk支付物品配置表\
+message PaymentInfo\
+{\
+	  required int32 id =1;//id\
+    required string paymentName =2;//商品名称\
+    required string paymentDesc =3;//商品名称\
+    required string paymentId =4;//商品ID\
+    required int32 paymentPrice =5;//人民币价格海外服对应的是美元价格\
+    required int32 paymentDiamon =6;//补单钻石数量\
+}\
+\
+// 支付商城信息\
+message PayShopData\
+{\
+	repeated PaymentShopInfo paymentShopInfos = 1;// 支付商店配置表集合\
+	repeated PaymentGoodsInfo paymentGoodsInfos = 2;// 支付商店物品配置表集合\
+	repeated PaymentInfo paymentInfos = 3;// sdk支付物品配置表\
+	repeated PayShopItem payItems = 4;// 付费商店道具\
+	required int64 payConfVersion = 5;// 支付配置信息的最新版本\
+}\
+\
+// 支付商城限购物品\
+message PayShopItem\
+{\
+    required int32 id = 1;// PaymentGoodsInfo.id\
+	  required int32 buyTimes = 2;// 购买数量\
+	  required int64 resetTime = 3;// 重置时间\
+}\
+\
+// 购买产生的支付订单信息\
+message CreatePayOrderInfo\
+{\
+	required string cpOrderId = 1;// 游戏订单号\
+	required int32 id = 2;// PaymentGoodsInfo.id\
+	required string sign = 3;// 签名\
+	optional string notifyUrl = 4;// 回调地址\
+	optional string qrcodePC = 5;// pc二维码信息仅pc端使用\
+}\
+\
+// 月卡信息\
+message PeriodCardInfo\
+{\
+	required int32 id = 1;// 周期卡id\
+	required int32 expirationTime = 2;//月卡到期时间戳（秒）\
+	required int32 lastRewardTime = 3;//月卡最后领奖时间戳（秒）\
+}\
+\
+//============支付商店sdk支付结构===========================\
+//排行榜\
+message RankPlayerInfo\
+{\
+	required int32 uid = 1;          //玩家ID\
+	required int32 icon = 2;        //玩家头像\
+	required int32 iconFrame = 3;   //头像框\
+	required string name =4; // 玩家名字\
+	optional int32 iconImage =5; // 玩家名片\
+}\
+\
+\
+message  RankPlayerDataInfo\
+{\
+	optional int32 score =1; //小战场积分\
+	required RankPlayerInfo rankInfos = 2; //榜单数据\
+	optional int32 ranking =3; //排名\
+	repeated SmallBattleLeaderSquadInfo smallBattleLeaderSquadInfo = 4; //小战场的队伍\
+	optional int32 internal =5;// 保护分数\
+	optional int32 level = 6;// 当前段位\
+	optional int64 time = 7; // 时间戳\
+}\
+\
+message RankHistoryPlayerInfo\
+{\
+	required int32 edition =1;\
+	repeated RankPlayerDataInfo rankPlayerInfo = 2; //小战场分组排名\
+	repeated SmallBattleState smallBattleState =3 ; //当前阶段的时间\
+}\
+\
+message SmallBattleState\
+{\
+	required int32 state = 5;      //当前处于的SmallBattleEnum阶段\
+	required int64 beginTime = 6; //当前阶段的开始时间\
+	required int64 endTime = 7; //当前阶段的结束时间\
+}\
+\
+//=========运营活动==================================\
+\
+\
+// 活动详细信息\
+message ActivityInfo\
+{\
+    required int32 activityId = 1; //  活动Id\
+    repeated ActivityTaskInfo activityTaskInfo = 4;// 活动需要的任务配置表， Activitytask 表数据\
+\
+\
+    optional SignActivityInfo signActivityInfo = 7;// 签到活动玩家信息\
+    optional TaskActivityInfo taskActivityInfo = 8;// 任务活动 玩家信息\
+    optional SingleActivityInfo singleActivityInfo = 9;// 进度活动 玩家信息\
+    optional BingoBrandActivityInfo bingoBrandActivityInfo = 10;// bingo 翻牌活动\
+}\
+\
+ //bingo 翻牌活动\
+message BingoBrandActivityInfo {\
+    required BingoBrandActivityConfigInfo configInfo = 1;\
+    repeated BingoBrandActivityRewardConfigInfo rewardInfo = 2;\
+    required BingoBrandActivityPlayerInfo playerInfo = 3;\
+}\
+\
+message BingoBrandActivityPlayerInfo\
+{\
+    required int32 activityId = 1;// 活动Id\
+    required int32 curBound = 2;// 当前轮次\
+    repeated int32 overRewardPosition = 3; // 已经翻开的格子\
+    repeated int32 overBingoPosition = 4;// 已经翻开的Bingo格子\
+    required int32 overBigBingo = 5;// 0： 未领取大奖， 1： 已领取大奖\
+}\
+\
+\
+message BingoBrandActivityConfigInfo\
+{\
+     required int32	id = 1;//ID\
+     required int32	type = 2;//活动类型\
+     required int32	shopdisplay = 3;//商城按钮显示\
+     required string shoplink = 4;//商城跳转\
+     required int32	specifications = 5;//规格\
+     required int32	currency = 6;//消耗货币\
+     required int32	price = 7;//抽取单价\
+     required int32	supplement = 8;//货币购买途径\
+     required int32	round = 9;//牌库轮次\
+     repeated int32	lockRewardFrequency = 10;//特定奖励轮次\
+     repeated int32	lockReward = 11;//特定轮次常规奖励\
+     repeated int32	lockbingoReward = 12;//特定轮次bingo奖励\
+     repeated int32	reward = 13;//任意轮次常规奖励\
+     repeated int32	bingoReward = 14;//任意轮次bingo奖励\
+     repeated int32	allBingoFrequency = 15;//bingo全收集奖励归属轮次\
+     repeated int32	allBingoReward = 16;//bingo全收集奖励\
+}\
+\
+\
+message BingoBrandActivityRewardConfigInfo\
+{\
+    required int32 rewardId = 1; //奖励组ID\
+    repeated ProtoHashInt2Int itemInfo = 2;// key = itemId, value = count， 有奖励就读这里\
+}\
+\
+message SingleActivityInfo\
+{\
+    required ActivitySingleInfo activitySingleInfo = 1;// 进度活动配置表 Singleactivity.xlsx\
+    required int32 progressNum = 2;// 当前进度\
+    repeated int32 overRewardIdSet = 3;// 已经领取的进度奖励\
+    required int32 lastDeleteTime = 4;// 上次清空时间\
+    repeated SingleActivityRewardInfo singleActivityRewardInfo = 5;// 进度奖励表数据\
+}\
+\
+// 进度配置表\
+message ActivitySingleInfo\
+{\
+    required int32 id = 1;\
+    required int32 type = 2;//活动类型\
+    required int32 deleteTime = 3;//进度清空时机\
+    repeated int32 stage = 4;//阶段要求\
+    required int32 obtainoRconsume = 5;//对象记录要求\
+    repeated int32 stageObject = 6;//阶段要求对象\
+    repeated int32 sign = 7;//标记印射的对应活动\
+    repeated int32 stegeReward = 8;// 阶段对应奖励\
+}\
+\
+// 活动界面配置表\
+message ActivityTabInfo\
+{\
+    required int32 id = 1; //  活动Id\
+    required int32 activityType = 2; //  活动类型\
+    required int32 type = 3; //  对应活动表里活动ID\
+    required int32 edition = 4; //  活动版本号\
+    required string openTime = 5; //  开启时间\
+    required string overTime = 6; //  结束时间\
+    required int32 limitLv = 7; //  等级要求\
+    required int32 limitChapter = 8; //  主线通关要求\
+    required int32 backgroudA = 9; //  页签关系-合集\
+    required string activityName = 10; //  合集标题\
+    required string activityPicture= 11; //  标题图片\
+    required int32 backgroudB = 12; //  页签关系-子集\
+    required int32 paintingB = 13; //  子集排序\
+    optional string playingName = 14; //  二级页签标题\
+    optional string playingPicture = 15; //  二级页签图片\
+    required int32 displayTip = 16; //  活动提示页显示\
+    required string tipPicture = 17; //  活动提示页图\
+    required string tipJump = 18; //  活动提示页跳转\
+    required int32 tipSort = 19; //  活动提示页显示\
+    required string verticalPaintingA = 20; //  活动立绘图A\
+    repeated int32 verticalOffsetA = 21;//  立绘偏移A\
+    required string verticalPaintingB = 22; //  活动立绘图B\
+    repeated int32 verticalOffsetB = 23;//  立绘偏移B\
+    required string gamePictureA = 24; //  活动背景图A\
+    repeated int32 backgroundOffsetA = 25;//  背景偏移A\
+    required string gamePictureB = 26; //  活动背景图B\
+    repeated int32 backgroundOffsetB = 27;//  背景偏移B\
+    required string gameTip = 28; //  活动说明\
+    required int32 displayExplain = 29; //  规则按钮显示\
+    required string explainJump = 30; //  规则按钮跳转\
+    required string explainIntroduce = 31; //  规则窗口文本\
+    required int32 displayGuide = 32; //  活动引导按钮显示\
+    required string guideName = 33; //  活动引导按钮名称\
+    required string guideJump = 34; //  活动引导按钮跳转\
+    required int32 titleType = 35; //  活动标题类型\
+    required string title = 36; //  活动标题\
+    repeated int32 titleOffset = 37;//  标题偏移\
+    required int32 dispayBanner = 38;//  是否显示banner\
+    required string image = 39; //  banner图\
+    required int32 skip = 40;// Banner跳转\
+    required string verticalPaintingC = 41;//活动立绘图C（CDN）\
+    repeated int32 verticalOffsetC = 42;//立绘偏移C\
+    required string openTimeStamp = 43;//开启时间时间戳\
+    required string overTimeStamp = 44;//结束时间时间戳\
+}\
+// 活动任务配置表\
+message ActivityTaskInfo\
+{\
+    required int32 id = 1; //  任务编号\
+    required string title = 2; //  任务名称\
+    required string brief = 3; //  任务介绍\
+    required string openTask = 4; //  任务开放时间\
+    required int32 displayTask = 5; //  活动列表显示\
+    required int32 icount = 6; //  刷新周期\
+    required int32 finishTopLimit = 7; //  周期可完成次数\
+    required int32 successively = 8; //  前置任务\
+    required int32 condition = 9; //  任务类型ID\
+    required int32 conditionParam1 = 10; //  任务参数1\
+    optional int32 conditionParam2 = 11; //  任务参数2\
+    optional int32 conditionParam3 = 12; //  任务参数3\
+    required int32 conditionNum = 13; //  任务条件次数\
+    required string jumpTo = 14; //  任务引导跳转\
+    required int32 rewardGroup = 15; //  奖励ID\
+    required int32 automation = 16; //  发放奖励\
+    required int32 tab = 17; //  活动标记\
+}\
+\
+// 任务活动配置表\
+message SubActivityTaskInfo\
+{\
+    required int32 id = 1; //  任务编号\
+    required int32 type = 2; //  活动类型\
+    required int32 displayTask = 3; //  是否开启任务\
+    required string rewardColorA = 4; //  任务状态图A\
+    required string taskColorB = 5; //  任务状态图A\
+    repeated int32 taskId = 6; //  任务编号\
+}\
+\
+// 活动签到配置表\
+message ActivitySignInfo\
+{\
+    required int32 type = 1; //  类别\
+    required int32 id = 2; //  序列\
+    required int32 times = 3; //  累计签到次数\
+    required int32 markType = 4; //  特殊标记\
+    required int32 fixedRewardID = 5; //  奖励ID\
+    required int32 draw = 6; //  是否手动领取\
+    required string openSign = 7; //  补签开放时间\
+    required string overSign = 8; //  补签结束时间\
+    required int32 signMoney = 9; //  补签消耗道具\
+    required int32 signConsume = 10; //  补签所需费用\
+    required string openSignStamp = 11; //  补签开放时间时间戳\
+    required string overSignStamp = 12; //  补签结束时间时间戳\
+}\
+// 活动进度配置表\
+message ActivityTotalInfo\
+{\
+    required int32 id = 1; //  类别\
+    required int32 type = 2; //  序列\
+    required int32 deleteTime = 3; //  进度清空时机\
+    repeated int32 stage = 4; //  阶段要求\
+    required int32 obtainoRconsume = 5; //  对象记录要求\
+    repeated int32 stageObject = 6; //  阶段要求对象\
+    repeated int32 stegeReward = 7; //  阶段对应奖励\
+}\
+\
+\
+// 活动任务信息\
+message TaskActivityInfo\
+{\
+\
+    required SubActivityTaskInfo subActivityTaskInfo = 1;// Taskactivity 表数据\
+    repeated TaskActivityRewardInfo taskActivityRewardInfo = 2;// 奖励表数据\
+\
+    repeated ActivityTaskBean taskBean = 3;// 玩家个人任务数据\
+}\
+\
+// 活动任务玩家信息\
+message ActivityTaskBean\
+{\
+    required int32 activityId = 1;// 活动Id\
+    required int32 subTaskId = 2;// activitytask 表ID\
+    required int32 progressNumber = 3; // 当前进度\
+    required int32 state = 4;// 当前状态  1： 已完成\
+    required int32 overTimes = 5;// 已经完成的次数\
+    required int32 lastFreshTime = 6;// 上次刷新的时间\
+}\
+\
+// 活动任务奖励信息\
+message SingleActivityRewardInfo\
+{\
+    required int32 rewardGroupId = 1;//奖励ID\
+    repeated ProtoHashInt2Int itemInfo = 2;// key = itemId, value = count， 有奖励就读这里\
+}\
+\
+\
+// 活动任务奖励信息\
+message TaskActivityRewardInfo\
+{\
+    required int32 rewardGroupId = 1;//奖励ID\
+    repeated ProtoHashInt2Int itemInfo = 2;// key = itemId, value = count， 有奖励就读这里\
+}\
+\
+// 活动签到奖励信息\
+message SignActivityRewardInfo\
+{\
+    required int32 signNumber = 1; //天数\
+    repeated ProtoHashInt2Int itemInfo = 2;// key = itemId, value = count， 有奖励就读这里\
+}\
+\
+// 活动签到详细信息\
+message SignActivityInfo\
+{\
+    repeated ActivitySignInfo activitySignInfo = 1;// 签到活动配置表  JSON\
+    //repeated int32 signNumber = 2;// 已经签到的天数\
+    //repeated int32 canSignNumber = 3;// 可以签到但是没签的天数\
+    //required int32 lastSignTime = 4;// 上次签到时间\
+    //required int32 lastCanSignTime = 5;// 上次往CanSignNumber 中存数据的时间\
+    required PlayerSignActivityInfo playerSignActivityInfo = 2;\
+    repeated SignActivityRewardInfo signActivityRewardInfo = 6;// 签到奖励表数据\
+}\
+\
+// 当前活动信息\
+message CurActivityInfo\
+{\
+    repeated int32 activityState = 1;// key = activityId , 有值表示此活动关闭\
+    required int32 activityVersion = 2;// GM 活动表版本\
+}\
+\
+// 玩家签到活动信息\
+message PlayerSignActivityInfo\
+{\
+    required int32 activityId = 1;//活动Id\
+    repeated int32 signNumber = 2;// 已经签到的天数\
+    repeated int32 canSignNumber = 3;// 可以签到但是没签的天数\
+    required int32 lastSignTime = 4;// 上次签到时间\
+    required int32 lastCanSignTime = 5;// 上次往CanSignNumber 中存数据的时间\
+}\
+\
+// 活动文本表信息\
+message ActivityTextInfo\
+{\
+    repeated ProtoHashInt2String textInfo = 1;// Key = id , value = content\
+}\
+\
+\
+//=========运营活动==================================\
+\
+// 首冲状态\
+enum FirstRechargeEnum\
+{\
+  // 未首冲\
+  STAY = 1;\
+  // 已完成首冲，可领取奖励\
+  SUCCESS = 2;\
+  // 首冲已领取奖励\
+  REWARD = 3;\
+}\
+\
+// 首冲结构\
+message FirstRechargeInfo\
+{\
+	// required int32 firstTime = 1;//已激活未查看 ID集合\
+	required FirstRechargeEnum state = 2;// 首冲状态，true：是\
+}\
+// 玩家本赛季数据\
+message CompetitionSeasonInfo\
+{\
+    required int32 seasonId = 1;// 第几个赛季\
+    required int32 seasonExp = 2;// 赛季经验\
+    required int32 seasonLevel = 3;// 赛季等级\
+    required int32 seasonLowMaxOverId = 4;// 已领取的 低级的赛季 最大奖励ID\
+    required int32 seasonHighMaxOverId = 5;// 已领取的 高级的赛季 最大奖励ID\
+    repeated int32 seasonPlotIdList = 6;// 已看完的的 赛季 剧情ID\
+    required int32 seasonHighRewardOpen = 7;//  赛季高级奖励条解锁 1表示解锁，0表示未解锁\
+}\
+\
+//==================perk结构===========================\
+// Perk结构\
+message PerkInfo\
+{\
+	required int32 id=1;//perk配置ID\
+	required int32 leaderId=2;//所属武将ID， 有Id说明已装备\
+	required string onlyId=3;//唯一id\
+	optional int32 lockStatus=4;//perk锁，0：未锁， 1：上锁， 上锁的不能分解\
+	optional int32 getTime=5;//获得的时间\
+	required int32 mainEntry=6;//固定词条id\
+	repeated int32 entryList=7;//随机/固定词条id集合\
+	required int32 capability=8;//战力\
+	repeated int32 gemstoneSet = 9;// 镶嵌的符灵集合ParkAttribute.id\
+	required int32 perkAppearanceId=10;//变形id\
+}\
+\
+//Perk币(也有可能直接用money结构)\
+message PerkMoneyInfo\
+{\
+	required int64 currentNum = 1;    //当前数量\
+	required int32 itemId = 2; //消耗的货币id\
+}\
+//==================perk结构===========================\
+\
+//==================AbyssFront\
+message AbyssFrontMonster\
+{\
+	required int32  monsterId =1; //怪物id\
+	repeated int32  lockLeaders = 2; // 锁定的leader\
+	required int32  levelId = 3; //关卡id\
+	optional LeaderSquadInfo leaderSquadInfo =4;//当前的队伍信息\
+	required int32 isSweep = 5; // 是否可以扫荡\
+	optional int32 monsterScore = 6; //分数\
+}\
+\
+message AbyssFrontPlayerInfo{\
+	repeated AbyssFrontMonsterInfo abyssFrontMonsterInfos =1;\
+	required RankPlayerInfo rankInfos = 2; //榜单数据\
+	required int32 score = 3;	// 玩家总分\
+	required AbyssFrontRank rank=4;// 排名\
+	optional int32 time = 5;\
+}\
+\
+\
+\
+message AbyssFrontMonsterInfo{\
+	required int32 monsterId = 1; //怪物id\
+	repeated AbyssFrontLeaderInfo abyssFrontLeaderInfo = 2; //leader 的数据\
+	required int32 score = 3 ; //怪物的积分\
+\
+}\
+\
+message AbyssFrontInfo{\
+	required int32 level =1; //当前的等级段\
+	required int32 score =2; //当前的分数\
+	required AbyssFrontRank rank =3; //当前的排名\
+	repeated AbyssFrontMonster abyssFrontMonster = 4;//每个关卡的怪物\
+	optional int32 timeCount =5;// 作战次数\
+	optional int32 rewards= 6;//当期的奖励\
+}\
+\
+message AbyssFrontLeaderInfo\
+{\
+	required int32 position=1;//位置\
+	required LeaderBattleInfo leaderBattleInfo =2; //leader信息\
+}\
+\
+message AbyssFrontRank\
+{\
+	optional int32 rank = 1; //排名 如果不是前100就是 0\
+	optional double percentage = 2; // 如果是前一百就是 0\
+}\
+\
+message LockMonster{\
+	required int32 monsterId = 1; //怪物id\
+	optional int32  lockLeaders = 2; // 锁定的leader\
+	optional string  lockWeapons =3; // 锁定的武器\
+	optional string  lockRevelations =4; // 锁定的镜像\
+}\
+\
+//通过类型修改功能红点\
+message ChangeFunctionRedDotInfo\
+{\
+	required int32 type=1;//红点类型 Action.RedDot\
+	repeated ChangeRedDotTypeInfo changeData=2;//需要修改的信息\
+}\
+\
+message ChangeRedDotTypeInfo\
+{\
+	required int32 addOrDel=1;//1=增加value值2=删除id\
+	required int32 id=2;//id\
+	required  string value =3;//修改值\
+}\
+\
+// 玩家通行证数据\
+message BattlePassInfo\
+{\
+    required int32 battlePassId = 1;\
+    optional int32 curLowLevel = 2;// 普通版已领取等级\
+    optional int32 curHighLevel = 3;// 高级版已领取等级\
+    optional int32 curExp = 4;// 当前经验\
+    optional int32 curLevel = 5;// 当前等级\
+    optional int32 battlePassHighRewardOpen = 6;//  高级奖励条解锁 1表示解锁，0表示未解锁\
+    repeated AlreadyOverBox overBox = 7;// 已经领取的宝箱\
+}\
+\
+message AlreadyOverBox\
+{\
+    required int32 level = 1;// 等级\
+    required int32 position = 2;// 宝箱位置\
+}\
+\
+// GM控制的 通行证数据\
+message BattlePassGMInfo\
+{\
+    required int32 battlePassId = 1;\
+    required string startTime = 2;//开始时间\
+    required string endTime = 3;//结束时间\
+    required string banner = 4;\
+}\
+\
+// 挂机数据结构\
+message HangUpInfo {\
+	optional int32 type = 1;// 挂机类型, 使用之前BattleType枚举\
+	optional int32 levelId = 2;// 挂机的关卡id，使用战斗时的字段, 战斗表id(不同关卡的表id)\
+	optional int32 times = 3;// 挂机次数\
+	optional int64 startTime = 4;// 挂机开始时间\
+	optional int64 endTime = 5;// 挂机结束时间\
+	required int64 state = 6;// 状态(优先读状态，未挂机则不用管后面字段)：0-未挂机或挂机结束已领奖，1-挂机中，2-挂机结束未领奖\
+}\
+\
+// 挂机结算关卡数据结构\
+message HangUpSettle {\
+	optional int32 type = 1;// 挂机类型, 使用之前BattleType枚举\
+	optional TrainLevelInfo trainLevelInfo = 2;// 训练关卡信息\
+	optional MainLevelInfo mainLevelInfo = 3;// 主线关卡信息（包括主线活动本）\
+}\
+\
+/*团本邀请，申请数据-红点*/\
+message GuildWarApplyInviteRedDot{\
+	optional bool haveNewApply = 1;//有新的申请\
+	optional bool haveNewInvite = 2;//有新的邀请\
+}\
+\
+// 团本关卡奖励红点提示\
+message GuildWarRewardRedDot\
+{\
+	required bool haveNewReward = 1;//有新的可领取奖励\
+}\
+\
+// 团本点赞红点提示\
+message GuildWarTeamLikesRedDot\
+{\
+	required bool canLikes = 1;//可进行点赞\
+}\
+\
+\
+// 玩家roguelike 数据\
+message RogueLikeInfo\
+{\
+    required int32 rogueId = 1;// 赛季Id\
+    repeated int32 obtainBuffIds = 2;// 当前获得的buff id\
+    repeated int32 talentBuff = 4;// 局外养成 激活的buff ,可能用于战斗内 也可能是战斗外\
+    repeated int32 buffHandbookIds = 5;// 收集的buff图鉴ID\
+    repeated int32 overBuffHandbookRewardIds = 6;// 领取的buff 收集奖励的 ID\
+    repeated int32 eventHandbookIds = 7;// 收集的事件图鉴ID\
+    repeated int32 overEventHandbookRewardIds = 8;// 领取的事件 收集奖励的 ID\
+    repeated ProtoHashInt2Int plotIds = 9;// 看过的剧情Id,  key = plotId , value =  0:未领奖 1：已经领奖\
+    optional RogueRandomLevelInfo rogueRandomLevelInfo = 10;// 肉鸽 随机出来的 关卡列表,  初始为 空\
+    repeated AlreadyCrossGroup alreadyCrossGroups = 11;// 已经通过 主题难度 列表\
+    optional int32 joinLevel = 13;// 玩家开始游戏 时  的等级，用于 匹配活跃点奖励\
+    repeated int32 overActivePointSet = 14;//已经领取过的 活跃点奖励  的 ID\
+    repeated int32 extraBuffIds = 15;// 选择相同类型的 buff 触发的 额外buff， 比如 选择6个相同的 选的什么buff\
+    repeated int32 randomBuffIds = 16;// 上次随机出来的 buff， 用于杀端 情况下\
+    optional NotOpenBuffInfo notOpenBuffInfo = 17;//  关卡结束了，但是没有请求buff panel 相关信息\
+    optional int32 buffAddType = 18;// 指定天赋开启后 选择的buff 累加类型   -1 表示先开的肉鸽游戏，后解锁的天赋，0 表示未选择（默认）\
+    repeated int32 useTalentIdList = 19;// 使用过的的天赋ID列表\
+    optional ResetBuffRandomEventInfo resetBuffRandomEventInfo = 20;// 事件关当前事件节点 引起的 重新随机buff剩余次数信息\
+    optional int32 useRefreshTime = 21;// 天赋给的Buff 重置次数 已经用了几次\
+\
+    optional int32 extraDropTime = 22;// 额外掉落奖励 已掉落次数\
+    repeated RogueHistoryTeamData historyTeamData = 23;// 历史 主题 编队信息列表\
+\
+}\
+\
+message RogueHistoryTeamData\
+{\
+    required int32 themeId = 1;//主题\
+    repeated int32 leaderIds = 2;//斯露德ID\
+}\
+\
+message NotOpenBuffInfo\
+{\
+    required int32 levelType = 1;// 1: 普通关卡  2： 事件里的战斗关卡\
+    required int32 lastNotOpenBuffLevelId = 2;//  0：正常状态, level ID : 关卡结束了，但是没有请求buff panel\
+}\
+\
+// 事件引起的 重新随机buff 剩余次数信息\
+message ResetBuffRandomEventInfo\
+{\
+    required int32 resetTime = 1;// 剩余次数\
+}\
+\
+// 已经通过的 主题，难度\
+message AlreadyCrossGroup\
+{\
+    required int32 themeId = 1;// 主题ID\
+    required int32 themeDifficulty = 2;// 主题难度\
+}\
+\
+// RogueLike 关卡信息\
+message RogueLikeBarrierInfo\
+{\
+    required int32 levelId = 1;// 当前进行的关卡ID\
+    required int32 curStage = 2;// 当前的阶段\
+    required int32 curCoin = 3;// 当前的货币数量\
+    // repeated RogueLeaderInfo rogueLeaderInfo = 4;// 肉鸽上阵斯露德信息\
+}\
+\
+// 肉鸽上阵斯露德信息\
+message RogueLeaderInfo\
+{\
+    required int32 leaderId = 1;// 斯露德ID\
+    required int32 curHp = 2;// 斯露德血量，百分比\
+}\
+\
+// 肉鸽 随机的来的 关卡列表\
+message RogueRandomLevelInfo\
+{\
+    required int32 themeId = 1;// 主题ID\
+    required int32 themeDifficulty = 2;// 主题难度\
+    repeated LevelStageInfo levelStageInfo = 3;// 阶段随出来的关卡\
+}\
+\
+// 阶段 随机 出来的关卡数据\
+message LevelStageInfo\
+{\
+  required int32 groupId = 1;//阶段组ID\
+  required int32 stageId = 2;// 阶段ID\
+  repeated SingleStageInfo singleStageInfo = 3;\
+}\
+\
+// 单 阶段 随机 出来的关卡数据\
+message SingleStageInfo\
+{\
+   required RandomStageInfo stageInfo = 1;// 随机出来的关卡信息\
+}\
+\
+//随机出来的关卡信息\
+message RandomStageInfo\
+{\
+    required int32 levelId = 1;// 关卡ID\
+    required int32 state = 2;// 0 : 未打， 1 ：进行中 2 成功通过 3. 失败通过\
+    required int32 eventState = 3;// 表示事件关的选项ID\
+    optional int32 isBattle = 4;// 0 ： 没有正在进行的事件关战斗， 1： 上次事件节点战斗未结束\
+}\
+\
+"
+return protoStr

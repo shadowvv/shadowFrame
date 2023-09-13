@@ -1,0 +1,107 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+//爬塔进入\
+//message EnterTower\
+//{\
+//   required int32 towerGroupId=1; //关卡ID（WeekTower.newLevelId）\
+//   repeated LeaderSquadInfo leaderSquadInfo=2; //关卡阵型\
+//}\
+////出爬塔进入战斗服\
+//message EnterTower_S2C\
+//{\
+//   required bool result = 1; // 是否成功开始\
+//   required BattleEnterInfo battleEnterInfo = 2; // 战斗进入数据\
+//   optional ServerInfo server = 3; // 战斗服信息\
+//   //required int32 kcpConvId = 4;  // kcp唯一id\
+//}\
+//爬塔出战斗\
+message OverTower\
+{\
+   optional int32 result = 1;// 战斗结果\
+   optional FightPar fightPar = 2;// 战斗数据\
+   optional int32 towerBegin=3; // 0表示 直接退出  发1表示重新开始\
+}\
+\
+message OverTower_S2C\
+{\
+   required int32 uniqueId = 1;// 战斗唯一id\
+   required int32 battleId = 2;//关卡ID（WeekTower.newLevelId）\
+   optional bool result = 3;//攻打结果\
+   repeated Rewards rewards = 4;//一般奖励下标0=主线关卡首次三星奖励/训练模式为战斗次数奖励 1=普通奖励\
+   repeated int32 starArray = 5;//修改未首次星级列表\
+   required int32 passTime = 6;//通关时间\
+   //  required OverSoloPlayerInfo playerInfo = 6;//玩家数据\
+   required int32 points = 7; //积分\
+   required TowerTeam tower = 8;//当前进行到的塔数据\
+   optional int32 battleNext = 9; // 下一关的关卡id\
+   repeated int32 rewardWeekTowerId = 10; //当前周期领取的奖励数据\
+   optional int32 kill = 11; // 击杀数\
+}\
+\
+//领取爬塔奖励\
+message GetTowerReward\
+{\
+   required int32 towerGroupId =1;\
+   required int32 points =2; //积分\
+}\
+//领取奖励返回\
+message GetTowerReward_S2C\
+{\
+}\
+\
+message GiveUpTower\
+{\
+   required int32 towerGroupId = 1;\
+}\
+\
+message GiveUpTower_S2C\
+{\
+   required int32 towerGroupId = 1;\
+}\
+\
+message OpenTower\
+{\
+\
+}\
+\
+message OpenTower_S2C\
+{\
+   required int32 levelTeam=1; //段位 为参加排名传0\
+   required int32 ranking=2;// 排名 为参加排名传0\
+   required int32 time = 3;// 时间 为参加排名传0\
+   required int32 levelEnd=4;// 预计 段位无传0\
+   required int32  kill=5;//击杀数\
+}\
+\
+message OpenTowerZone\
+{\
+\
+}\
+\
+message OpenTowerZone_S2C\
+{\
+   repeated  TowerHistoryTeam towerHistoryTeamList =1;\
+}\
+\
+message OpenTowerRanking\
+{\
+\
+}\
+\
+message OpenTowerRanking_S2C\
+{\
+   repeated  TowerHistoryTeam towerHistoryTeamList =1;\
+}\
+\
+message OverTowerWeekDeciding{\
+   required int32 towerGroupId = 1;\
+}\
+\
+message OverTowerWeekDeciding_S2C{\
+   repeated TowerWeekTeam towerWeekTeam=1; //周期的爬塔数据\
+}\
+"
+return protoStr

@@ -1,5 +1,6 @@
 package com.shadowFrame.physics.space.bspTree;
 
+import com.shadowFrame.physics.shape.line.LineSegment3;
 import com.shadowFrame.physics.shape.plane.Plane3;
 import com.shadowFrame.physics.shape.solid.AABBBox;
 import com.shadowFrame.util.Geometry3DUtil;
@@ -60,8 +61,9 @@ public class BSPNode<T> {
     }
 
     private static Plane3 findSplitPlane(AABBBox leftBox, AABBBox rightBox) {
-        FLineSegment3 p2p = new FLineSegment3(leftBox.getFSphereBoxCenter(), rightBox.getFSphereBoxCenter());
-        return Geometry3DUtil.findLineSegmentMidVerticalPlane(p2p);
+//        LineSegment3 p2p = new LineSegment3(leftBox.getFSphereBoxCenter(), rightBox.getFSphereBoxCenter());
+//        return Geometry3DUtil.findLineSegmentMidVerticalPlane(p2p);
+        return null;
     }
 
     private static void filterObject(Plane3 splitPlane, List<AABBBox> source, List<AABBBox> tempLeft, List<AABBBox> tempRight) {

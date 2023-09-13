@@ -1,0 +1,2 @@
+TestSummonAD_01={rootTask={nodeType=1,children={[1]={nodeType=103,interrupttag=true,checkMode=2,children={[1]={nodeType=104,times=0,children={[1]={nodeType=103,interrupttag=false,checkMode=1,children={[1]={nodeType=316,chaseType=2,posShift={x=-1.13,y=0.54,z=0.42},children={}},[2]={nodeType=303,selectCampType=3,includeSelf=false,firstSelectCondition=4,firstSelectConditionParam=0,secSelectCondition=0,secSelectConditionParam=0,children={}},[3]={nodeType=306,children={}}}}}},[2]={nodeType=312,idDescType=2,value=1,time=14,children={}}}}}}}
+return TestSummonAD_01

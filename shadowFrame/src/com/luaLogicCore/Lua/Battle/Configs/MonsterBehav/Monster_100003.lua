@@ -1,0 +1,2 @@
+Monster_100003={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=311,propKey=0,compareType=4,compareValue=,valueDescType=1,children={}},[2]={nodeType=5,compareType=5,variables={id={variableType=1,variableValue="123"},compareValue={variableType=1,variableValue=123123}},children={}}}}}}}}}
+return Monster_100003

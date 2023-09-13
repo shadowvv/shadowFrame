@@ -1,0 +1,26 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+// 获取帮助奖励
+message GetHelpCenterReward
+{
+	required int32 helpId = 1;//点击的 帮助Id
+}
+// 获取帮助奖励
+message GetHelpCenterReward_S2C
+{
+	required int32 helpId = 1;//点击的 帮助Id
+}
+
+// 设置帮助Id 为已激活未查看状态
+message SetHelpIdActiveState
+{
+   required int32 helpId = 1;// 帮助Id
+}
+
+// 设置帮助Id 为已激活未查看状态
+message SetHelpIdActiveState_S2C
+{
+   required int32 helpId = 1;// 帮助Id
+}

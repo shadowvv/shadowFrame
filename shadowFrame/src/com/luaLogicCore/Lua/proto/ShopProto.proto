@@ -1,0 +1,90 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+
+//商城刷新
+message ShopRefresh
+{
+	required int32 shopType=1;//商城类型
+}
+
+//商城刷新
+message ShopRefresh_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Shop shops=2;//商城
+	optional Rewards rewards=3;//扣除的物品
+}
+
+//购买商城物品
+message BuyShopItem
+{
+	required int32 shopTypeId=1;//商店id
+	required int32 shopItemId=2;//具体商店表主键ID（例如CommonShop.id）
+	required int32 num=3;//数量
+}
+
+//购买商城物品
+message BuyShopItem_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Rewards rewards=2;//物品集合
+	optional Shop shops=3;//商城
+}
+
+//领取充值任务商城
+message GetRechargeTask
+{
+	required int32 Id=1;//配置表主键id
+}
+
+//领取充值任务商城
+message GetRechargeTask_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Rewards rewards=2;//获得的物品
+	repeated int32 rechargeTaskList=3;//已领取的充值任务id
+}
+
+
+//使用物品 类型为道具
+message UseGoods
+{
+	repeated UsePart useParts = 1;//使用道具
+}
+
+//购买商城物品
+message UseGoods_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Rewards rewards=1;//物品集合
+}
+
+//购买兑换
+message BuyExchangeItem
+{
+	required int32 id=1;//CurrencyShop表主键ID
+	required int32 num=2;//数量
+}
+
+//购买兑换
+message BuyExchangeItem_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Rewards rewards=2;//物品集合
+	repeated ProtoHashInt2Int exchangeMap = 3;//货币/体力兑换结构，每天清空集合数据
+}
+
+//出售物品给系统 类型为道具
+message SellGoods
+{
+	repeated UsePart itemInfo = 1;//出售的物品集合key=id,value=数量
+}
+
+//出售物品给系统
+message SellGoods_S2C
+{
+	// required int32 errCode=1;//错误号
+	optional Rewards rewards=2;//物品集合
+}

@@ -1,0 +1,38 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+
+
+
+//=====================好感度===========================
+
+// 选择天赋
+message SelectTalent
+{
+	required int32 objectId=1;//对象ID
+	required int32 objectType=2;//对象类型：1=斯露德2=NPC
+	repeated ProtoHashInt2Int talentIdMap=3;//天赋ID字典<等级,天赋id>
+}
+
+// 选择天赋 返回
+message SelectTalent_S2C
+{
+	required int32 objectId=1;//对象ID
+	required int32 objectType=2;//对象类型：1=斯露德2=NPC
+	repeated ProtoHashInt2Int talentIdMap=3;//天赋ID字典<等级,天赋id>
+}
+
+// 送 好感度经验 礼物
+message SendFavorGift
+{
+	required int32 leaderId = 1;// 斯露德ID
+	repeated ProtoHashInt2Int gifts = 2; //送的 好感度经验 礼物 集合 key=道具id,value=数量
+}
+
+// 送 好感度经验 礼物 返回
+message SendFavorGift_S2C
+{
+	required int32 leaderId = 1;// 斯露德ID
+	repeated ProtoHashInt2Int gifts = 2; //送的 好感度经验 礼物 集合 key=道具id,value=数量
+}

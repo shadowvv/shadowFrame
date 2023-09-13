@@ -1,0 +1,31 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+//切换服装
+message SwitchClothing
+{
+  required int32 leaderId=1;//武将ID
+  required int32 clothingId=2;//服装id
+}
+
+//切换服装返回
+message SwitchClothing_S2C
+{
+  optional ClothingInfo clothingInfo=1;//服装信息
+  optional LeaderInfo destinationLeaderBean=2;//角色信息
+  optional LeaderInfo sourceLeaderBean=3;//角色信息
+}
+//切换式仗服装
+message SwitchWeaponSkin
+{
+  required string weaponId=1;//式仗ID
+  required int32 skinId=2;//服装id
+}
+
+//切换式仗服装返回
+message SwitchWeaponSkin_S2C
+{
+  optional WeaponInfo destinationWeaponInfo=1;//式仗信息
+  optional WeaponInfo sourceWeaponInfo=2;//式仗信息
+}

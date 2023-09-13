@@ -1,0 +1,2 @@
+Gadget_Gen_WeaponCoolDown={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=109,checkType=1,interruptTag=false,children={[1]={nodeType=324,variables={stateId={variableType=1,variableValue=1}},children={}}}},[2]={nodeType=326,radius=25,selectType=1,selectParam={1},buffGroupId=20007,children={}},[3]={nodeType=326,radius=25,selectType=1,selectParam={1},buffGroupId=20013,children={}},[4]={nodeType=7,children={}}}}}}}
+return Gadget_Gen_WeaponCoolDown

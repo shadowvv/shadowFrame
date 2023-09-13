@@ -1,0 +1,160 @@
+import "Msg.proto";
+package msg;
+option java_package = "com.server.logic.socket.netmsg";// (生成Java类时包名；C#类的命名空间)
+
+//参加乌拉拉活动
+message JoinPatrol
+{
+	required int32 id=1;//PatrolTask.id置表主键id
+	optional PatrolLeaderInfo patrolLeaderInfo = 2;//乌拉拉参与活动的角色信息
+}
+//参加乌拉拉活动 返回
+message JoinPatrol_S2C
+{
+	optional PatrolInfo patrolInfo=1;//乌拉拉结构信息
+	optional TeamInfo teamInfo=2;//队伍结构信息
+}
+
+//获取乌拉拉活动信息
+message GetPatrol
+{
+	
+}
+//获取乌拉拉活动信息 返回
+message GetPatrol_S2C
+{
+	optional PatrolInfo patrolInfo=1;//乌拉拉结构信息
+	optional TeamInfo teamInfo=2;//队伍结构信息
+	repeated PatrolTeamLevelInfo teamLevelInfoS = 3;//乌拉拉个人已完成关卡结构
+	repeated PatrolLevelInfo patrolLevelInfoS = 4;//乌拉拉队友关卡信息关卡
+	repeated PatrolSpeedUpInfo patrolSpeedUpInfoS = 5;//乌拉拉队友加速关卡
+}
+
+// //修改乌拉拉参战角色
+// message PatrolChangeLeader
+// {
+// 	optional PatrolLeaderInfo patrolLeaderInfo = 1;//乌拉拉参与活动的角色信息
+// }
+// //修改乌拉拉参战角色 返回
+// message PatrolChangeLeader_S2C
+// {
+// 	optional PatrolInfo patrolInfo=1;//乌拉拉队伍结构信息
+// }
+
+//领取进度奖励
+message GetPaceReward
+{
+
+}
+//领取进度奖励 返回
+message GetPaceReward_S2C
+{
+	optional PatrolInfo patrolInfo=1;//乌拉拉结构信息
+}
+
+//乌拉拉退出战斗
+message OverBattlePatrol
+{
+   optional int32 result = 1;// 战斗结果
+   optional FightPar fightPar = 2;// 战斗数据
+}
+
+//乌拉拉退出战斗 返回
+message OverBattlePatrol_S2C
+{
+	required int32 uniqueId = 1;// 战斗唯一id
+	required int32 battleId = 2;//关卡ID（PatrolLevel.id）
+	optional bool result = 3;//攻打结果
+	repeated Rewards rewards = 4;//一般奖励下标0=主线关卡首次三星奖励/训练模式为战斗次数奖励 1=普通奖励
+	required int32 passTime = 5;//通关时间
+	optional PatrolLevelInfo patrolLevelInfo = 6;//可做的悬赏任务数据
+}
+
+// 乌拉拉退出战斗 单人关卡/队伍关卡 推送
+message OverBattlePatrolPush
+{
+	optional PatrolSpeedUpInfo speedUpInfo = 1;//乌拉拉队伍内可加速结构
+	optional PatrolTeamLevelInfo teamLevelInfo = 2;//乌拉拉队伍关卡结构
+}
+
+//检查到队友帮忙完成的个人加速关卡或者队伍关卡
+message CheckSpeedUpOrTeamLevel
+{
+	required int32 type=1;//1=检查单人增速关卡，2=检查队伍关卡
+	optional PatrolSpeedUpInfo speedUpInfo = 2;//乌拉拉队伍内可加速结构
+	optional PatrolTeamLevelInfo teamLevelInfo = 3;//乌拉拉队伍关卡结构
+}
+//检查到队友帮忙完成的个人加速关卡或者队伍关卡 返回
+message CheckSpeedUpOrTeamLevel_S2C
+{
+	optional PatrolLevelInfo patrolLevelInfo = 1;//可做的悬赏任务数据
+	optional PatrolInfo patrolInfo=2;//乌拉拉结构信息
+}
+
+//查询推荐队伍信息
+message GetQueryRecommendTeam
+{
+}
+//查询推荐队伍信息 返回
+message GetQueryRecommendTeam_S2C
+{
+	repeated RecommendTeamInfo recommendTeamInfoS = 1;//推荐队伍结构集合
+}
+
+// 乌拉拉退队
+message PatrolQuitTeam
+{
+}
+
+// 乌拉拉退队-返回
+message PatrolQuitTeam_S2C
+{
+	optional TeamInfo teamInfo=1;//队伍结构信息
+}
+
+// 获取简单的队伍信息（目前仅用于推荐队伍）
+message GetSimpleTeamS
+{
+	required TeamType teamType=1;//队伍类型
+	required int32 type = 2;//1=推荐队友2=推荐队伍
+	repeated int32 idS=3;//队员uid/队伍id 集合
+}
+// 获取简单的队伍信息（目前仅用于推荐队伍）-返回
+message GetSimpleTeamS_S2C
+{
+	repeated TeamSimpleInfo teamInfoS=1;//队伍结构信息集合
+}
+
+// 获取乌拉拉邀请入队信息
+message GetPlayerInviteTeamData
+{
+
+}
+// 获取乌拉拉邀请入队信息-返回
+message GetPlayerInviteTeamData_S2C
+{
+	repeated ProtoHashInt2Int teamIdS=1;//邀请队伍信息key=teamIdvalue=时间戳
+}
+
+//获取乌拉拉活动信息
+message GetPatrolTeam
+{
+	
+}
+//获取乌拉拉活动信息 返回
+message GetPatrolTeam_S2C
+{
+	optional TeamInfo teamInfo=1;//队伍结构信息（去除自己的角色信息）
+}
+
+//乌拉拉赛季结束后发送
+message PatrolSeasonOver
+{
+	
+}
+//乌拉拉赛季结束后发送 返回
+message PatrolSeasonOver_S2C
+{
+	optional bool back=1;//重置成功
+}
+

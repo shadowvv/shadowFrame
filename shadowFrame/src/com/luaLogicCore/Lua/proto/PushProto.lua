@@ -1,0 +1,126 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+\
+\
+message Data_Push\
+{\
+	optional PlayerChangeExpAndLvl_Push playerChangeExpandLvl=1; // 经验推送\
+	optional ChangeMoney_Push changeMoney=2;//钱推送\
+	optional ChangeStrength_Push changeStrength=3;//体力改变推送\
+	optional ChangeHead_Push changeHead=4;//玩家头像(头像解锁)---\
+	optional LeaderAttrChanged_Push leaderAttrChanged=5;//武将信息发生变化 服务器推送\
+	optional RevelationChanged_Push revelationChanged=6;//镜像信息发生变化 服务器推送\
+	optional WeaponChanged_Push weaponChanged=7;//式仗信息发生变化 服务器推送\
+	optional NewClothing_Push newClothing=8;//角色新服装推送 ----\
+	optional NewWeaponSkin_Push newWeaponSkin=9;//式仗获得新的涂装推送 ----\
+	optional ChangePart_Push changePart=10;//修改道具\
+	optional FavorChanged_Push changeFavor=11;//修改好感度\
+	optional ChangeShipStrength_Push changeShipStrength=12;//战舰体力改变推送\
+	optional ChangeShipExp_Push changeShipExp =13;//战舰经验&等级\
+	optional ChangeShipTalentNum_Push changeShipTalentNum =14;//战舰天赋点数改变推送\
+	optional ChangeHeadFrame_Push changeHeadFrame=15;//玩家头像框\
+}\
+\
+//物品改变的推送\
+message ShowItem_Push\
+{\
+	required int32 comeFrom=1;\
+	required Rewards reward=2;//奖励\
+}\
+\
+\
+//获得模块开启的推送消息\
+message OpenFuctionSet_S2C_Push\
+{\
+	required int32 newId=1;//新开启的功能模块ID\
+}\
+\
+\
+//武将技能开启信息发生变化 服务器推送\
+message LeaderSkillChanged_S2C_Push\
+{\
+	required int32 leaderid=1;//武将id\
+	repeated TalentSkill talentSkills=2;//武将技能信息\
+}\
+\
+\
+//获得新的功能模块开启的推送消息\
+message ConditionSet_S2C_Push\
+{\
+	repeated int32 newId=1;//新开启的小功能模块ID\
+}\
+\
+//检查计算出来功能模块开启的推送消息\
+message ComputeConditionSet_S2C_Push\
+{\
+	repeated int32 conditionId=1;//检查计算出来的开启的小功能模块ID\
+}\
+\
+//删除小功能模块开启的推送消息\
+message RemoveConditionSet_Push\
+{\
+	repeated int32 removeNewId=1;//删除开启的小功能模块ID\
+}\
+\
+//获得新阵法的推送消息\
+message ChangeFormationS2CPush\
+{\
+	required LeaderSquadInfo leaderSquadSet=1;//修改后的阵型信息\
+}\
+\
+\
+//商城信息变化推送\
+message ShopDataChange_S2C_Push\
+{\
+	required Shop shops=1;//商城\
+}\
+\
+//新邮件推送\
+message NewMail_Push\
+{\
+	required Mail mail=1;//邮件内容\
+	repeated string removeMails=2;//到期删除的邮件ID集合\
+}\
+\
+//改变的任务进度推送\
+message TaskProgress_Push\
+{\
+	repeated ProtoHashInt2Int progressTaskIdS=1;//任务进度信息, 只推送变动部分\
+}\
+\
+// 图鉴中击杀怪物次数信息推送\
+message HandBookMonsterKillPush\
+{\
+	repeated ProtoHashInt2Int monsterTypeKill = 1;//战斗中击杀的怪物类型以及次数 key=怪物类型Id(MonsterTemplate.id)  value=击杀次数\
+}\
+\
+//角色属性/战力触发了任务 客户端附加推送给服务器的消息\
+message TaskConditionClientPush\
+{\
+	required int32 leaderId=1;   //角色id\
+	required int32 type=2;	//触发类型 1=属性触发，2=战力\
+	required int32 value=3;	//属性值/战力值\
+}\
+//需要弹错误窗\
+message ErrorCode_Push\
+{\
+	optional ErrorMsg_S2C error=1;\
+}\
+\
+\
+// 帮助中心推送\
+message HelpCenter_PUSH\
+{\
+	required HelpCenterData helpCenterData = 1; // 推送消息中 非全量数据\
+}\
+\
+// 强制跳过引导组 数据推送（增量）\
+message ForceGuidePush\
+{\
+    repeated int32 newForceGuide = 1;// 新手引导强制跳过组Id 集合 （增量）\
+}\
+"
+return protoStr

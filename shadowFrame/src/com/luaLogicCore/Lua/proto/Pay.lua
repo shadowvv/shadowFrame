@@ -1,0 +1,86 @@
+local protoStr = { }
+protoStr.str = "import 'Msg.proto';\
+package msg;\
+option java_package = 'com.server.logic.socket.netmsg';// (生成Java类时包名；C#类的命名空间)\
+\
+// //充值流程创建游戏支付订单\
+// message CreatePayOrder\
+// {\
+// 	required int32 id=1;//PaymentGoodsInfo.id 检查是否可购买\
+// 	required int32 num=2;//购买数量（可能不需要）\
+// }\
+// //充值流程创建游戏支付订单 返回\
+// message CreatePayOrder_S2C\
+// {\
+// 	required int64 id=1;//游戏订单号\
+// 	required int32 paymentGoodsId=2;//PaymentGoodsInfo.id\
+// }\
+\
+//客户端给服务器返回sdk支付结果\
+message PaymentResults\
+{\
+	required string cpOrderId=1;//游戏订单号\
+	required int32 type=2;//游戏订单号状态0=失败或取消，1=成功\
+}\
+//客户端给服务器返回sdk支付结果 返回\
+message PaymentResults_S2C\
+{\
+	required int32 type=1;//收到（目前无实际意义）\
+}\
+\
+// 订单完成推送消息给客户端 推送\
+message PaymentOverPush\
+{\
+	required string cpOrderId=1;//游戏支付订单号\
+}\
+\
+//获取待发货的支付订单信息、收到PaymentOverPush推送or 登录 都要发送此协议\
+message GetWaitOrderData\
+{\
+}\
+//获取待发货的支付订单信息 返回\
+message GetWaitOrderData_S2C\
+{\
+	repeated string idS=1;//待发货的支付订单集合（没有课发货的订单时候返回空）\
+}\
+\
+// //给未发货订单发货（奖励组）\
+// message GetPayOrderReward\
+// {\
+// 	required int64 id=1;//游戏支付订单号\
+// }\
+// //给未发货订单发货（奖励组） 返回\
+// message GetPayOrderReward_S2C\
+// {\
+// 	repeated int64 idS=1;//待发货的支付订单集合（没有课发货的订单时候返回空）\
+// }\
+\
+//pc二维码信息验证接口\
+message QRcodeCheckPayPC\
+{\
+	required string qrcodePC=1;//游戏订单号二维码信息\
+	required string deviceOS = 2;// 设备类型枚举,和兴涛定的全部小写 pc,android,ios\
+}\
+//pc二维码信息验证接口 返回\
+message QRcodeCheckPayPC_S2C\
+{\
+	required int32 result=1;//验证结果0=成功 其他值=错误号\
+	optional CreatePayOrderInfo createPayOrderInfo = 2;//订单信息\
+	optional PaymentGoodsInfo paymentGoodsInfos = 3;// 支付商店物品配置表集合\
+	optional PaymentInfo paymentInfos = 4;// sdk支付物品配置表\
+	optional int32 uid = 5;//玩家uid\
+	optional string uName = 6;//玩家名字\
+}\
+\
+//pc取消支付\
+message CancelPaymentPC\
+{\
+	required string qrcodePC=1;//游戏订单号二维码信息\
+}\
+//pc取消支付 返回\
+message CancelPaymentPC_S2C\
+{\
+\
+}\
+"
+return protoStr

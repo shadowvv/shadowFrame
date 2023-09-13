@@ -1,0 +1,2 @@
+LevelBehav_9000070={rootTask={nodeType=1,children={[1]={nodeType=100,interrupttag=false,children={[1]={nodeType=204,dropType=2,firstCamp=0,secondCamp=1,delayType=0,delayBottom=1,delayTop=1.01,variables={id={variableType=1,variableValue=101}},children={}},[2]={nodeType=219,targetType=1,operType=1,targetId=1,buffGroupId=20002,children={}}}}}},treeVariableDic={["ls"]=0,["one"]=1}}
+return LevelBehav_9000070
