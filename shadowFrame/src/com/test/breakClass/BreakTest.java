@@ -15,9 +15,9 @@ public class BreakTest {
         ClassPool cp = ClassPool.getDefault();
         cp.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
         cp.importPackage("com.test.breakClass.MethodClass");
-        // 找到 CtClass，重写 com.chengxuzhixin.Demo
+        // 找到 CtClass
         CtClass cc = cp.get("com.test.breakClass.BreakClass");
-        // 增强方法 test
+        // 增强方法
         CtMethod m = cc.getDeclaredMethod("invokeFromOtherSide");
         // 前面插入代码
         m.insertBefore("{ " +

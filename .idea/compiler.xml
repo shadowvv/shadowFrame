@@ -9,8 +9,5 @@
         <module name="shadowFrame" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="shadowFrame" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
