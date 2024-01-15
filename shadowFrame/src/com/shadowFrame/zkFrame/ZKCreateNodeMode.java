@@ -1,0 +1,11 @@
+package com.shadowFrame.zkFrame;
+
+public enum ZKCreateNodeMode {
+    PERSISTENT,
+    PERSISTENT_SEQUENTIAL,
+    EPHEMERAL,
+    EPHEMERAL_SEQUENTIAL,
+    CONTAINER,
+    PERSISTENT_WITH_TTL,
+    PERSISTENT_SEQUENTIAL_WITH_TTL
+}
