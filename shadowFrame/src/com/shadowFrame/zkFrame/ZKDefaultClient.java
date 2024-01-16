@@ -59,7 +59,7 @@ public class ZKDefaultClient implements IZKClient {
     }
 
     @Override
-    public boolean createNode(String nodePath,String data,ZKCreateNodeMode mode,boolean isCreateParent) {
+    public boolean createNode(String nodePath,byte[] data,ZKCreateNodeMode mode,boolean isCreateParent) {
         if (StringUtils.isEmpty(nodePath)){
             return false;
         }
@@ -80,13 +80,13 @@ public class ZKDefaultClient implements IZKClient {
         }
     }
 
-    private boolean createNode(String nodePath,String data,ZKCreateNodeMode mode){
+    private boolean createNode(String nodePath,byte[] data,ZKCreateNodeMode mode){
         try {
             Stat stat = zooKeeper.exists(nodePath,true);
             if (stat != null){
                 return false;
             }
-            zooKeeper.create(nodePath,data.getBytes(),ZooDefs.Ids.OPEN_ACL_UNSAFE,getCreateMode(mode));
+            zooKeeper.create(nodePath,data,ZooDefs.Ids.OPEN_ACL_UNSAFE,getCreateMode(mode));
         } catch (KeeperException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -127,11 +127,11 @@ public class ZKDefaultClient implements IZKClient {
         }
     }
 
-    public String queryNode(String nodePath) {
+    @Override
+    public byte[] queryNodeData(String nodePath) {
         try {
             Stat stat = new Stat();
-            byte[] data = zooKeeper.getData(nodePath,true,stat);
-            return new String(data);
+            return zooKeeper.getData(nodePath,true,stat);
         } catch (KeeperException | InterruptedException e) {
             throw new RuntimeException(e);
         }

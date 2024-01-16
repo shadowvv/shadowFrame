@@ -24,14 +24,14 @@ public interface IZKConfigWatcher extends Watcher {
     default void process(WatchedEvent event) {
         switch (event.getType()){
             case NodeCreated:
-                String createValue = getZKClient().queryNode(event.getPath());
+                String createValue = getZKClient().queryNodeString(event.getPath());
                 onConfigCreated(event.getPath(),createValue);
                 break;
             case NodeDeleted:
                 onConfigDelete(event.getPath());
                 break;
             case NodeDataChanged:
-                String changeValue = getZKClient().queryNode(event.getPath());
+                String changeValue = getZKClient().queryNodeString(event.getPath());
                 onConfigChange(event.getPath(),changeValue);
                 break;
         }
