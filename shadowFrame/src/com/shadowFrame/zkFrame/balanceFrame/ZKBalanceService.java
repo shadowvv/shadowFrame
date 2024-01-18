@@ -18,28 +18,31 @@ public class ZKBalanceService<T> {
 
     public ZKBalanceService(String balancePath){
         this.client = new ZKDefaultClient();
-        this.balancePath = balancePath;
         ZKDefaultClient shadowZKClient = (ZKDefaultClient) client;
         shadowZKClient.initConnect();
+        this.balancePath = this.client.getZKRoot()+balancePath;
+
         balanceInfoMap = new HashMap<>();
     }
 
     public ZKBalanceService(String ZKHost,String path,int sessionTimeout,String balancePath){
         this.client = new ZKDefaultClient();
-        this.balancePath = balancePath;
         this.client.initConnect(ZKHost,path,sessionTimeout);
+        this.balancePath = this.client.getZKRoot()+balancePath;
+
         balanceInfoMap = new HashMap<>();
     }
 
     public ZKBalanceService(IZKClient client,String balancePath){
         this.client = client;
-        this.balancePath = balancePath;
+        this.balancePath = this.client.getZKRoot()+balancePath;
+
         balanceInfoMap = new HashMap<>();
     }
 
     public void initService(IBalanceStrategy<T> balanceStrategy){
         this.balanceStrategy = balanceStrategy;
-        client.addWatcher(client.getZKRoot() + balancePath, new IZKWatcher() {
+        client.addWatcher(this.balancePath, new IZKWatcher() {
             @Override
             public boolean onNodeChange(String key, byte[] data) {
                 int id = balanceStrategy.getBalanceInfoIdFromKey(key);
