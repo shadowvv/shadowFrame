@@ -35,7 +35,12 @@ public class ZKBalanceStrategySample implements IBalanceStrategy<ZKBalanceInfoSa
 
     @Override
     public int getBalanceInfoIdFromKey(String key) {
-        String balanceId = key.substring(key.lastIndexOf("/"),key.length()).substring(8);
+        String balanceId = key.substring(key.lastIndexOf("/"),key.length()).substring(getBalancePrefix().length()+1);
         return Integer.parseInt(balanceId);
+    }
+
+    @Override
+    public String getBalancePrefix() {
+        return " ";
     }
 }

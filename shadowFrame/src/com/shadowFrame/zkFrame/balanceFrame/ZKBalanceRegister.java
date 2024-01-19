@@ -1,7 +1,9 @@
 package com.shadowFrame.zkFrame.balanceFrame;
 
+import com.shadowFrame.util.EmptyStringException;
 import com.shadowFrame.zkFrame.IZKClient;
 import com.shadowFrame.zkFrame.ZKDefaultClient;
+import org.apache.zookeeper.common.StringUtils;
 
 public class ZKBalanceRegister<T> {
 
@@ -20,6 +22,9 @@ public class ZKBalanceRegister<T> {
         }
 
         this.balanceStrategy = balanceStrategy;
+        if (StringUtils.isEmpty(balanceStrategy.getBalancePrefix())){
+            throw new EmptyStringException();
+        }
     }
 
     public ZKBalanceRegister(String ZKHost,String path,int sessionTimeout,String balancePath,IBalanceStrategy<T> balanceStrategy){
@@ -32,6 +37,9 @@ public class ZKBalanceRegister<T> {
         }
 
         this.balanceStrategy = balanceStrategy;
+        if (StringUtils.isEmpty(balanceStrategy.getBalancePrefix())){
+            throw new EmptyStringException();
+        }
     }
 
     public ZKBalanceRegister(IZKClient client,String balancePath,IBalanceStrategy<T> balanceStrategy){
@@ -43,10 +51,13 @@ public class ZKBalanceRegister<T> {
         }
 
         this.balanceStrategy = balanceStrategy;
+        if (StringUtils.isEmpty(balanceStrategy.getBalancePrefix())){
+            throw new EmptyStringException();
+        }
     }
 
     public boolean registerBalanceInfo(T balanceInfo){
-        return this.client.createEphemeralNode(balancePath+"/balance",this.balanceStrategy.encodeBalanceInfo(balanceInfo),true,false);
+        return this.client.createEphemeralNode(balancePath+"/"+this.balanceStrategy.getBalancePrefix(),this.balanceStrategy.encodeBalanceInfo(balanceInfo),true,false);
     }
 
 }

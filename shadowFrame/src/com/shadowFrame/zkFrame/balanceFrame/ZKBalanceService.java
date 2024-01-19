@@ -1,10 +1,12 @@
 package com.shadowFrame.zkFrame.balanceFrame;
 
 import com.shadowFrame.log.ShadowLogger;
+import com.shadowFrame.util.EmptyStringException;
 import com.shadowFrame.zkFrame.IZKClient;
 import com.shadowFrame.zkFrame.IZKWatcher;
 import com.shadowFrame.zkFrame.ZKAddWatchMode;
 import com.shadowFrame.zkFrame.ZKDefaultClient;
+import org.apache.zookeeper.common.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,9 @@ public class ZKBalanceService<T> {
     }
 
     public void initService(IBalanceStrategy<T> balanceStrategy){
+        if (StringUtils.isEmpty(balanceStrategy.getBalancePrefix())){
+            throw new EmptyStringException();
+        }
         this.balanceStrategy = balanceStrategy;
         client.addWatcher(this.balancePath, new IZKWatcher() {
             @Override
@@ -48,7 +53,6 @@ public class ZKBalanceService<T> {
                 int id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 T balanceInfo = balanceStrategy.decodeBalanceInfo(data);
                 balanceInfoMap.put(id,balanceInfo);
-                ShadowLogger.logPrintln("onNodeChange");
                 return true;
             }
 
@@ -56,7 +60,6 @@ public class ZKBalanceService<T> {
             public boolean onNodeDelete(String key) {
                 int id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 balanceInfoMap.remove(id);
-                ShadowLogger.logPrintln("onNodeDelete");
                 return true;
             }
 
@@ -65,7 +68,6 @@ public class ZKBalanceService<T> {
                 int id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 T balanceInfo = balanceStrategy.decodeBalanceInfo(data);
                 balanceInfoMap.put(id,balanceInfo);
-                ShadowLogger.logPrintln("onNodeCreated");
                 return true;
             }
 

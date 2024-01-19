@@ -171,6 +171,16 @@ public class ZKDefaultClient implements IZKClient {
         return true;
     }
 
+    @Override
+    public boolean deleteWatcher(String path, Watcher watcher) {
+        try {
+            zooKeeper.removeWatches(path,watcher, Watcher.WatcherType.Any,true);
+            return true;
+        } catch (InterruptedException | KeeperException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private AddWatchMode getWatchMode(ZKAddWatchMode mode){
         switch (mode){
             case ONCE:

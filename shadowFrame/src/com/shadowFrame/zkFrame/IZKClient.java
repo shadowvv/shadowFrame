@@ -71,6 +71,8 @@ public interface IZKClient {
 
     boolean addWatcher(String path, Watcher watcher,ZKAddWatchMode mode);
 
+    boolean deleteWatcher(String path, Watcher watcher);
+
     default boolean AddOnceWatcher(String path, Watcher watcher){
         return addWatcher(path,watcher,ZKAddWatchMode.ONCE);
     }

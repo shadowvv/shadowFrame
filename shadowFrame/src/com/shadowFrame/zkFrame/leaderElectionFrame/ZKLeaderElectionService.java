@@ -29,7 +29,6 @@ public class ZKLeaderElectionService implements ILeaderElectionService {
     }
 
     public void initService(){
-        tryToBeLeader();
         this.client.addWatcher(this.leaderPath, new IZKWatcher() {
             @Override
             public boolean onNodeChange(String key, byte[] data) {
@@ -51,12 +50,14 @@ public class ZKLeaderElectionService implements ILeaderElectionService {
             public IZKClient getZKClient() {
                 return client;
             }
-        }, ZKAddWatchMode.PERSISTENT_RECURSIVE);
+        }, ZKAddWatchMode.PERSISTENT);
+        tryToBeLeader();
     }
 
     @Override
     public boolean tryToBeLeader() {
-        return this.client.createNode(this.leaderPath,"/leader", ZKCreateNodeMode.EPHEMERAL,false);
+        this.isLeader = this.client.createNode(this.leaderPath,"/leader", ZKCreateNodeMode.EPHEMERAL,false);
+        return this.isLeader;
     }
 
     @Override

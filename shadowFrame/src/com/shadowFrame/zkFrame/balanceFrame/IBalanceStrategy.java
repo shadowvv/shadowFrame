@@ -12,4 +12,6 @@ public interface IBalanceStrategy<T> {
 
     int getBalanceInfoIdFromKey(String key);
 
+    String getBalancePrefix();
+
 }
