@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ZKBalanceStrategySample implements IBalanceStrategy<ZKBalanceInfoSample> {
     @Override
-    public ZKBalanceInfoSample getBalanceInfo(Map<Integer, ZKBalanceInfoSample> balanceInfoMap) {
+    public ZKBalanceInfoSample getBalanceInfo(Map<Long, ZKBalanceInfoSample> balanceInfoMap) {
         for (ZKBalanceInfoSample info:balanceInfoMap.values()){
             return info;
         }

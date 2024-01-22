@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface IBalanceStrategy<T> {
 
-    T getBalanceInfo(Map<Integer,T> balanceInfoMap);
+    T getBalanceInfo(Map<Long,T> balanceInfoMap);
 
     T decodeBalanceInfo(byte[] data);
 
