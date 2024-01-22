@@ -1,5 +1,6 @@
 package com.sample.zkFrame.balanceFrame;
 
+import com.shadowFrame.zkFrame.ZKUtils;
 import com.shadowFrame.zkFrame.balanceFrame.IBalanceStrategy;
 
 import java.nio.ByteBuffer;
@@ -34,9 +35,8 @@ public class ZKBalanceStrategySample implements IBalanceStrategy<ZKBalanceInfoSa
     }
 
     @Override
-    public int getBalanceInfoIdFromKey(String key) {
-        String balanceId = key.substring(key.lastIndexOf("/"),key.length()).substring(getBalancePrefix().length()+1);
-        return Integer.parseInt(balanceId);
+    public long getBalanceInfoIdFromKey(String key) {
+        return ZKUtils.getZKIndex(key);
     }
 
     @Override

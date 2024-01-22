@@ -2,7 +2,7 @@ package com.shadowFrame.zkFrame.leaderElectionFrame;
 
 import com.shadowFrame.zkFrame.*;
 
-public class ZKLeaderElectionService implements ILeaderElectionService {
+public class ZKLeaderElectionService implements ILeaderElection {
 
     private String leaderPath;
 
@@ -56,7 +56,10 @@ public class ZKLeaderElectionService implements ILeaderElectionService {
 
     @Override
     public boolean tryToBeLeader() {
-        this.isLeader = this.client.createNode(this.leaderPath,"/leader", ZKCreateNodeMode.EPHEMERAL,false);
+        String nodeKey = this.client.createNode(this.leaderPath,"/leader", ZKCreateNodeMode.EPHEMERAL,false);
+        if (nodeKey != null){
+            this.isLeader = true;
+        }
         return this.isLeader;
     }
 

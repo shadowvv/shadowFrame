@@ -59,38 +59,39 @@ public class ZKDefaultClient implements IZKClient {
     }
 
     @Override
-    public boolean createNode(String nodePath,byte[] data,ZKCreateNodeMode mode,boolean isCreateParent) {
+    public String createNode(String nodePath,byte[] data,ZKCreateNodeMode mode,boolean isCreateParent) {
         if (StringUtils.isEmpty(nodePath)){
-            return false;
+            return null;
         }
         if (isCreateParent){
+            String nodeKey = null;
             String[] nodePaths = nodePath.substring(1).split("/");
             for (int i = 0; i < nodePaths.length; i++) {
                 String path = "";
                 for (int j = 0; j <= i ; j++) {
                     path = path + "/" + nodePaths[j];
-                    if (!createNode(nodePath, data, mode)){
-                        return false;
+                    nodeKey = createNode(nodePath, data, mode);
+                    if (nodeKey == null){
+                        return null;
                     }
                 }
             }
-            return true;
+            return nodeKey;
         }else {
             return createNode(nodePath,data,mode);
         }
     }
 
-    private boolean createNode(String nodePath,byte[] data,ZKCreateNodeMode mode){
+    private String createNode(String nodePath,byte[] data,ZKCreateNodeMode mode){
         try {
             Stat stat = zooKeeper.exists(nodePath,true);
             if (stat != null){
-                return false;
+                return null;
             }
-            zooKeeper.create(nodePath,data,ZooDefs.Ids.OPEN_ACL_UNSAFE,getCreateMode(mode));
+            return zooKeeper.create(nodePath,data,ZooDefs.Ids.OPEN_ACL_UNSAFE,getCreateMode(mode));
         } catch (KeeperException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return true;
     }
 
     private CreateMode getCreateMode(ZKCreateNodeMode mode){
@@ -118,6 +119,19 @@ public class ZKDefaultClient implements IZKClient {
     public boolean checkExist(String nodePath){
         try {
             Stat stat = zooKeeper.exists(nodePath,true);
+            if (stat == null){
+                return false;
+            }
+            return true;
+        } catch (KeeperException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean checkExist(String nodePath, Watcher watcher) {
+        try {
+            Stat stat = zooKeeper.exists(nodePath,watcher);
             if (stat == null){
                 return false;
             }
@@ -164,7 +178,11 @@ public class ZKDefaultClient implements IZKClient {
     @Override
     public boolean addWatcher(String path, Watcher watcher, ZKAddWatchMode mode) {
         try {
-            zooKeeper.addWatch(path,watcher,getWatchMode(mode));
+            if (mode == ZKAddWatchMode.ONCE){
+                checkExist(path,watcher);
+            }else {
+                zooKeeper.addWatch(path,watcher,getWatchMode(mode));
+            }
         }catch (InterruptedException | KeeperException e) {
             throw new RuntimeException(e);
         }

@@ -2,7 +2,7 @@ package com.shadowFrame.zkFrame.lockFrame;
 
 import com.shadowFrame.zkFrame.*;
 
-public class ZKExclusiveLockService implements ILockService {
+public class ZKExclusiveLockService implements IExclusiveLock {
 
     private String lockPath;
 
@@ -59,9 +59,11 @@ public class ZKExclusiveLockService implements ILockService {
 
     @Override
     public boolean tryToGetLock() {
-        this.isLockOwner = this.client.createNode(this.lockPath,"/exclusiveLock", ZKCreateNodeMode.EPHEMERAL,false);
-        if (!this.isLockOwner){
+        String nodeKey = this.client.createNode(this.lockPath,"/exclusiveLock", ZKCreateNodeMode.EPHEMERAL,false);
+        if (nodeKey == null){
             this.client.addWatcher(this.lockPath,this.watcher, ZKAddWatchMode.ONCE);
+        }else{
+            this.isLockOwner = true;
         }
         return this.isLockOwner;
     }
@@ -92,11 +94,15 @@ public class ZKExclusiveLockService implements ILockService {
         exclusiveLockThread.start();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ZKExclusiveLockService service = new ZKExclusiveLockService("/exclusiveLock");
         service.initService();
         service.tryToGetLock();
         service.start();
+
+        Thread.sleep(10000);
+
+        service.client.modifyNodeData(service.lockPath, "/exclusiveLock1");
     }
 
 }

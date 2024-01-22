@@ -1,6 +1,6 @@
 package com.shadowFrame.zkFrame.lockFrame;
 
-public interface ILockService {
+public interface IExclusiveLock {
 
     boolean tryToGetLock();
 

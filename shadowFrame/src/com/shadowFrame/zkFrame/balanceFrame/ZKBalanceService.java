@@ -14,7 +14,7 @@ import java.util.Map;
 public class ZKBalanceService<T> {
 
     private String balancePath;
-    private Map<Integer,T> balanceInfoMap;
+    private Map<Long,T> balanceInfoMap;
     private IZKClient client;
     private IBalanceStrategy<T> balanceStrategy;
 
@@ -50,7 +50,7 @@ public class ZKBalanceService<T> {
         client.addWatcher(this.balancePath, new IZKWatcher() {
             @Override
             public boolean onNodeChange(String key, byte[] data) {
-                int id = balanceStrategy.getBalanceInfoIdFromKey(key);
+                long id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 T balanceInfo = balanceStrategy.decodeBalanceInfo(data);
                 balanceInfoMap.put(id,balanceInfo);
                 return true;
@@ -58,14 +58,14 @@ public class ZKBalanceService<T> {
 
             @Override
             public boolean onNodeDelete(String key) {
-                int id = balanceStrategy.getBalanceInfoIdFromKey(key);
+                long id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 balanceInfoMap.remove(id);
                 return true;
             }
 
             @Override
             public boolean onNodeCreated(String key, byte[] data) {
-                int id = balanceStrategy.getBalanceInfoIdFromKey(key);
+                long id = balanceStrategy.getBalanceInfoIdFromKey(key);
                 T balanceInfo = balanceStrategy.decodeBalanceInfo(data);
                 balanceInfoMap.put(id,balanceInfo);
                 return true;

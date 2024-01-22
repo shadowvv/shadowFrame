@@ -1,6 +1,6 @@
 package com.shadowFrame.zkFrame.leaderElectionFrame;
 
-public interface ILeaderElectionService {
+public interface ILeaderElection {
 
     boolean tryToBeLeader();
 

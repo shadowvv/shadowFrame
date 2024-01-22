@@ -49,7 +49,7 @@ public class ZKConfigDefaultModifier implements IZKConfigModifier {
         if (client.checkExist(path)){
             return false;
         }
-        return client.createPersistentNode(path,value,false,false);
+        return client.createPersistentNode(path,value,false,false) != null;
     }
 
     @Override

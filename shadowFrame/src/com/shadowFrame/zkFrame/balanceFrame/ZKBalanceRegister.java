@@ -57,7 +57,7 @@ public class ZKBalanceRegister<T> {
     }
 
     public boolean registerBalanceInfo(T balanceInfo){
-        return this.client.createEphemeralNode(balancePath+"/"+this.balanceStrategy.getBalancePrefix(),this.balanceStrategy.encodeBalanceInfo(balanceInfo),true,false);
+        return this.client.createEphemeralNode(balancePath+"/"+this.balanceStrategy.getBalancePrefix(),this.balanceStrategy.encodeBalanceInfo(balanceInfo),true,false) != null;
     }
 
 }

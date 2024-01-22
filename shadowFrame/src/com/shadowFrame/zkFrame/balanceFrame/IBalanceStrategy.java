@@ -10,7 +10,7 @@ public interface IBalanceStrategy<T> {
 
     byte[] encodeBalanceInfo(T balanceInfo);
 
-    int getBalanceInfoIdFromKey(String key);
+    long getBalanceInfoIdFromKey(String key);
 
     String getBalancePrefix();
 
