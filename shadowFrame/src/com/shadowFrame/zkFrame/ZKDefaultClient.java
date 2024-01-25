@@ -212,6 +212,16 @@ public class ZKDefaultClient implements IZKClient {
         }
     }
 
+    public int getChildNum(String path){
+        int num = 0;
+        try {
+            zooKeeper.getChildren(path,false);
+            return num;
+        } catch (KeeperException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String getZKRoot() {
         return zkRoot;

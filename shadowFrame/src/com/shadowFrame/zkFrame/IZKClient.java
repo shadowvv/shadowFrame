@@ -87,5 +87,7 @@ public interface IZKClient {
         return addWatcher(path,watcher,ZKAddWatchMode.PERSISTENT_RECURSIVE);
     }
 
+    public int getChildNum(String path);
+
     String getZKRoot();
 }
